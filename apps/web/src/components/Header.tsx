@@ -88,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
-      <div className="flex h-16 items-center justify-between gap-4 sm:gap-6 px-4 sm:px-6 max-w-7xl mx-auto">
+      <div className="flex h-16 items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] mx-auto">
         {/* Left Section: Publication Branding & Document Title */}
         <div className="flex items-center space-x-3 sm:space-x-3.5 min-w-0 shrink-0">
           <button
@@ -203,8 +203,8 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Section: Action Utilities & Identity */}
         <div className="flex items-center space-x-2 shrink-0">
-          {/* System Status Indicator (Rule 23) */}
-          <div className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
+          {/* System Status Indicator */}
+          <div className="hidden 2xl:flex items-center space-x-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
             <span
               className={`h-2 w-2 rounded-full ${
                 connectionState === 'Connected' ? 'bg-sage-dark' : 'bg-charcoal-light'
@@ -244,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title="Click to copy ECDSA public key fingerprint"
                 className="flex items-center space-x-1 text-[10px] font-mono text-charcoal-muted hover:text-charcoal transition-colors"
               >
-                <span>{identity.fingerprint.slice(0, 12)}...</span>
+                <span>{identity.fingerprint.slice(0, 10)}...</span>
                 {copied ? <Check className="h-2.5 w-2.5 text-sage-dark" /> : <Copy className="h-2.5 w-2.5" />}
               </button>
             </div>
@@ -337,28 +337,30 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onAIClick}
               title="AI Provenance & Change Explainer"
-              className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors"
+              className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors shrink-0"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">AI Assist</span>
+              <span className="hidden md:inline">AI Assist</span>
             </button>
           )}
 
-          {/* Share / P2P Room */}
+          {/* Share / P2P Room - Prominent Primary Action */}
           <button
             onClick={onShareClick}
-            className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+            title="Share Document P2P Link"
+            className="flex items-center space-x-1.5 rounded-lg bg-charcoal text-cream-50 hover:bg-charcoal/90 px-3 py-1.5 text-xs font-semibold transition-colors shadow-sm shrink-0"
           >
-            <Share2 className="h-3.5 w-3.5 text-charcoal-muted" />
-            <span className="hidden sm:inline">Share</span>
+            <Share2 className="h-3.5 w-3.5 text-cream-50" />
+            <span>Share</span>
           </button>
 
           {/* Export Bundle */}
           <button
             onClick={onExportClick}
-            className="flex items-center space-x-1.5 rounded px-3 py-1.5 text-xs font-semibold bg-charcoal text-cream-50 hover:bg-charcoal-subtle transition-colors"
+            title="Export Verifiable Bundle"
+            className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium border border-cream-border hover:bg-cream-subtle text-charcoal transition-colors shrink-0"
           >
-            <Download className="h-3.5 w-3.5" />
+            <Download className="h-3.5 w-3.5 text-charcoal-muted" />
             <span className="hidden sm:inline">Export</span>
           </button>
 
@@ -367,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onOnboardingClick}
               title="Guided User Tour"
-              className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+              className="p-1.5 rounded-lg text-charcoal-muted hover:text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors shrink-0"
             >
               <HelpCircle className="h-4 w-4" />
             </button>
@@ -376,7 +378,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden p-1.5 rounded text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+            className="xl:hidden p-1.5 rounded-lg text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors shrink-0"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -434,6 +436,29 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Radio className="w-3.5 h-3.5" />
               Time Travel
+            </button>
+          </div>
+
+          <div className="pt-2 border-t border-cream-border grid grid-cols-2 gap-2 text-xs">
+            <button
+              onClick={() => {
+                onShareClick();
+                setMobileMenuOpen(false);
+              }}
+              className="p-2 rounded bg-charcoal text-cream-50 font-semibold text-left flex items-center gap-2"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              Share Link
+            </button>
+            <button
+              onClick={() => {
+                onExportClick();
+                setMobileMenuOpen(false);
+              }}
+              className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2 text-charcoal font-semibold"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Export Bundle
             </button>
           </div>
 

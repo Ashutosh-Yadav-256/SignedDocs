@@ -1,12 +1,13 @@
 import React from 'react';
 import { PeerPresence } from '@hermes/sync';
-import { Users, ShieldCheck } from 'lucide-react';
+import { Users, ShieldCheck, Share2 } from 'lucide-react';
 
 export interface ActivePeersProps {
   peers: PeerPresence[];
   currentUserFingerprint: string;
   currentUserDisplayName: string;
   currentUserColor: string;
+  onShareClick?: () => void;
 }
 
 export const ActivePeers: React.FC<ActivePeersProps> = ({
@@ -14,6 +15,7 @@ export const ActivePeers: React.FC<ActivePeersProps> = ({
   currentUserFingerprint,
   currentUserDisplayName,
   currentUserColor,
+  onShareClick,
 }) => {
   return (
     <div className="bg-cream-50 rounded-xl p-5 border border-cream-border space-y-4 font-sans text-charcoal">
@@ -22,9 +24,21 @@ export const ActivePeers: React.FC<ActivePeersProps> = ({
           <Users className="h-4 w-4 text-sage-dark" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal">Active Collaborators</h3>
         </div>
-        <span className="text-xs font-mono bg-cream-subtle text-charcoal-muted border border-cream-border px-2 py-0.5 rounded font-semibold">
-          {peers.length + 1} Active
-        </span>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs font-mono bg-cream-subtle text-charcoal-muted border border-cream-border px-2 py-0.5 rounded font-semibold">
+            {peers.length + 1} Active
+          </span>
+          {onShareClick && (
+            <button
+              onClick={onShareClick}
+              className="flex items-center space-x-1 text-xs text-sage-dark hover:underline font-semibold bg-sage-light border border-sage-border px-2 py-0.5 rounded transition-colors"
+              title="Share Document Invite Link"
+            >
+              <Share2 className="h-3 w-3" />
+              <span>Invite</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">

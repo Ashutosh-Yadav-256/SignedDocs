@@ -324,6 +324,7 @@ export function App() {
                   currentUserFingerprint={identity.fingerprint}
                   currentUserDisplayName={displayName}
                   currentUserColor={userColor}
+                  onShareClick={() => setIsShareOpen(true)}
                 />
 
                 {/* Quick DAG Feed */}
