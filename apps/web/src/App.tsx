@@ -13,7 +13,8 @@ import { ExportModal } from './components/modals/ExportModal.js';
 import { AuditVerifierModal } from './components/modals/AuditVerifierModal.js';
 import { ShareModal } from './components/modals/ShareModal.js';
 import { Dashboard } from './components/Dashboard.js';
-import { Sparkles, Layers, ShieldCheck, Radio, FileText, ArrowLeft } from 'lucide-react';
+import { AIAssistantDrawer } from './components/ai/AIAssistantDrawer.js';
+import { Sparkles, Layers, ShieldCheck, Radio, FileText, ArrowLeft, Bot } from 'lucide-react';
 
 export function App() {
   const storage = useMemo(() => new HermesStorage(), []);
@@ -31,6 +32,8 @@ export function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isVerifierModalOpen, setIsVerifierModalOpen] = useState(false);
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
+  const [selectedAICommitId, setSelectedAICommitId] = useState<string | null>(null);
 
   // Author identity
   const {
@@ -83,6 +86,22 @@ export function App() {
     );
   }
 
+  const handleOpenAICommit = (commit: any) => {
+    setSelectedAICommitId(commit.id);
+    setIsAIAssistantOpen(true);
+  };
+
+  const handleApplyAISuggestion = async (newContent: string) => {
+    const ytext = ydoc.getText('tiptap') || ydoc.getText('content');
+    if (ytext) {
+      ydoc.transact(() => {
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, newContent);
+      });
+      await flushCommit();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col font-sans">
       {/* Header */}
@@ -101,6 +120,7 @@ export function App() {
         onShareClick={() => setIsShareOpen(true)}
         onVerifyClick={() => setIsVerifierModalOpen(true)}
         onDocumentsClick={() => setShowDashboard(!showDashboard)}
+        onAIClick={() => setIsAIAssistantOpen(true)}
       />
 
       {/* Main Container */}
@@ -128,7 +148,12 @@ export function App() {
               )}
 
               {activeTab === 'dag' && (
-                <DAGVisualizer dag={dag} commits={commits} heads={heads} />
+                <DAGVisualizer
+                  dag={dag}
+                  commits={commits}
+                  heads={heads}
+                  onSelectCommit={handleOpenAICommit}
+                />
               )}
 
               {activeTab === 'blame' && <SignedBlame ydoc={ydoc} commits={commits} />}
@@ -166,7 +191,11 @@ export function App() {
                     </button>
                   </div>
                   <div className="max-h-80 overflow-y-auto pr-1">
-                    <Timeline commits={commits} heads={heads} />
+                    <Timeline
+                      commits={commits}
+                      heads={heads}
+                      onSelectCommit={handleOpenAICommit}
+                    />
                   </div>
                 </div>
               </div>
@@ -175,7 +204,20 @@ export function App() {
         )}
       </main>
 
-      {/* Modals */}
+      {/* Modals & AI Assistant Drawer */}
+      <AIAssistantDrawer
+        isOpen={isAIAssistantOpen}
+        onClose={() => setIsAIAssistantOpen(false)}
+        dag={dag}
+        commits={commits}
+        heads={heads}
+        ydoc={ydoc}
+        documentTitle={documentTitle}
+        documentId={documentId}
+        onApplyAISuggestion={handleApplyAISuggestion}
+        selectedCommitId={selectedAICommitId}
+      />
+
       <ExportModal
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}

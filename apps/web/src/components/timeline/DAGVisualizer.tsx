@@ -265,12 +265,25 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
       {selectedCommit && (
         <div className="w-full lg:w-96 glass-panel rounded-2xl p-6 border border-slate-800 shadow-2xl flex flex-col justify-between overflow-y-auto">
           <div>
-            <div className="flex items-center space-x-2 pb-4 border-b border-slate-800">
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
-              <div>
-                <h3 className="text-sm font-bold text-white">Cryptographic Node</h3>
-                <p className="text-[11px] text-emerald-400 font-mono">ECDSA P-256 Verified</p>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="h-5 w-5 text-emerald-400" />
+                <div>
+                  <h3 className="text-sm font-bold text-white">Cryptographic Node</h3>
+                  <p className="text-[11px] text-emerald-400 font-mono">ECDSA P-256 Verified</p>
+                </div>
               </div>
+
+              {onSelectCommit && selectedCommit && (
+                <button
+                  type="button"
+                  onClick={() => onSelectCommit(selectedCommit)}
+                  className="flex items-center space-x-1 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shadow-sm"
+                >
+                  <span>✨</span>
+                  <span>AI Explain</span>
+                </button>
+              )}
             </div>
 
             <div className="mt-4 space-y-4 text-xs">

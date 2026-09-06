@@ -758,6 +758,32 @@ In air-gapped mode:
 The application must remain fully functional when the network
 interface has no Internet connectivity.
 
+## AI TRUST BOUNDARY
+
+AI-generated content, summaries, classifications, explanations,
+and recommendations are untrusted derived data.
+
+AI MUST NOT determine cryptographic authenticity.
+
+Cryptographic verification MUST independently validate:
+- commit schema
+- update hash
+- commit ID
+- author public key
+- ECDSA signature
+- parent references
+- DAG integrity
+
+AI MUST NOT directly modify the signed history.
+
+Any AI-generated document modification MUST become a normal Yjs
+update and pass through the standard commit → hash → sign → DAG
+pipeline after user/system authorization.
+
+AI functionality MUST remain optional and MUST NOT be required
+for core editing, collaboration, persistence, synchronization,
+export, or verification.
+
 The following must always remain true:
 
 ```text
@@ -771,4 +797,6 @@ CRDT CONVERGENCE IS SEPARATE FROM DAG HISTORY
 THE VERIFIER DOES NOT TRUST THE EDITOR
 A FAILED SIGNATURE NEVER PRODUCES A VALID DOCUMENT UPDATE
 PROTOCOL CHANGES ARE VERSIONED
+AI IS AN UNTRUSTED DERIVED DATA LAYER
 ```
+

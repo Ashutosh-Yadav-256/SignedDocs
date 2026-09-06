@@ -33,6 +33,7 @@ export interface HeaderProps {
   onShareClick: () => void;
   onVerifyClick: () => void;
   onDocumentsClick: () => void;
+  onAIClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -50,6 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
   onShareClick,
   onVerifyClick,
   onDocumentsClick,
+  onAIClick,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -253,6 +255,17 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
           </div>
+
+          {/* AI Intelligence Assistant */}
+          {onAIClick && (
+            <button
+              onClick={onAIClick}
+              className="flex items-center space-x-1.5 rounded-lg bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 border border-cyan-500/30 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 hover:text-white transition-all shadow-sm"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+              <span>AI Assistant</span>
+            </button>
+          )}
 
           {/* Share / P2P WebRTC */}
           <button
