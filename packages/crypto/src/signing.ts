@@ -22,3 +22,9 @@ export async function signCanonicalHeader(
   const signatureBuffer = await subtle.sign(ECDSA_SIGN_PARAMS, privateKey, buffer);
   return uint8ArrayToBase64(new Uint8Array(signatureBuffer));
 }
+
+/**
+ * Alias for signing arbitrary canonical bytes with ECDSA P-256 private key.
+ */
+export const signData = signCanonicalHeader;
+
