@@ -8,8 +8,6 @@ import {
   ArrowRight,
   ArrowLeft,
   X,
-  Lock,
-  Layers,
   Sparkles,
   Users,
 } from 'lucide-react';
@@ -30,15 +28,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       subtitle: 'Local-first architecture with real-time CRDT synchronization.',
       badge: 'Step 1 of 4',
       icon: FileText,
-      colorClass: 'bg-sage-light border-sage text-sage-dark',
+      colorClass: 'bg-sage/10 border-sage/30 text-sage',
       content: (
         <div className="space-y-4 text-charcoal text-sm leading-relaxed font-sans">
           <p>
             Welcome to <strong className="font-semibold text-charcoal">SignedDocs</strong> — a distraction-free, publication-grade document workspace designed for thoughtful writing and verifiable collaboration.
           </p>
-          <div className="p-4 bg-cream-subtle border border-cream-border rounded-lg space-y-2">
+          <div className="p-4 bg-cream border border-cream-border rounded-lg space-y-2">
             <div className="font-semibold text-xs text-charcoal flex items-center gap-2">
-              <Users className="w-4 h-4 text-sage-dark" />
+              <Users className="w-4 h-4 text-sage" />
               Real-Time CRDT Sync
             </div>
             <p className="text-xs text-charcoal-muted leading-relaxed">
@@ -53,23 +51,23 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       subtitle: 'Mathematical proof of authorship via ECDSA P-256 Merkle DAG.',
       badge: 'Step 2 of 4',
       icon: ShieldCheck,
-      colorClass: 'bg-sage-light border-sage text-sage-dark',
+      colorClass: 'bg-sage/10 border-sage/30 text-sage',
       content: (
         <div className="space-y-4 text-charcoal text-sm leading-relaxed font-sans">
           <p>
             Unlike traditional cloud docs where anyone with database access can rewrite history, SignedDocs cryptographically signs every change on your device.
           </p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-cream-subtle border border-cream-border rounded-lg space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1">
               <div className="text-xs font-semibold text-charcoal">WebCrypto Private Key</div>
-              <p className="text-[11px] text-charcoal-muted">
+              <p className="text-[11px] text-charcoal-muted leading-relaxed">
                 Your private key stays strictly in your browser. It is never transmitted across the network.
               </p>
             </div>
-            <div className="p-3 bg-cream-subtle border border-cream-border rounded-lg space-y-1">
+            <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1">
               <div className="text-xs font-semibold text-charcoal">Merkle DAG Nodes</div>
-              <p className="text-[11px] text-charcoal-muted">
-                Commits link to parent hashes. If even 1 character is tampered with, verification immediately fails.
+              <p className="text-[11px] text-charcoal-muted leading-relaxed">
+                Commits link to parent hashes. If even 1 character is tampered with, verification fails.
               </p>
             </div>
           </div>
@@ -81,27 +79,27 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       subtitle: 'ZK-Redaction and human vs. AI origin proofs.',
       badge: 'Step 3 of 4',
       icon: EyeOff,
-      colorClass: 'bg-terracotta-light border-terracotta text-terracotta-dark',
+      colorClass: 'bg-terracotta/10 border-terracotta/30 text-terracotta',
       content: (
-        <div className="space-y-4 text-charcoal text-sm leading-relaxed font-sans">
+        <div className="space-y-3 text-charcoal text-sm leading-relaxed font-sans">
           <p>
             SignedDocs introduces two groundbreaking trust primitives for modern publishing:
           </p>
-          <div className="p-3.5 bg-cream-subtle border border-cream-border rounded-lg space-y-2">
+          <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1.5">
             <div className="font-semibold text-xs text-charcoal flex items-center gap-2">
-              <EyeOff className="w-3.5 h-3.5 text-terracotta-dark" />
+              <EyeOff className="w-3.5 h-3.5 text-terracotta" />
               ZK-Redact (Selective Disclosure)
             </div>
-            <p className="text-xs text-charcoal-muted">
-              Redact confidential clauses before sharing. Recipients verify author authenticity and unredacted text without seeing hidden content.
+            <p className="text-xs text-charcoal-muted leading-relaxed">
+              Redact confidential clauses before sharing. Recipients verify authenticity and unredacted text without seeing hidden content.
             </p>
           </div>
-          <div className="p-3.5 bg-cream-subtle border border-cream-border rounded-lg space-y-2">
+          <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1.5">
             <div className="font-semibold text-xs text-charcoal flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-sage-dark" />
+              <Sparkles className="w-3.5 h-3.5 text-sage" />
               Forensic Origin Heatmap
             </div>
-            <p className="text-xs text-charcoal-muted">
+            <p className="text-xs text-charcoal-muted leading-relaxed">
               Distinguishes direct human typing cadence from human-audited AI suggestions and clipboard pastes.
             </p>
           </div>
@@ -113,15 +111,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       subtitle: 'Synchronize physically isolated laptops without cables or Wi-Fi.',
       badge: 'Step 4 of 4',
       icon: Radio,
-      colorClass: 'bg-sage-light border-sage text-sage-dark',
+      colorClass: 'bg-sage/10 border-sage/30 text-sage',
       content: (
         <div className="space-y-4 text-charcoal text-sm leading-relaxed font-sans">
           <p>
             In high-security enclaves with zero internet, you can project your document commits as high-density animated QR fountain streams.
           </p>
-          <div className="p-4 bg-cream-subtle border border-cream-border rounded-lg space-y-2">
+          <div className="p-4 bg-cream border border-cream-border rounded-lg space-y-2">
             <div className="font-semibold text-xs text-charcoal flex items-center gap-2">
-              <Radio className="w-4 h-4 text-sage-dark" />
+              <Radio className="w-4 h-4 text-sage" />
               Camera Ingestion & Verification
             </div>
             <p className="text-xs text-charcoal-muted leading-relaxed">
@@ -151,27 +149,27 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 backdrop-blur-[2px] p-4 animate-in fade-in duration-150">
-      <div className="bg-cream-50 border border-cream-border rounded-xl w-full max-w-lg flex flex-col shadow-none overflow-hidden text-charcoal">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4 animate-in fade-in duration-150">
+      <div className="bg-cream-light border border-cream-border rounded-lg w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden text-charcoal">
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-cream-border flex items-center justify-between bg-cream-100">
+        <div className="flex-shrink-0 px-6 py-4 border-b border-cream-border flex items-center justify-between bg-cream">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-cream-subtle border border-cream-border text-charcoal-muted">
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-cream-light border border-cream-border text-charcoal-muted font-mono">
               {current.badge}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-subtle transition-colors"
+            className="p-1 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-dark transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 space-y-5">
+        {/* Modal Body with flex-1 and min-h-0 to guarantee scrolling without overflow */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
           <div className="flex items-start space-x-3.5">
-            <div className={`p-2.5 rounded-lg border ${current.colorClass}`}>
+            <div className={`p-2.5 rounded-lg border ${current.colorClass} flex-shrink-0`}>
               <IconComponent className="w-5 h-5" />
             </div>
             <div className="space-y-0.5">
@@ -197,7 +195,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                 className={`h-1.5 rounded-full transition-all ${
                   currentStep === idx
                     ? 'w-6 bg-charcoal'
-                    : 'w-1.5 bg-cream-border hover:bg-charcoal-light'
+                    : 'w-1.5 bg-cream-border hover:bg-charcoal-muted'
                 }`}
               />
             ))}
@@ -205,11 +203,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Footer Navigation */}
-        <div className="px-6 py-4 border-t border-cream-border bg-cream-100 flex items-center justify-between">
+        <div className="flex-shrink-0 px-6 py-4 border-t border-cream-border bg-cream flex items-center justify-between">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className="px-3.5 py-1.5 rounded text-xs font-medium text-charcoal-muted hover:text-charcoal hover:bg-cream-subtle disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 transition-colors"
+            className="px-3.5 py-1.5 rounded text-xs font-semibold text-charcoal-muted hover:text-charcoal hover:bg-cream-dark disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 transition-colors border border-transparent hover:border-cream-border flex-shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back
@@ -217,7 +215,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
           <button
             onClick={handleNext}
-            className="px-4 py-2 rounded bg-charcoal text-cream-50 hover:bg-charcoal-subtle text-xs font-medium flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 rounded bg-charcoal text-cream hover:bg-charcoal/90 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-charcoal flex-shrink-0"
           >
             {currentStep === steps.length - 1 ? (
               <>
