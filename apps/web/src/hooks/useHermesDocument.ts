@@ -40,7 +40,10 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
     userColor,
     storage,
     enableWebRTC = true,
-    signalingUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SIGNALING_URL) || 'ws://localhost:4444',
+    signalingUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SIGNALING_URL) ||
+      (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'ws://localhost:4444'
+        : 'wss://hermes-signaling-relay.onrender.com'),
     roomCode,
   } = options;
 

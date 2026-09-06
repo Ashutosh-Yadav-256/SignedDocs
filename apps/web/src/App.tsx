@@ -42,7 +42,11 @@ export function App() {
   const searchParams = new URLSearchParams(window.location.search);
   const initialDocId = searchParams.get('doc') || 'doc_hermes_default';
   const initialRoom = searchParams.get('room') || initialDocId;
-  const initialSignal = searchParams.get('signal') || (import.meta.env?.VITE_SIGNALING_URL as string) || undefined;
+  const defaultSignalingUrl =
+    typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'ws://localhost:4444'
+      : 'wss://hermes-signaling-relay.onrender.com';
+  const initialSignal = searchParams.get('signal') || (import.meta.env?.VITE_SIGNALING_URL as string) || defaultSignalingUrl;
 
   const [documentId, setDocumentId] = useState(initialDocId);
   const [documentTitle, setDocumentTitle] = useState('Hermes Protocol Specification');

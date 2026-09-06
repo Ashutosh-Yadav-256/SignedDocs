@@ -25,7 +25,11 @@ export class WebRTCTransport implements SyncTransport {
   constructor(documentId: string, options: WebRTCTransportOptions = {}) {
     this.documentId = documentId;
     this.roomCode = options.roomCode || documentId;
-    this.signalingUrl = options.signalingUrl || 'ws://localhost:4444';
+    const defaultSignaling =
+      typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'ws://localhost:4444'
+        : 'wss://hermes-signaling-relay.onrender.com';
+    this.signalingUrl = options.signalingUrl || defaultSignaling;
     this.stunServers = options.stunServers || DEFAULT_STUN_SERVERS; // Empty array for air-gapped default
   }
 
