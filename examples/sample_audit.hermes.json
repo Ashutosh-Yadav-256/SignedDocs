@@ -1,0 +1,40 @@
+{
+  "format": "hermesdocs",
+  "version": 1,
+  "document": {
+    "id": "doc_genesis_001",
+    "title": "System Architecture Specification",
+    "createdAt": 1788626956242,
+    "updatedAt": 1788626956242,
+    "heads": [
+      "1f484455ac72451cd9174255fea2ca5a156ee83d1bc82e9a531793f78d624bf2"
+    ]
+  },
+  "authors": [
+    {
+      "fingerprint": "hermes:787d571ca0227781",
+      "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYLokua1dQFfD5puLiVKljhCpBt0+OlqaY11oaTxE9Yf7uXPS8/rOEdspRaKySbcWmaNwwXwc1ctrtu5/EP1OCg==",
+      "displayName": "Alice"
+    }
+  ],
+  "commits": [
+    {
+      "version": 1,
+      "id": "1f484455ac72451cd9174255fea2ca5a156ee83d1bc82e9a531793f78d624bf2",
+      "parentIds": [],
+      "author": {
+        "fingerprint": "hermes:787d571ca0227781",
+        "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYLokua1dQFfD5puLiVKljhCpBt0+OlqaY11oaTxE9Yf7uXPS8/rOEdspRaKySbcWmaNwwXwc1ctrtu5/EP1OCg=="
+      },
+      "timestamp": 1788626956241,
+      "updateHash": "9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a",
+      "updateBinary": "AQIDBA==",
+      "signature": "Eox0pNKc7Ld8T9HU3Zn5m1o5W+MN1h1RaLerESkI12fcMJiSEo9rQ6SggTRPbBwVMcvHmbs9xfYIvVtPh1qv8Q=="
+    }
+  ],
+  "heads": [
+    "1f484455ac72451cd9174255fea2ca5a156ee83d1bc82e9a531793f78d624bf2"
+  ],
+  "stateHash": "state_hash_demo",
+  "exportedAt": 1788626956242
+}

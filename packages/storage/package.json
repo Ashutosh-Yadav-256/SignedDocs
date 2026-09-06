@@ -1,0 +1,26 @@
+{
+  "name": "@hermes/storage",
+  "version": "1.0.0",
+  "description": "IndexedDB local-first persistence for documents, commit DAGs, heads, and cryptographic identities",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@hermes/core": "*",
+    "@hermes/crypto": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

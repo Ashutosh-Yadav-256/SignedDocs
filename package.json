@@ -1,0 +1,28 @@
+{
+  "name": "hermesdocs-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HermesDocs: Local-first cryptographically verifiable collaborative Markdown editor",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@hermes/web",
+    "build:packages": "npm run build --workspace=@hermes/crypto && npm run build --workspace=@hermes/core && npm run build --workspace=@hermes/protocol && npm run build --workspace=@hermes/storage && npm run build --workspace=@hermes/sync",
+    "build:apps": "npm run build --workspace=@hermes/verifier && npm run build --workspace=@hermes/signal && npm run build --workspace=@hermes/web",
+    "build": "npm run build:packages && npm run build:apps",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "signal": "node apps/signal/dist/server.js",
+    "signal:dev": "npm run dev --workspace=@hermes/signal",
+    "verify": "node apps/verifier/dist/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

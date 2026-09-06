@@ -1,0 +1,21 @@
+{
+  "name": "@hermes/verifier",
+  "version": "1.0.0",
+  "description": "Standalone CLI verifier for HermesDocs .hermes.json audit bundles",
+  "type": "module",
+  "bin": {
+    "hermes": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "verify": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@hermes/core": "*",
+    "@hermes/crypto": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

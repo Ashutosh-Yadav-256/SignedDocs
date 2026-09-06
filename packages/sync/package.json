@@ -1,0 +1,29 @@
+{
+  "name": "@hermes/sync",
+  "version": "1.0.0",
+  "description": "Peer synchronization engine supporting BroadcastChannel and WebRTC transports with verify-before-apply cryptographic safety",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@hermes/core": "*",
+    "@hermes/crypto": "*",
+    "@hermes/protocol": "*",
+    "@hermes/storage": "*",
+    "yjs": "^13.6.23"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
