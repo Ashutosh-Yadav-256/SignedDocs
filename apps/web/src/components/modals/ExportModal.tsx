@@ -14,6 +14,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, getBu
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
     if (isOpen) {
       setIsLoading(true);
       getBundle()
@@ -50,7 +60,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, getBu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="w-full max-w-2xl bg-cream-light rounded-lg border border-cream-border overflow-hidden flex flex-col max-h-[90vh] text-charcoal">
         {/* Modal Header */}
         <div className="flex items-center justify-between p-5 border-b border-cream-border">

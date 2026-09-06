@@ -16,6 +16,18 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
   const searchParams = new URLSearchParams(window.location.search);
   const signalParam = searchParams.get('signal');
   const shareUrl = `${window.location.origin}${window.location.pathname}?doc=${documentId}&room=${roomCode}${signalParam ? `&signal=${encodeURIComponent(signalParam)}` : ''}`;
@@ -27,7 +39,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="w-full max-w-lg bg-cream-light rounded-lg border border-cream-border overflow-hidden text-charcoal">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-cream-border">
