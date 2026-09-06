@@ -344,16 +344,6 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* Share / P2P Room - Prominent Primary Action */}
-          <button
-            onClick={onShareClick}
-            title="Share Document P2P Link"
-            className="flex items-center space-x-1.5 rounded-lg bg-charcoal text-cream-50 hover:bg-charcoal/90 px-3 py-1.5 text-xs font-semibold transition-colors shadow-sm shrink-0"
-          >
-            <Share2 className="h-3.5 w-3.5 text-cream-50" />
-            <span>Share</span>
-          </button>
-
           {/* Export Bundle */}
           <button
             onClick={onExportClick}
@@ -448,7 +438,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="p-2 rounded bg-charcoal text-cream-50 font-semibold text-left flex items-center gap-2"
             >
               <Share2 className="w-3.5 h-3.5" />
-              Share Link
+              Invite
             </button>
             <button
               onClick={() => {
