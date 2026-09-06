@@ -41,9 +41,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
     storage,
     enableWebRTC = true,
     signalingUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SIGNALING_URL) ||
-      (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'ws://localhost:4444'
-        : 'wss://hermes-signaling-relay.onrender.com'),
+      'wss://hermes-signaling-relay.onrender.com',
     roomCode,
   } = options;
 
@@ -196,6 +194,19 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
       };
       ydoc.on('update', onYDocUpdate);
 
+      // Initial broadcast of presence and DAG state
+      syncEngine.broadcastHello();
+      syncEngine.broadcastAwareness();
+      syncEngine.broadcastDAGHeads();
+
+      // Periodic presence and sync heartbeat (every 4 seconds)
+      const heartbeatTimer = setInterval(() => {
+        if (isMounted && syncEngineRef.current) {
+          syncEngineRef.current.broadcastHello();
+          syncEngineRef.current.broadcastAwareness();
+        }
+      }, 4000);
+
       if (isMounted) {
         setIsLoaded(true);
         setIsSyncing(false);
@@ -203,6 +214,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
       }
 
       return () => {
+        clearInterval(heartbeatTimer);
         ydoc.off('update', onYDocUpdate);
         unsubDAG();
         unsubPeers();

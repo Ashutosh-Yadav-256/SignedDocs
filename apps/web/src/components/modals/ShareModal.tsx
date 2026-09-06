@@ -29,10 +29,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   if (!isOpen) return null;
 
   const searchParams = new URLSearchParams(window.location.search);
-  const defaultSignalingUrl =
-    typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'ws://localhost:4444'
-      : 'wss://hermes-signaling-relay.onrender.com';
+  const defaultSignalingUrl = 'wss://hermes-signaling-relay.onrender.com';
   const signalParam = searchParams.get('signal') || (import.meta.env?.VITE_SIGNALING_URL as string) || defaultSignalingUrl;
   const shareUrl = `${window.location.origin}${window.location.pathname}?doc=${documentId}&room=${roomCode}${signalParam ? `&signal=${encodeURIComponent(signalParam)}` : ''}`;
 

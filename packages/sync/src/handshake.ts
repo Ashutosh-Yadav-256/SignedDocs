@@ -172,12 +172,20 @@ export class SyncEngine {
 
     switch (msg.type) {
       case 'IDENTITY_HELLO': {
+        const isNewPeer = !this.awareness.getActivePeers().some((p) => p.author.fingerprint === msg.author.fingerprint);
         this.awareness.updatePeer({
           author: msg.author,
           color: '#6366f1',
           displayName: msg.author.displayName || msg.author.fingerprint.slice(0, 12),
           lastActive: msg.timestamp,
         });
+
+        // Greet new peer back with our identity and DAG heads so they sync immediately
+        if (isNewPeer) {
+          this.broadcastHello();
+          this.broadcastAwareness();
+          this.broadcastDAGHeads();
+        }
         break;
       }
 
@@ -186,7 +194,7 @@ export class SyncEngine {
         const localHeads = this.dag.getHeads();
 
         // Check if remote heads contain commits we don't have
-        const hasMissing = remoteHeads.some((h) => !this.dag.has(h));
+        const hasMissing = remoteHeads.length > 0 && remoteHeads.some((h) => !this.dag.has(h));
         if (hasMissing) {
           const req: SyncRequestMessage = {
             type: 'SYNC_REQUEST',
@@ -194,6 +202,18 @@ export class SyncEngine {
             knownHeads: localHeads,
           };
           sourceTransport.send(req);
+        }
+
+        // If we have heads that the remote peer doesn't have, announce our heads so they can sync
+        const remoteMissingFromUs = localHeads.length > 0 && localHeads.some((h) => !remoteHeads.includes(h));
+        if (remoteMissingFromUs && !hasMissing) {
+          const headsMsg: DAGHeadsMessage = {
+            type: 'DAG_HEADS',
+            documentId: this.document.id,
+            heads: localHeads,
+            timestamp: Date.now(),
+          };
+          sourceTransport.send(headsMsg);
         }
         break;
       }
@@ -212,7 +232,10 @@ export class SyncEngine {
       }
 
       case 'SYNC_RESPONSE': {
-        await this.processIncomingCommits(msg.commits);
+        const applied = await this.processIncomingCommits(msg.commits);
+        if (applied > 0) {
+          this.broadcastDAGHeads();
+        }
         break;
       }
 
