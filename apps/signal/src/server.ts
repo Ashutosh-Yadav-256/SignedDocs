@@ -1,3 +1,4 @@
+import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 
 interface ClientConnection {
@@ -7,11 +8,36 @@ interface ClientConnection {
 }
 
 const PORT = parseInt(process.env.PORT || '4444', 10);
-const wss = new WebSocketServer({ port: PORT });
 const clients = new Map<WebSocket, ClientConnection>();
 
-console.log(`[Hermes-Signal] Signaling server listening on ws://localhost:${PORT}`);
-console.log(`[Hermes-Signal] Note: Signaling carries ONLY peer connection negotiation (SDP/ICE), never document content.`);
+const server = http.createServer((req, res) => {
+  if (req.url === '/health' || req.url === '/healthz' || req.url === '/') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    });
+    res.end(
+      JSON.stringify({
+        status: 'healthy',
+        service: 'Hermes Signaling Relay',
+        activeConnections: clients.size,
+        timestamp: Date.now(),
+      })
+    );
+    return;
+  }
+
+  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.end('Not Found');
+});
+
+const wss = new WebSocketServer({ server });
+
+server.listen(PORT, () => {
+  console.log(`[Hermes-Signal] Signaling server listening on port ${PORT}`);
+  console.log(`[Hermes-Signal] HTTP healthcheck available at http://localhost:${PORT}/health`);
+  console.log(`[Hermes-Signal] Note: Signaling carries ONLY peer connection negotiation (SDP/ICE), never document content.`);
+});
 
 wss.on('connection', (ws: WebSocket) => {
   ws.on('message', (data: string) => {

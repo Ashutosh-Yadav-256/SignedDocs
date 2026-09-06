@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hermes-signaling-relay
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build --workspace=@hermes/signal
+    startCommand: npm run signal
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
