@@ -19,6 +19,8 @@ import {
   Menu,
   X,
   Feather,
+  ChevronDown,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
@@ -73,6 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
 
   const copyFingerprint = () => {
     navigator.clipboard.writeText(identity.fingerprint);
@@ -247,12 +250,12 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Innovation Action Toolbar (Flat 2D Buttons) */}
+          {/* Innovation Action Toolbar (Visible directly on 2xl screens) */}
           {onRedactClick && (
             <button
               onClick={onRedactClick}
               title="ZK-Redact: Cryptographic Selective Disclosure"
-              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
               <EyeOff className="h-3.5 w-3.5 text-terracotta-dark" />
               <span>Redact</span>
@@ -263,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onMultisigClick}
               title="Multisig: M-of-N Milestone Agreement Seal"
-              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
               <Award className="h-3.5 w-3.5 text-terracotta-dark" />
               <span>Multisig</span>
@@ -274,7 +277,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onForensicsClick}
               title="Forensics: Human vs. AI Attribution Heatmap"
-              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
               <Activity className="h-3.5 w-3.5 text-sage-dark" />
               <span>Forensics</span>
@@ -285,12 +288,95 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onAirGapClick}
               title="Air-Gap: Optical QR Sneakernet Sync"
-              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
               <Radio className="h-3.5 w-3.5 text-sage-dark" />
               <span>Air-Gap</span>
             </button>
           )}
+
+          {/* Tools Dropdown (Visible on lg and xl screens to prevent header collisions) */}
+          <div className="relative hidden lg:block 2xl:hidden">
+            <button
+              onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
+              className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 text-charcoal-muted" />
+              <span>Tools</span>
+              <ChevronDown className={`h-3 w-3 text-charcoal-muted transition-transform ${toolsDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {toolsDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setToolsDropdownOpen(false)}
+                />
+                <div className="absolute right-0 mt-1.5 w-48 rounded-lg bg-white border border-cream-border shadow-xl z-50 py-1 font-sans text-xs">
+                  {onRedactClick && (
+                    <button
+                      onClick={() => {
+                        onRedactClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal"
+                    >
+                      <EyeOff className="h-3.5 w-3.5 text-terracotta-dark" />
+                      <div>
+                        <div className="font-semibold">ZK-Redact</div>
+                        <div className="text-[10px] text-charcoal-muted">Selective disclosure</div>
+                      </div>
+                    </button>
+                  )}
+                  {onMultisigClick && (
+                    <button
+                      onClick={() => {
+                        onMultisigClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal border-t border-cream-border/50"
+                    >
+                      <Award className="h-3.5 w-3.5 text-terracotta-dark" />
+                      <div>
+                        <div className="font-semibold">Multisig Seal</div>
+                        <div className="text-[10px] text-charcoal-muted">M-of-N milestone</div>
+                      </div>
+                    </button>
+                  )}
+                  {onForensicsClick && (
+                    <button
+                      onClick={() => {
+                        onForensicsClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal border-t border-cream-border/50"
+                    >
+                      <Activity className="h-3.5 w-3.5 text-sage-dark" />
+                      <div>
+                        <div className="font-semibold">Origin Forensics</div>
+                        <div className="text-[10px] text-charcoal-muted">Attribution heatmap</div>
+                      </div>
+                    </button>
+                  )}
+                  {onAirGapClick && (
+                    <button
+                      onClick={() => {
+                        onAirGapClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal border-t border-cream-border/50"
+                    >
+                      <Radio className="h-3.5 w-3.5 text-sage-dark" />
+                      <div>
+                        <div className="font-semibold">Optical Air-Gap</div>
+                        <div className="text-[10px] text-charcoal-muted">QR code sync</div>
+                      </div>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
 
           {onAIClick && (
             <button

@@ -23,7 +23,6 @@ import {
   RefreshCw,
   User,
   Clock,
-  Radio,
 } from 'lucide-react';
 
 export interface AIAssistantDrawerProps {
@@ -213,457 +212,467 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl bg-cream-light border-l border-cream-border flex flex-col font-sans text-charcoal">
-      {/* Drawer Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-cream-border">
-        <div className="flex items-center space-x-3">
-          <div className="rounded border border-sage/30 bg-sage/10 p-2 text-sage">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-bold font-serif text-charcoal">Hermes AI Intelligence</h2>
-              <span className="rounded bg-cream px-1.5 py-0.5 text-[9px] font-mono text-sage border border-cream-border font-medium">
-                {aiEngine.getProvider().name.includes('Offline') ? '100% Offline' : aiEngine.getProvider().name}
-              </span>
+    <>
+      {/* Backdrop overlay to prevent underlying page bleeding through */}
+      <div
+        className="fixed inset-0 z-50 bg-charcoal/40 transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Slide-out Solid Drawer */}
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl bg-white border-l border-cream-border flex flex-col font-sans text-charcoal shadow-2xl">
+        {/* Drawer Header with 100% solid background */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-cream-border bg-[#F9F6F0]">
+          <div className="flex items-center space-x-3">
+            <div className="rounded border border-sage/30 bg-sage/10 p-2 text-sage">
+              <Sparkles className="h-4 w-4" />
             </div>
-            <p className="text-[11px] text-charcoal-muted">Provenance, History & Merkle DAG Reasoning</p>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-sm font-bold font-serif text-charcoal">Hermes AI Intelligence</h2>
+                <span className="rounded bg-white px-1.5 py-0.5 text-[9px] font-mono text-sage border border-cream-border font-medium">
+                  {aiEngine.getProvider().name.includes('Offline') ? '100% Offline' : aiEngine.getProvider().name}
+                </span>
+              </div>
+              <p className="text-[11px] text-charcoal-muted">Provenance, History & Merkle DAG Reasoning</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-1">
+            <button
+              onClick={() => setActiveTab('settings')}
+              title="AI Provider Settings"
+              className={`p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent ${
+                activeTab === 'settings' ? 'bg-white text-charcoal border-cream-border' : ''
+              }`}
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent hover:border-cream-border"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1">
+        {/* Tabs with 100% solid background */}
+        <div className="flex items-center space-x-1 px-4 py-2 border-b border-cream-border bg-[#F4F0E8] text-xs">
           <button
-            onClick={() => setActiveTab('settings')}
-            title="AI Provider Settings"
-            className={`p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent ${
-              activeTab === 'settings' ? 'bg-cream text-charcoal border-cream-border' : ''
+            onClick={() => setActiveTab('qna')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+              activeTab === 'qna' ? 'bg-white text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
-            <Settings className="h-4 w-4" />
+            <History className="h-3.5 w-3.5" />
+            <span>History Q&A</span>
           </button>
+
           <button
-            onClick={onClose}
-            className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent hover:border-cream-border"
+            onClick={() => setActiveTab('commit')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+              activeTab === 'commit' ? 'bg-white text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
+            }`}
           >
-            <X className="h-4 w-4" />
+            <Layers className="h-3.5 w-3.5" />
+            <span>Commit Explainer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('branches')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+              activeTab === 'branches' ? 'bg-white text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
+            }`}
+          >
+            <GitBranch className="h-3.5 w-3.5" />
+            <span>Branches {heads.length > 1 && <span className="bg-terracotta text-white font-bold px-1 rounded text-[9px]">!</span>}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('refactor')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+              activeTab === 'refactor' ? 'bg-white text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
+            }`}
+          >
+            <Wand2 className="h-3.5 w-3.5" />
+            <span>Smart Assist</span>
           </button>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="flex items-center space-x-1 px-4 py-2 border-b border-cream-border bg-cream text-xs">
-        <button
-          onClick={() => setActiveTab('qna')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
-            activeTab === 'qna' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
-          }`}
-        >
-          <History className="h-3.5 w-3.5" />
-          <span>History Q&A</span>
-        </button>
+        {/* Main Tab Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-white">
+          {/* --- TAB 1: HISTORY Q&A --- */}
+          {activeTab === 'qna' && (
+            <div className="flex flex-col h-full space-y-4">
+              {/* Quick Prompt Pills */}
+              <div className="flex flex-wrap gap-2 text-[11px]">
+                {[
+                  { icon: User, label: 'Who contributed to this document?', query: 'Who contributed to this document?' },
+                  { icon: GitBranch, label: 'Explain DAG branch topology', query: 'Explain DAG branch topology' },
+                  { icon: Clock, label: 'Summarize recent revisions', query: 'Summarize recent revisions' },
+                  { icon: ShieldCheck, label: 'Are all commits verified?', query: 'Are all commits cryptographically verified?' },
+                ].map((pill, idx) => {
+                  const IconComp = pill.icon;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleAskQuestion(pill.query)}
+                      className="flex items-center space-x-1.5 bg-[#F9F6F0] hover:bg-[#EDE7DB] text-charcoal border border-cream-border px-2.5 py-1 rounded transition-colors"
+                    >
+                      <IconComp className="h-3 w-3 text-sage" />
+                      <span>{pill.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-        <button
-          onClick={() => setActiveTab('commit')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
-            activeTab === 'commit' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
-          }`}
-        >
-          <Layers className="h-3.5 w-3.5" />
-          <span>Commit Explainer</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('branches')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
-            activeTab === 'branches' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
-          }`}
-        >
-          <GitBranch className="h-3.5 w-3.5" />
-          <span>Branches {heads.length > 1 && <span className="bg-terracotta text-cream font-bold px-1 rounded text-[9px]">!</span>}</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('refactor')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
-            activeTab === 'refactor' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
-          }`}
-        >
-          <Wand2 className="h-3.5 w-3.5" />
-          <span>Smart Assist</span>
-        </button>
-      </div>
-
-      {/* Main Tab Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
-        {/* --- TAB 1: HISTORY Q&A --- */}
-        {activeTab === 'qna' && (
-          <div className="flex flex-col h-full space-y-4">
-            {/* Quick Prompt Pills (pure SVG icons) */}
-            <div className="flex flex-wrap gap-2 text-[11px]">
-              {[
-                { icon: User, label: 'Who contributed to this document?', query: 'Who contributed to this document?' },
-                { icon: GitBranch, label: 'Explain DAG branch topology', query: 'Explain DAG branch topology' },
-                { icon: Clock, label: 'Summarize recent revisions', query: 'Summarize recent revisions' },
-                { icon: ShieldCheck, label: 'Are all commits verified?', query: 'Are all commits cryptographically verified?' },
-              ].map((pill, idx) => {
-                const IconComponent = pill.icon;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleAskQuestion(pill.query)}
-                    className="flex items-center space-x-1.5 bg-cream hover:bg-cream-dark text-charcoal border border-cream-border px-2.5 py-1 rounded transition-colors"
-                  >
-                    <IconComponent className="h-3 w-3 text-sage" />
-                    <span>{pill.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Chat message bubbles */}
-            <div className="flex-1 space-y-3 overflow-y-auto pr-1">
-              {chatMessages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex items-start space-x-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  {msg.sender === 'ai' && (
-                    <div className="h-6 w-6 rounded bg-cream text-sage flex items-center justify-center flex-shrink-0 border border-cream-border mt-0.5">
-                      <Bot className="h-3.5 w-3.5" />
-                    </div>
-                  )}
+              {/* Chat message bubbles */}
+              <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+                {chatMessages.map((msg, index) => (
                   <div
-                    className={`rounded-lg px-4 py-2.5 text-xs max-w-[85%] leading-relaxed ${
-                      msg.sender === 'user'
-                        ? 'bg-charcoal text-cream'
-                        : 'bg-cream border border-cream-border text-charcoal'
-                    }`}
+                    key={index}
+                    className={`flex items-start space-x-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className="whitespace-pre-wrap font-sans">{msg.text}</div>
+                    {msg.sender === 'ai' && (
+                      <div className="h-6 w-6 rounded bg-[#F9F6F0] text-sage flex items-center justify-center flex-shrink-0 border border-cream-border mt-0.5">
+                        <Bot className="h-3.5 w-3.5" />
+                      </div>
+                    )}
+                    <div
+                      className={`rounded-lg px-4 py-2.5 text-xs max-w-[85%] leading-relaxed ${
+                        msg.sender === 'user'
+                          ? 'bg-charcoal text-cream-50'
+                          : 'bg-[#F9F6F0] border border-cream-border text-charcoal'
+                      }`}
+                    >
+                      <div className="whitespace-pre-wrap font-sans">{msg.text}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
-              {isAnswering && (
-                <div className="flex items-center space-x-2 text-xs text-sage">
-                  <Bot className="h-4 w-4 animate-spin" />
-                  <span>Traversing Merkle DAG & analyzing commits...</span>
-                </div>
-              )}
-            </div>
-
-            {/* Input Bar */}
-            <div className="pt-2 border-t border-cream-border">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleAskQuestion();
-                }}
-                className="flex items-center space-x-2"
-              >
-                <input
-                  type="text"
-                  placeholder="Ask about authors, commits, branches, or provenance..."
-                  value={questionInput}
-                  onChange={(e) => setQuestionInput(e.target.value)}
-                  className="flex-1 bg-cream border border-cream-border rounded px-3.5 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal"
-                />
-                <button
-                  type="submit"
-                  disabled={!questionInput.trim() || isAnswering}
-                  className="bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream p-2 rounded transition-colors border border-charcoal"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* --- TAB 2: COMMIT EXPLAINER --- */}
-        {activeTab === 'commit' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-charcoal">Select Commit Node:</label>
-              <select
-                value={currentCommitId}
-                onChange={(e) => setCurrentCommitId(e.target.value)}
-                className="bg-cream border border-cream-border rounded px-2.5 py-1 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
-              >
-                {commits.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    #{c.id.slice(0, 8)} ({c.author.fingerprint.slice(0, 10)}) -{' '}
-                    {new Date(c.timestamp).toLocaleTimeString()}
-                  </option>
                 ))}
-              </select>
-            </div>
-
-            {isExplainingCommit ? (
-              <div className="flex items-center justify-center p-12 text-xs text-sage space-x-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                <span>Generating semantic diff & commit explanation...</span>
-              </div>
-            ) : (
-              <div className="bg-cream border border-cream-border rounded-lg p-4 text-xs space-y-3">
-                <div className="whitespace-pre-wrap leading-relaxed text-charcoal">
-                  {commitExplanation || 'No commit selected.'}
-                </div>
-
-                <div className="pt-3 border-t border-cream-border flex items-center justify-between text-[11px] text-charcoal-muted">
-                  <div className="flex items-center space-x-1.5 text-sage">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    <span>Cryptographically Authenticated (ECDSA P-256)</span>
-                  </div>
-                  <span className="font-mono text-charcoal-muted">Node: #{currentCommitId.slice(0, 8)}</span>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* --- TAB 3: BRANCH & CONFLICT ANALYSIS --- */}
-        {activeTab === 'branches' && (
-          <div className="space-y-4">
-            <div className="p-3 bg-cream border border-cream-border rounded-lg flex items-center justify-between text-xs">
-              <div>
-                <p className="font-semibold text-charcoal">Active Merkle DAG Heads</p>
-                <p className="text-[11px] text-charcoal-muted">
-                  {heads.length} branch head(s) currently registered in graph.
-                </p>
-              </div>
-              <div className="flex items-center space-x-1">
-                {heads.map((h) => (
-                  <span key={h} className="font-mono bg-cream-light text-sage border border-cream-border px-2 py-0.5 rounded text-[10px] font-medium">
-                    #{h.slice(0, 6)}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {heads.length <= 1 ? (
-              <div className="bg-cream border border-cream-border rounded-lg p-6 text-center space-y-2 text-xs text-charcoal">
-                <Check className="h-8 w-8 text-sage mx-auto" />
-                <p className="font-semibold text-charcoal font-serif">Single Unified Head</p>
-                <p className="text-charcoal-muted text-[11px]">
-                  All peer commits are currently merged into a single branch. There are no divergent branches active.
-                </p>
-              </div>
-            ) : (
-              <div className="bg-cream border border-cream-border rounded-lg p-4 text-xs space-y-3">
-                {isAnalyzingBranches ? (
-                  <div className="flex items-center justify-center p-8 text-sage space-x-2">
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    <span>Analyzing branch divergence & conflict risks...</span>
-                  </div>
-                ) : (
-                  <div className="whitespace-pre-wrap leading-relaxed text-charcoal">
-                    {branchAnalysis}
+                {isAnswering && (
+                  <div className="flex items-center space-x-2 text-xs text-sage">
+                    <Bot className="h-4 w-4 animate-spin" />
+                    <span>Traversing Merkle DAG & analyzing commits...</span>
                   </div>
                 )}
               </div>
-            )}
-          </div>
-        )}
 
-        {/* --- TAB 4: SMART REFACTOR (HUMAN-IN-THE-LOOP) --- */}
-        {activeTab === 'refactor' && (
-          <div className="space-y-4 text-xs">
-            <div className="space-y-1.5">
-              <label className="font-semibold text-charcoal">Prompt AI to Edit Document:</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  placeholder="e.g., 'Add a security overview section', 'Generate Table of Contents', 'Clean formatting'"
-                  value={refactorPrompt}
-                  onChange={(e) => setRefactorPrompt(e.target.value)}
-                  className="flex-1 bg-cream border border-cream-border rounded px-3 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal font-sans"
-                />
-                <button
-                  onClick={handleGenerateSuggestion}
-                  disabled={!refactorPrompt.trim() || isGeneratingSuggestion}
-                  className="flex items-center space-x-1.5 bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream px-3.5 py-2 rounded transition-colors font-semibold border border-charcoal"
+              {/* Input Bar */}
+              <div className="pt-2 border-t border-cream-border">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleAskQuestion();
+                  }}
+                  className="flex items-center space-x-2"
                 >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>Generate</span>
-                </button>
+                  <input
+                    type="text"
+                    placeholder="Ask about authors, commits, branches, or provenance..."
+                    value={questionInput}
+                    onChange={(e) => setQuestionInput(e.target.value)}
+                    className="flex-1 bg-[#F9F6F0] border border-cream-border rounded px-3.5 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal font-sans"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!questionInput.trim() || isAnswering}
+                    className="bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream-50 p-2 rounded transition-colors border border-charcoal"
+                  >
+                    <Send className="h-3.5 w-3.5" />
+                  </button>
+                </form>
               </div>
             </div>
+          )}
 
-            {isGeneratingSuggestion && (
-              <div className="flex items-center justify-center p-8 text-sage space-x-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                <span>AI is formulating document revision...</span>
+          {/* --- TAB 2: COMMIT EXPLAINER --- */}
+          {activeTab === 'commit' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-charcoal">Select Commit Node:</label>
+                <select
+                  value={currentCommitId}
+                  onChange={(e) => setCurrentCommitId(e.target.value)}
+                  className="bg-[#F9F6F0] border border-cream-border rounded px-2.5 py-1 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                >
+                  {commits.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      #{c.id.slice(0, 8)} ({c.author.fingerprint.slice(0, 10)}) -{' '}
+                      {new Date(c.timestamp).toLocaleTimeString()}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
 
-            {suggestion && (
-              <div className="bg-cream border border-cream-border rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-cream-border">
-                  <span className="font-semibold text-charcoal font-serif">Proposed Revision Preview</span>
-                  <span className="text-[10px] text-sage font-medium">{suggestion.summary}</span>
+              {isExplainingCommit ? (
+                <div className="flex items-center justify-center p-12 text-xs text-sage space-x-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>Generating semantic diff & commit explanation...</span>
                 </div>
+              ) : (
+                <div className="bg-[#F9F6F0] border border-cream-border rounded-lg p-4 text-xs space-y-3">
+                  <div className="whitespace-pre-wrap leading-relaxed text-charcoal font-sans">
+                    {commitExplanation || 'No commit selected.'}
+                  </div>
 
-                {/* Diff Preview */}
-                <div className="max-h-60 overflow-y-auto font-mono text-[11px] space-y-0.5 bg-cream-light p-3 rounded border border-cream-border">
-                  {suggestion.diffLines.slice(0, 40).map((line, idx) => (
-                    <div
-                      key={idx}
-                      className={`px-1.5 py-0.5 rounded ${
-                        line.type === 'added'
-                          ? 'bg-sage/15 text-sage font-semibold'
-                          : line.type === 'removed'
-                          ? 'bg-rose-50 text-rose-700 line-through opacity-70'
-                          : 'text-charcoal-muted opacity-60'
-                      }`}
-                    >
-                      {line.type === 'added' ? '+ ' : line.type === 'removed' ? '- ' : '  '}
-                      {line.text}
+                  <div className="pt-3 border-t border-cream-border flex items-center justify-between text-[11px] text-charcoal-muted">
+                    <div className="flex items-center space-x-1.5 text-sage">
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      <span>Cryptographically Authenticated (ECDSA P-256)</span>
                     </div>
+                    <span className="font-mono text-charcoal-muted">Node: #{currentCommitId.slice(0, 8)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- TAB 3: BRANCH & CONFLICT ANALYSIS --- */}
+          {activeTab === 'branches' && (
+            <div className="space-y-4">
+              <div className="p-3 bg-[#F9F6F0] border border-cream-border rounded-lg flex items-center justify-between text-xs">
+                <div>
+                  <p className="font-semibold text-charcoal">Active Merkle DAG Heads</p>
+                  <p className="text-[11px] text-charcoal-muted">
+                    {heads.length} branch head(s) currently registered in graph.
+                  </p>
+                </div>
+                <div className="flex items-center space-x-1">
+                  {heads.map((h) => (
+                    <span key={h} className="font-mono bg-white text-sage border border-cream-border px-2 py-0.5 rounded text-[10px] font-medium">
+                      #{h.slice(0, 6)}
+                    </span>
                   ))}
                 </div>
+              </div>
 
-                <div className="p-2.5 bg-cream-light border border-cream-border rounded text-[11px] text-charcoal-muted space-y-1">
-                  <div className="flex items-center space-x-1.5 text-sage font-semibold">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    <span>Human-in-the-Loop Cryptographic Invariant</span>
-                  </div>
-                  <p>
-                    Applying this AI suggestion will update Yjs and trigger your local WebCrypto ECDSA key to sign a new verified commit node on the Merkle DAG.
+              {heads.length <= 1 ? (
+                <div className="bg-[#F9F6F0] border border-cream-border rounded-lg p-6 text-center space-y-2 text-xs text-charcoal">
+                  <Check className="h-8 w-8 text-sage mx-auto" />
+                  <p className="font-semibold text-charcoal font-serif">Single Unified Head</p>
+                  <p className="text-charcoal-muted text-[11px]">
+                    All peer commits are currently merged into a single branch. There are no divergent branches active.
                   </p>
                 </div>
-
-                <div className="flex items-center justify-end space-x-2 pt-2">
-                  <button
-                    onClick={() => setSuggestion(null)}
-                    className="px-3 py-1.5 bg-cream hover:bg-cream-dark text-charcoal border border-cream-border rounded font-medium"
-                  >
-                    Discard
-                  </button>
-                  <button
-                    onClick={handleApplySuggestion}
-                    disabled={isApplying}
-                    className="flex items-center space-x-1.5 px-4 py-1.5 bg-charcoal hover:bg-charcoal/90 text-cream rounded font-semibold border border-charcoal"
-                  >
-                    <Check className="h-3.5 w-3.5" />
-                    <span>{isApplying ? 'Signing Commit...' : 'Approve & Cryptographically Sign'}</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* --- TAB 5: AI SETTINGS --- */}
-        {activeTab === 'settings' && (
-          <div className="space-y-4 text-xs">
-            <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1">
-              <p className="font-semibold text-charcoal">Select AI Provider</p>
-              <p className="text-[11px] text-charcoal-muted">
-                Hermes AI operates on zero-cost local heuristics by default, with optional local LLM (Ollama) or Cloud API adapters.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <label className="font-semibold text-charcoal block">Provider Engine:</label>
-              <div className="grid grid-cols-1 gap-2">
-                {[
-                  {
-                    type: 'heuristic' as const,
-                    name: 'Built-in Offline Analyzer',
-                    desc: '100% Free, Air-Gapped, Zero-Latency, Zero External Dependencies',
-                  },
-                  {
-                    type: 'ollama' as const,
-                    name: 'Ollama Local LLM',
-                    desc: 'Private self-hosted local model (e.g. llama3.2, mistral)',
-                  },
-                  {
-                    type: 'cloud' as const,
-                    name: 'Cloud API (Gemini / OpenAI / Groq)',
-                    desc: 'Connect with your own API key (stored in client memory only)',
-                  },
-                ].map((item) => (
-                  <button
-                    key={item.type}
-                    onClick={() => setProviderType(item.type)}
-                    className={`text-left p-3 rounded-lg border transition-colors ${
-                      providerType === item.type
-                        ? 'bg-cream border-charcoal'
-                        : 'bg-cream-light border-cream-border hover:border-charcoal-muted'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-charcoal">{item.name}</span>
-                      {providerType === item.type && <Check className="h-3.5 w-3.5 text-sage" />}
+              ) : (
+                <div className="bg-[#F9F6F0] border border-cream-border rounded-lg p-4 text-xs space-y-3">
+                  {isAnalyzingBranches ? (
+                    <div className="flex items-center justify-center p-8 text-sage space-x-2">
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      <span>Analyzing branch divergence & conflict risks...</span>
                     </div>
-                    <p className="text-[11px] text-charcoal-muted mt-0.5">{item.desc}</p>
-                  </button>
-                ))}
-              </div>
+                  ) : (
+                    <div className="whitespace-pre-wrap leading-relaxed text-charcoal font-sans">
+                      {branchAnalysis}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+          )}
 
-            {providerType === 'ollama' && (
-              <div className="space-y-3 bg-cream p-3.5 rounded-lg border border-cream-border">
-                <div>
-                  <label className="block text-charcoal font-semibold mb-1">Ollama Server Endpoint:</label>
+          {/* --- TAB 4: SMART REFACTOR (HUMAN-IN-THE-LOOP) --- */}
+          {activeTab === 'refactor' && (
+            <div className="space-y-4 text-xs">
+              <div className="space-y-1.5">
+                <label className="font-semibold text-charcoal">Prompt AI to Edit Document:</label>
+                <div className="flex items-center space-x-2">
                   <input
                     type="text"
-                    value={endpoint}
-                    onChange={(e) => setEndpoint(e.target.value)}
-                    placeholder="http://localhost:11434"
-                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                    placeholder="e.g., 'Add a security overview section', 'Generate Table of Contents', 'Clean formatting'"
+                    value={refactorPrompt}
+                    onChange={(e) => setRefactorPrompt(e.target.value)}
+                    className="flex-1 bg-[#F9F6F0] border border-cream-border rounded px-3 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal font-sans"
                   />
-                </div>
-                <div>
-                  <label className="block text-charcoal font-semibold mb-1">Model Name:</label>
-                  <input
-                    type="text"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder="llama3.2"
-                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
-                  />
+                  <button
+                    onClick={handleGenerateSuggestion}
+                    disabled={!refactorPrompt.trim() || isGeneratingSuggestion}
+                    className="flex items-center space-x-1.5 bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream-50 px-3.5 py-2 rounded transition-colors font-semibold border border-charcoal"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>Generate</span>
+                  </button>
                 </div>
               </div>
-            )}
 
-            {providerType === 'cloud' && (
-              <div className="space-y-3 bg-cream p-3.5 rounded-lg border border-cream-border">
-                <div>
-                  <label className="block text-charcoal font-semibold mb-1">API Key:</label>
-                  <input
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="sk-..."
-                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
-                  />
-                  <p className="text-[10px] text-charcoal-muted mt-1">
-                    Your key is stored only in your local browser and never sent to peers or signaling relays.
-                  </p>
+              {isGeneratingSuggestion && (
+                <div className="flex items-center justify-center p-8 text-sage space-x-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>AI is formulating document revision...</span>
                 </div>
-                <div>
-                  <label className="block text-charcoal font-semibold mb-1">Model / Endpoint:</label>
-                  <input
-                    type="text"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder="gpt-4o-mini or gemini-1.5-flash"
-                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
-                  />
+              )}
+
+              {suggestion && (
+                <div className="bg-[#F9F6F0] border border-cream-border rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-cream-border">
+                    <span className="font-semibold text-charcoal font-serif">Proposed Revision Preview</span>
+                    <span className="text-[10px] text-sage font-medium">{suggestion.summary}</span>
+                  </div>
+
+                  {/* Diff Preview */}
+                  <div className="max-h-60 overflow-y-auto font-mono text-[11px] space-y-0.5 bg-white p-3 rounded border border-cream-border">
+                    {suggestion.diffLines.slice(0, 40).map((line, idx) => (
+                      <div
+                        key={idx}
+                        className={`px-1.5 py-0.5 rounded ${
+                          line.type === 'added'
+                            ? 'bg-sage/15 text-sage font-semibold'
+                            : line.type === 'removed'
+                            ? 'bg-rose-50 text-rose-700 line-through opacity-70'
+                            : 'text-charcoal-muted opacity-60'
+                        }`}
+                      >
+                        {line.type === 'added' ? '+ ' : line.type === 'removed' ? '- ' : '  '}
+                        {line.text}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-2.5 bg-white border border-cream-border rounded text-[11px] text-charcoal-muted space-y-1">
+                    <div className="flex items-center space-x-1.5 text-sage font-semibold">
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      <span>Human-in-the-Loop Cryptographic Invariant</span>
+                    </div>
+                    <p>
+                      Applying this AI suggestion will update Yjs and trigger your local WebCrypto ECDSA key to sign a new verified commit node on the Merkle DAG.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-end space-x-2 pt-2">
+                    <button
+                      onClick={() => setSuggestion(null)}
+                      className="px-3 py-1.5 bg-white hover:bg-cream text-charcoal border border-cream-border rounded font-medium"
+                    >
+                      Discard
+                    </button>
+                    <button
+                      onClick={handleApplySuggestion}
+                      disabled={isApplying}
+                      className="flex items-center space-x-1.5 px-4 py-1.5 bg-charcoal hover:bg-charcoal/90 text-cream-50 rounded font-semibold border border-charcoal"
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                      <span>{isApplying ? 'Signing Commit...' : 'Approve & Cryptographically Sign'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- TAB 5: AI SETTINGS --- */}
+          {activeTab === 'settings' && (
+            <div className="space-y-4 text-xs">
+              <div className="p-3 bg-[#F9F6F0] border border-cream-border rounded-lg space-y-1">
+                <p className="font-semibold text-charcoal">Select AI Provider</p>
+                <p className="text-[11px] text-charcoal-muted">
+                  Hermes AI operates on zero-cost local heuristics by default, with optional local LLM (Ollama) or Cloud API adapters.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-semibold text-charcoal block">Provider Engine:</label>
+                <div className="grid grid-cols-1 gap-2">
+                  {[
+                    {
+                      type: 'heuristic' as const,
+                      name: 'Built-in Offline Analyzer',
+                      desc: '100% Free, Air-Gapped, Zero-Latency, Zero External Dependencies',
+                    },
+                    {
+                      type: 'ollama' as const,
+                      name: 'Ollama Local LLM',
+                      desc: 'Private self-hosted local model (e.g. llama3.2, mistral)',
+                    },
+                    {
+                      type: 'cloud' as const,
+                      name: 'Cloud API (Gemini / OpenAI / Groq)',
+                      desc: 'Connect with your own API key (stored in client memory only)',
+                    },
+                  ].map((item) => (
+                    <button
+                      key={item.type}
+                      onClick={() => setProviderType(item.type)}
+                      className={`text-left p-3 rounded-lg border transition-colors ${
+                        providerType === item.type
+                          ? 'bg-[#F9F6F0] border-charcoal'
+                          : 'bg-white border-cream-border hover:border-charcoal-muted'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-charcoal">{item.name}</span>
+                        {providerType === item.type && <Check className="h-3.5 w-3.5 text-sage" />}
+                      </div>
+                      <p className="text-[11px] text-charcoal-muted mt-0.5">{item.desc}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
-            )}
 
-            <button
-              onClick={saveSettings}
-              className="w-full py-2 bg-charcoal hover:bg-charcoal/90 text-cream font-semibold rounded border border-charcoal transition-colors"
-            >
-              Save AI Configuration
-            </button>
-          </div>
-        )}
+              {providerType === 'ollama' && (
+                <div className="space-y-3 bg-[#F9F6F0] p-3.5 rounded-lg border border-cream-border">
+                  <div>
+                    <label className="block text-charcoal font-semibold mb-1">Ollama Server Endpoint:</label>
+                    <input
+                      type="text"
+                      value={endpoint}
+                      onChange={(e) => setEndpoint(e.target.value)}
+                      placeholder="http://localhost:11434"
+                      className="w-full bg-white border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-charcoal font-semibold mb-1">Model Name:</label>
+                    <input
+                      type="text"
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      placeholder="llama3.2"
+                      className="w-full bg-white border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {providerType === 'cloud' && (
+                <div className="space-y-3 bg-[#F9F6F0] p-3.5 rounded-lg border border-cream-border">
+                  <div>
+                    <label className="block text-charcoal font-semibold mb-1">API Key:</label>
+                    <input
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder="sk-..."
+                      className="w-full bg-white border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                    />
+                    <p className="text-[10px] text-charcoal-muted mt-1">
+                      Your key is stored only in your local browser and never sent to peers or signaling relays.
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-charcoal font-semibold mb-1">Model / Endpoint:</label>
+                    <input
+                      type="text"
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      placeholder="gpt-4o-mini or gemini-1.5-flash"
+                      className="w-full bg-white border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={saveSettings}
+                className="w-full py-2 bg-charcoal hover:bg-charcoal/90 text-cream-50 font-semibold rounded border border-charcoal transition-colors"
+              >
+                Save AI Configuration
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

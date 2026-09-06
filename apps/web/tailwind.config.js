@@ -16,6 +16,8 @@ export default {
           border: '#E2DCD2',
           card: '#FFFFFF',
           subtle: '#F4F0E8',
+          light: '#FFFFFF',
+          dark: '#EDE7DB',
         },
         charcoal: {
           DEFAULT: '#1A1A1A',
@@ -31,6 +33,7 @@ export default {
           900: '#111111',
           muted: '#666666',
           light: '#8C8C8C',
+          subtle: '#2A2A2A',
         },
         sage: {
           DEFAULT: '#7A8B7B',
