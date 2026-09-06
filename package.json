@@ -15,7 +15,8 @@
     "test": "node --import tsx --test tests/*.test.ts tests/**/*.test.ts",
     "signal": "node apps/signal/dist/server.js",
     "signal:dev": "npm run dev --workspace=@hermes/signal",
-    "verify": "node apps/verifier/dist/cli.js"
+    "verify": "node apps/verifier/dist/cli.js",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

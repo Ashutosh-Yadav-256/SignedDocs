@@ -88,12 +88,12 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
+      <div className="flex h-16 items-center justify-between gap-4 sm:gap-6 px-4 sm:px-6 max-w-7xl mx-auto">
         {/* Left Section: Publication Branding & Document Title */}
-        <div className="flex items-center space-x-3.5">
+        <div className="flex items-center space-x-3.5 min-w-0 shrink">
           <button
             onClick={onDocumentsClick}
-            className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left"
+            className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left shrink-0"
             title="Open Document Library"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal">
@@ -109,10 +109,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </button>
 
-          <div className="h-5 w-px bg-cream-border hidden sm:block" />
+          <div className="h-5 w-px bg-cream-border hidden sm:block shrink-0" />
 
           {/* Document Title Editor */}
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0">
             {isEditingTitle ? (
               <input
                 type="text"
@@ -126,11 +126,11 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <button
                 onClick={() => setIsEditingTitle(true)}
-                className="group flex items-center space-x-1.5 rounded px-2 py-1 text-sm font-semibold text-charcoal hover:bg-cream-subtle transition-colors font-serif"
+                className="group flex items-center space-x-1.5 rounded px-2 py-1 text-sm font-semibold text-charcoal hover:bg-cream-subtle transition-colors font-serif min-w-0"
                 title="Click to rename document"
               >
-                <span className="truncate max-w-[160px] md:max-w-xs">{documentTitle}</span>
-                <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="truncate max-w-[140px] md:max-w-[200px]">{documentTitle}</span>
+                <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                   ✎
                 </span>
               </button>
@@ -139,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Center Section: Minimalist Navigation Tabs (Desktop) */}
-        <div className="hidden lg:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border">
+        <div className="hidden lg:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border shrink-0">
           <button
             onClick={() => onTabChange('editor')}
             className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
@@ -202,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Section: Action Utilities & Identity */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 shrink-0">
           {/* System Status Indicator (Rule 23) */}
           <div className="hidden xl:flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
             <span
@@ -250,53 +250,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Innovation Action Toolbar (Visible directly on 2xl screens) */}
-          {onRedactClick && (
-            <button
-              onClick={onRedactClick}
-              title="ZK-Redact: Cryptographic Selective Disclosure"
-              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
-            >
-              <EyeOff className="h-3.5 w-3.5 text-terracotta-dark" />
-              <span>Redact</span>
-            </button>
-          )}
-
-          {onMultisigClick && (
-            <button
-              onClick={onMultisigClick}
-              title="Multisig: M-of-N Milestone Agreement Seal"
-              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
-            >
-              <Award className="h-3.5 w-3.5 text-terracotta-dark" />
-              <span>Multisig</span>
-            </button>
-          )}
-
-          {onForensicsClick && (
-            <button
-              onClick={onForensicsClick}
-              title="Forensics: Human vs. AI Attribution Heatmap"
-              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
-            >
-              <Activity className="h-3.5 w-3.5 text-sage-dark" />
-              <span>Forensics</span>
-            </button>
-          )}
-
-          {onAirGapClick && (
-            <button
-              onClick={onAirGapClick}
-              title="Air-Gap: Optical QR Sneakernet Sync"
-              className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
-            >
-              <Radio className="h-3.5 w-3.5 text-sage-dark" />
-              <span>Air-Gap</span>
-            </button>
-          )}
-
-          {/* Tools Dropdown (Visible on lg and xl screens to prevent header collisions) */}
-          <div className="relative hidden lg:block 2xl:hidden">
+          {/* Tools Dropdown */}
+          <div className="relative hidden lg:block">
             <button
               onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
               className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
