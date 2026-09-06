@@ -90,16 +90,16 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
       <div className="flex h-16 items-center justify-between gap-4 sm:gap-6 px-4 sm:px-6 max-w-7xl mx-auto">
         {/* Left Section: Publication Branding & Document Title */}
-        <div className="flex items-center space-x-3.5 min-w-0 shrink">
+        <div className="flex items-center space-x-3 sm:space-x-3.5 min-w-0 shrink-0">
           <button
             onClick={onDocumentsClick}
             className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left shrink-0"
             title="Open Document Library"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal shrink-0">
               <Feather className="h-4 w-4 text-cream-50" />
             </div>
-            <div className="hidden sm:block">
+            <div className="hidden sm:block shrink-0">
               <div className="flex items-center space-x-1.5">
                 <span className="font-bold tracking-tight text-charcoal text-sm font-serif">SignedDocs</span>
                 <span className="rounded bg-cream-subtle px-1.5 py-0.2 text-[10px] font-semibold text-charcoal-muted border border-cream-border font-mono">
@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="group flex items-center space-x-1.5 rounded px-2 py-1 text-sm font-semibold text-charcoal hover:bg-cream-subtle transition-colors font-serif min-w-0"
                 title="Click to rename document"
               >
-                <span className="truncate max-w-[140px] md:max-w-[200px]">{documentTitle}</span>
+                <span className="truncate max-w-[100px] sm:max-w-[140px] md:max-w-[180px] xl:max-w-xs">{documentTitle}</span>
                 <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                   ✎
                 </span>
@@ -138,8 +138,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center Section: Minimalist Navigation Tabs (Desktop) */}
-        <div className="hidden lg:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border shrink-0">
+        {/* Center Section: Minimalist Navigation Tabs (Desktop xl+) */}
+        <div className="hidden xl:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border shrink-0">
           <button
             onClick={() => onTabChange('editor')}
             className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
@@ -204,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right Section: Action Utilities & Identity */}
         <div className="flex items-center space-x-2 shrink-0">
           {/* System Status Indicator (Rule 23) */}
-          <div className="hidden xl:flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
+          <div className="hidden 2xl:flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
             <span
               className={`h-2 w-2 rounded-full ${
                 connectionState === 'Connected' ? 'bg-sage-dark' : 'bg-charcoal-light'
@@ -251,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Tools Dropdown */}
-          <div className="relative hidden lg:block">
+          <div className="relative hidden sm:block">
             <button
               onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
               className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
@@ -376,7 +376,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 rounded text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+            className="xl:hidden p-1.5 rounded text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -385,7 +385,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-cream-border bg-cream-50 px-4 py-3 space-y-3 font-sans">
+        <div className="xl:hidden border-t border-cream-border bg-cream-50 px-4 py-3 space-y-3 font-sans">
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
               onClick={() => {
