@@ -5,3 +5,4 @@ export * from './canonical.js';
 export * from './identity.js';
 export * from './signing.js';
 export * from './verification.js';
+export * from './merkle.js';

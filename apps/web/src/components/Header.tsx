@@ -11,8 +11,11 @@ import {
   Key,
   Copy,
   Check,
-  Radio,
   FileText,
+  EyeOff,
+  Award,
+  Activity,
+  Radio,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
@@ -34,6 +37,10 @@ export interface HeaderProps {
   onVerifyClick: () => void;
   onDocumentsClick: () => void;
   onAIClick?: () => void;
+  onRedactClick?: () => void;
+  onMultisigClick?: () => void;
+  onForensicsClick?: () => void;
+  onAirGapClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -52,6 +59,10 @@ export const Header: React.FC<HeaderProps> = ({
   onVerifyClick,
   onDocumentsClick,
   onAIClick,
+  onRedactClick,
+  onMultisigClick,
+  onForensicsClick,
+  onAirGapClick,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -255,6 +266,54 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
           </div>
+
+          {/* ZK-Redact Button */}
+          {onRedactClick && (
+            <button
+              onClick={onRedactClick}
+              title="Cryptographic Selective Disclosure & Zero-Knowledge Redaction"
+              className="flex items-center space-x-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all shadow-sm"
+            >
+              <EyeOff className="h-3.5 w-3.5" />
+              <span className="hidden xl:inline">ZK-Redact</span>
+            </button>
+          )}
+
+          {/* Multisig Milestone Button */}
+          {onMultisigClick && (
+            <button
+              onClick={onMultisigClick}
+              title="M-of-N Threshold Milestone Seal"
+              className="flex items-center space-x-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 px-2.5 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-all shadow-sm"
+            >
+              <Award className="h-3.5 w-3.5" />
+              <span className="hidden xl:inline">Multisig</span>
+            </button>
+          )}
+
+          {/* Forensics Heatmap Button */}
+          {onForensicsClick && (
+            <button
+              onClick={onForensicsClick}
+              title="Human vs AI Attribution Heatmap & Provenance"
+              className="flex items-center space-x-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 px-2.5 py-1.5 text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition-all shadow-sm"
+            >
+              <Activity className="h-3.5 w-3.5" />
+              <span className="hidden xl:inline">Forensics</span>
+            </button>
+          )}
+
+          {/* Air-Gap Optical Sync Button */}
+          {onAirGapClick && (
+            <button
+              onClick={onAirGapClick}
+              title="Air-Gapped Optical QR Sneakernet Sync"
+              className="flex items-center space-x-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 px-2.5 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition-all shadow-sm"
+            >
+              <Radio className="h-3.5 w-3.5" />
+              <span className="hidden xl:inline">Air-Gap</span>
+            </button>
+          )}
 
           {/* AI Intelligence Assistant */}
           {onAIClick && (

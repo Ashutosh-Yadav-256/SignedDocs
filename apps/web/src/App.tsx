@@ -14,6 +14,10 @@ import { AuditVerifierModal } from './components/modals/AuditVerifierModal.js';
 import { ShareModal } from './components/modals/ShareModal.js';
 import { Dashboard } from './components/Dashboard.js';
 import { AIAssistantDrawer } from './components/ai/AIAssistantDrawer.js';
+import { RedactionStudioModal } from './components/redaction/RedactionStudioModal.js';
+import { MultisigMilestoneModal } from './components/multisig/MultisigMilestoneModal.js';
+import { ForensicInspectorModal } from './components/forensics/ForensicInspectorModal.js';
+import { AirGapSyncModal } from './components/airgap/AirGapSyncModal.js';
 import { Sparkles, Layers, ShieldCheck, Radio, FileText, ArrowLeft, Bot } from 'lucide-react';
 
 export function App() {
@@ -34,6 +38,12 @@ export function App() {
   const [isVerifierModalOpen, setIsVerifierModalOpen] = useState(false);
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [selectedAICommitId, setSelectedAICommitId] = useState<string | null>(null);
+
+  // Innovation Modals State
+  const [isRedactionModalOpen, setIsRedactionModalOpen] = useState(false);
+  const [isMultisigModalOpen, setIsMultisigModalOpen] = useState(false);
+  const [isForensicsModalOpen, setIsForensicsModalOpen] = useState(false);
+  const [isAirGapModalOpen, setIsAirGapModalOpen] = useState(false);
 
   // Author identity
   const {
@@ -121,6 +131,10 @@ export function App() {
         onVerifyClick={() => setIsVerifierModalOpen(true)}
         onDocumentsClick={() => setShowDashboard(!showDashboard)}
         onAIClick={() => setIsAIAssistantOpen(true)}
+        onRedactClick={() => setIsRedactionModalOpen(true)}
+        onMultisigClick={() => setIsMultisigModalOpen(true)}
+        onForensicsClick={() => setIsForensicsModalOpen(true)}
+        onAirGapClick={() => setIsAirGapModalOpen(true)}
       />
 
       {/* Main Container */}
@@ -236,6 +250,49 @@ export function App() {
           <AuditVerifierModal onClose={() => setIsVerifierModalOpen(false)} />
         </div>
       )}
+
+      {/* Phase 1: ZK-Redact Studio */}
+      <RedactionStudioModal
+        isOpen={isRedactionModalOpen}
+        onClose={() => setIsRedactionModalOpen(false)}
+        documentId={documentId}
+        documentTitle={documentTitle}
+        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        identity={identity}
+        heads={heads}
+      />
+
+      {/* Phase 2: Multisig Milestone Seals */}
+      <MultisigMilestoneModal
+        isOpen={isMultisigModalOpen}
+        onClose={() => setIsMultisigModalOpen(false)}
+        documentId={documentId}
+        documentTitle={documentTitle}
+        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        identity={identity}
+        activePeers={activePeers}
+      />
+
+      {/* Phase 3: Forensic Attribution Inspector */}
+      <ForensicInspectorModal
+        isOpen={isForensicsModalOpen}
+        onClose={() => setIsForensicsModalOpen(false)}
+        documentId={documentId}
+        documentTitle={documentTitle}
+        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        identity={identity}
+      />
+
+      {/* Phase 4: Optical Air-Gap Sync */}
+      <AirGapSyncModal
+        isOpen={isAirGapModalOpen}
+        onClose={() => setIsAirGapModalOpen(false)}
+        documentId={documentId}
+        documentTitle={documentTitle}
+        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        onApplyReconstructedPayload={handleApplyAISuggestion}
+      />
+
     </div>
   );
 }
