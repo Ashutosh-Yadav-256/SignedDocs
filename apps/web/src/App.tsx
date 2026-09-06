@@ -166,6 +166,7 @@ export function App() {
         onMultisigClick={() => setIsMultisigModalOpen(true)}
         onForensicsClick={() => setIsForensicsModalOpen(true)}
         onAirGapClick={() => setIsAirGapModalOpen(true)}
+        onOnboardingClick={() => setIsOnboardingOpen(true)}
       />
 
       {/* Main Container */}

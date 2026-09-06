@@ -25,165 +25,164 @@ export interface EditorToolbarProps {
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   editor,
   onFlushCommit,
-  isSaving,
 }) => {
   if (!editor) return null;
 
   return (
-    <div className="w-full bg-[#FFFFFF] border-b border-cream-border px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-1.5 z-10 font-sans select-none">
+    <div className="sticky top-16 z-20 flex flex-wrap items-center justify-between gap-1.5 border-b border-cream-border bg-white px-4 py-2 font-sans w-full">
       <div className="flex flex-wrap items-center gap-1">
         {/* Headings */}
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={`rounded px-2 py-1 text-xs font-semibold transition-colors ${
+          className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('heading', { level: 1 })
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Heading 1"
+          type="button"
         >
           <Heading1 className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`rounded px-2 py-1 text-xs font-semibold transition-colors ${
+          className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('heading', { level: 2 })
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Heading 2"
+          type="button"
         >
           <Heading2 className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={`rounded px-2 py-1 text-xs font-semibold transition-colors ${
+          className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('heading', { level: 3 })
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Heading 3"
+          type="button"
         >
           <Heading3 className="h-4 w-4" />
         </button>
 
-        <div className="h-4 w-px bg-cream-border mx-1 hidden sm:block" />
+        <div className="h-4 w-px bg-cream-border mx-1" />
 
         {/* Basic formatting */}
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('bold')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Bold (Ctrl+B)"
+          type="button"
         >
           <Bold className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('italic')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Italic (Ctrl+I)"
+          type="button"
         >
           <Italic className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('code')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Inline Code"
+          type="button"
         >
           <Code className="h-4 w-4" />
         </button>
 
-        <div className="h-4 w-px bg-cream-border mx-1 hidden sm:block" />
+        <div className="h-4 w-px bg-cream-border mx-1" />
 
         {/* Lists & Blocks */}
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('bulletList')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Bullet List"
+          type="button"
         >
           <List className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('orderedList')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Numbered List"
+          type="button"
         >
           <ListOrdered className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`rounded p-1.5 text-xs font-medium transition-colors ${
             editor.isActive('blockquote')
-              ? 'bg-cream text-charcoal border border-charcoal/30'
-              : 'text-charcoal-muted hover:bg-cream hover:text-charcoal'
+              ? 'bg-cream-subtle text-charcoal border border-charcoal/30'
+              : 'text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal'
           }`}
           title="Blockquote"
+          type="button"
         >
           <Quote className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream hover:text-charcoal transition-colors"
+          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal transition-colors"
           title="Divider Line"
+          type="button"
         >
           <Minus className="h-4 w-4" />
         </button>
 
-        <div className="h-4 w-px bg-cream-border mx-1 hidden sm:block" />
+        <div className="h-4 w-px bg-cream-border mx-1" />
 
         {/* Undo/Redo */}
         <button
-          type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Undo"
+          type="button"
         >
           <Undo className="h-4 w-4" />
         </button>
 
         <button
-          type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="rounded p-1.5 text-xs text-charcoal-muted hover:bg-cream-subtle hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Redo"
+          type="button"
         >
           <Redo className="h-4 w-4" />
         </button>
@@ -192,12 +191,12 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
       {/* Right Action: Sign & Commit Now */}
       {onFlushCommit && (
         <button
-          type="button"
           onClick={onFlushCommit}
-          className="flex items-center space-x-1.5 rounded bg-charcoal text-cream hover:bg-charcoal/90 px-3 py-1.5 text-xs font-semibold transition-colors border border-charcoal flex-shrink-0"
+          className="flex items-center space-x-1.5 rounded bg-charcoal text-cream-50 hover:bg-charcoal/90 px-3 py-1.5 text-xs font-medium transition-colors border border-charcoal shrink-0"
           title="Sign commit with WebCrypto ECDSA private key and append to Merkle DAG"
+          type="button"
         >
-          <Sparkles className="h-3.5 w-3.5 text-sage" />
+          <Sparkles className="h-3.5 w-3.5 text-cream-50" />
           <span>Sign Commit</span>
         </button>
       )}

@@ -7,8 +7,6 @@ export default {
       colors: {
         cream: {
           DEFAULT: '#F9F6F0',
-          light: '#FFFFFF',
-          dark: '#F2EDE2',
           50: '#FFFFFF',
           100: '#FDFCFA',
           200: '#F9F6F0',
@@ -21,7 +19,6 @@ export default {
         },
         charcoal: {
           DEFAULT: '#1A1A1A',
-          subtle: '#2E2E2E',
           50: '#F5F5F5',
           100: '#E6E6E6',
           200: '#CCCCCC',

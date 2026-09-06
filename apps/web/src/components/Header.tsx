@@ -19,7 +19,6 @@ import {
   Menu,
   X,
   Feather,
-  Pencil,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
@@ -85,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
   const connectionState = activePeers.length > 0 ? 'Connected' : 'Local';
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-light text-charcoal">
+    <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
         {/* Left Section: Publication Branding & Document Title */}
         <div className="flex items-center space-x-3.5">
@@ -94,8 +93,8 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left"
             title="Open Document Library"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded bg-charcoal text-cream border border-charcoal">
-              <Feather className="h-4 w-4 text-cream" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal">
+              <Feather className="h-4 w-4 text-cream-50" />
             </div>
             <div className="hidden sm:block">
               <div className="flex items-center space-x-1.5">
@@ -128,7 +127,9 @@ export const Header: React.FC<HeaderProps> = ({
                 title="Click to rename document"
               >
                 <span className="truncate max-w-[160px] md:max-w-xs">{documentTitle}</span>
-                <Pencil className="h-3 w-3 text-charcoal-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                  ✎
+                </span>
               </button>
             )}
           </div>

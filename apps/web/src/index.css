@@ -1,16 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    --cream: #F9F6F0;
-    --cream-light: #FFFFFF;
-    --cream-dark: #F2EDE2;
-    --cream-border: #E2DCD2;
-    --charcoal: #1A1A1A;
-    --charcoal-muted: #666666;
-    --sage: #7A8B7B;
-    --terracotta: #C87D55;
     --color-bg-cream: #F9F6F0;
     --color-text-charcoal: #1A1A1A;
     --color-accent-sage: #7A8B7B;

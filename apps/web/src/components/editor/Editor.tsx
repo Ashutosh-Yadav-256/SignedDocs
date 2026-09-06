@@ -6,7 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Typography from '@tiptap/extension-typography';
 import * as Y from 'yjs';
 import { EditorToolbar } from './EditorToolbar.js';
-import { Clock, ShieldCheck, User } from 'lucide-react';
+import { Clock, ShieldCheck, BookOpen } from 'lucide-react';
 
 export interface EditorProps {
   ydoc: Y.Doc;
@@ -68,12 +68,12 @@ export const Editor: React.FC<EditorProps> = ({
   }, [editor]);
 
   return (
-    <div className="flex flex-col bg-cream-light border border-cream-border rounded-lg overflow-hidden">
-      {/* Formatting Toolbar */}
+    <div className="flex flex-col bg-white border border-cream-border rounded-xl shadow-none relative">
+      {/* Formatting Toolbar - Fixed at top with solid white opaque fill */}
       <EditorToolbar editor={editor} onFlushCommit={onFlushCommit} />
 
       {/* Medium-Style Long-Form Publication Canvas */}
-      <div className="w-full px-5 sm:px-10 md:px-14 py-8 max-w-3xl mx-auto">
+      <div className="flex-1 px-6 sm:px-12 md:px-16 py-8 max-w-3xl w-full mx-auto">
         {/* Article Byline Metadata Header */}
         <div className="border-b border-cream-border pb-6 mb-8 font-sans">
           {/* Document Title Header */}
@@ -86,7 +86,7 @@ export const Editor: React.FC<EditorProps> = ({
             <div className="flex items-center space-x-3">
               {/* Author Avatar */}
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-cream font-bold text-sm"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-cream-50 font-bold text-sm"
                 style={{ backgroundColor: authorColor }}
               >
                 {authorName.slice(0, 1).toUpperCase()}
@@ -95,15 +95,15 @@ export const Editor: React.FC<EditorProps> = ({
               <div className="space-y-0.5">
                 <div className="flex items-center space-x-2">
                   <span className="font-semibold text-sm text-charcoal">{authorName}</span>
-                  <span className="text-xs text-sage flex items-center gap-1 bg-sage/10 px-1.5 py-0.5 rounded border border-sage/30 font-medium">
-                    <ShieldCheck className="w-3 h-3" />
+                  <span className="text-xs text-sage flex items-center gap-1 bg-sage-light px-1.5 py-0.5 rounded border border-sage/30 font-medium">
+                    <ShieldCheck className="w-3 h-3 text-sage" />
                     ECDSA P-256
                   </span>
                 </div>
 
                 <div className="flex items-center space-x-2 text-xs text-charcoal-muted">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-3 h-3 text-charcoal-muted" />
                     {readTimeMinutes} min read
                   </span>
                   <span>•</span>
