@@ -29,7 +29,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   if (!isOpen) return null;
 
   const searchParams = new URLSearchParams(window.location.search);
-  const signalParam = searchParams.get('signal');
+  const signalParam = searchParams.get('signal') || (import.meta.env?.VITE_SIGNALING_URL as string) || undefined;
   const shareUrl = `${window.location.origin}${window.location.pathname}?doc=${documentId}&room=${roomCode}${signalParam ? `&signal=${encodeURIComponent(signalParam)}` : ''}`;
 
   const copyUrl = () => {
