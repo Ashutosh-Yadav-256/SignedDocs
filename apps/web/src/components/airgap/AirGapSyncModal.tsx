@@ -7,11 +7,7 @@ import {
   Pause,
   RotateCcw,
   CheckCircle2,
-  XCircle,
-  Copy,
-  Download,
   X,
-  Layers,
   Sparkles,
 } from 'lucide-react';
 import {
@@ -89,7 +85,6 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
   };
 
   const handleSimulateSelfIngest = async () => {
-    // Pipe all generated frames sequentially to test instant optical reconstruction
     receiverRef.current.reset();
     for (const raw of rawFrameStrings) {
       const res = await receiverRef.current.ingestRawString(raw);
@@ -108,42 +103,42 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
+      <div className="bg-cream-light border border-cream-border rounded-lg w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden text-charcoal">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-6 py-4 border-b border-cream-border flex items-center justify-between bg-cream">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+            <div className="p-2 rounded border border-sage/30 bg-sage/10 text-sage">
               <Radio className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+              <h2 className="text-base font-serif font-bold flex items-center gap-2 text-charcoal">
                 Air-Gapped Optical Sneakernet Sync
-                <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-cream-light border border-cream-border text-sage font-mono">
                   Fountain QR
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-charcoal-muted">
                 100% wireless & offline synchronization across physical air gaps using animated optical QR streams.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-dark transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-800 bg-slate-950/30 px-6 pt-2">
+        <div className="flex border-b border-cream-border bg-cream px-6 pt-2 text-xs">
           <button
             onClick={() => setActiveTab('transmit')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'transmit'
-                ? 'border-cyan-500 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Play className="w-4 h-4" />
@@ -151,10 +146,10 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('receive')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'receive'
-                ? 'border-cyan-500 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Camera className="w-4 h-4" />
@@ -169,26 +164,23 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
               {frames.length > 0 ? (
                 <div className="flex flex-col items-center space-y-4">
                   {/* Optical Projector Display Frame */}
-                  <div className="w-full max-w-sm aspect-square bg-slate-950 border-2 border-cyan-500/50 rounded-2xl p-6 flex flex-col items-center justify-center relative shadow-2xl shadow-cyan-950/50">
+                  <div className="w-full max-w-sm aspect-square bg-cream border-2 border-cream-border rounded-lg p-6 flex flex-col items-center justify-center relative">
                     <div className="text-center space-y-2">
-                      <div className="p-4 bg-white rounded-xl shadow-inner inline-block">
-                        <QrCode className="w-36 h-36 text-slate-950" />
+                      <div className="p-4 bg-cream-light border border-cream-border rounded inline-block">
+                        <QrCode className="w-36 h-36 text-charcoal" />
                       </div>
-                      <div className="font-mono text-xs text-cyan-400 font-semibold">
+                      <div className="font-mono text-xs text-charcoal font-semibold">
                         Frame {currentFrameIndex + 1} / {frames.length}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-500 truncate max-w-[240px]">
+                      <div className="font-mono text-[10px] text-charcoal-muted truncate max-w-[240px]">
                         Session: {sessionId} • CRC: {currentFrame?.checksum}
                       </div>
                     </div>
-
-                    {/* Active Scanline Effect */}
-                    <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent top-1/2 -translate-y-1/2 animate-pulse opacity-60" />
                   </div>
 
                   {/* Wire String Representation */}
-                  <div className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 break-all">
-                    <span className="text-cyan-400 font-bold">QR Payload: </span>
+                  <div className="w-full bg-cream border border-cream-border rounded-lg p-3 font-mono text-[11px] text-charcoal break-all">
+                    <span className="text-sage font-bold">QR Payload: </span>
                     {currentRawString}
                   </div>
 
@@ -197,28 +189,28 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => setIsPlaying(!isPlaying)}
-                        className="p-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold transition-all"
+                        className="p-2.5 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold transition-colors border border-charcoal"
                       >
                         {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => setCurrentFrameIndex(0)}
-                        className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
+                        className="p-2.5 rounded bg-cream hover:bg-cream-dark text-charcoal border border-cream-border transition-colors"
                       >
                         <RotateCcw className="w-4 h-4" />
                       </button>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-slate-400 font-medium">Speed:</span>
+                      <span className="text-xs text-charcoal-muted font-medium">Speed:</span>
                       {[4, 6, 10, 15].map((rate) => (
                         <button
                           key={rate}
                           onClick={() => setFps(rate)}
-                          className={`px-2 py-1 rounded text-xs font-mono font-semibold transition-all ${
+                          className={`px-2 py-1 rounded text-xs font-mono font-semibold transition-colors border ${
                             fps === rate
-                              ? 'bg-cyan-500 text-slate-950'
-                              : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                              ? 'bg-charcoal text-cream border-charcoal'
+                              : 'bg-cream text-charcoal-muted border-cream-border hover:text-charcoal'
                           }`}
                         >
                           {rate}fps
@@ -228,7 +220,7 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-12 text-slate-400">Loading document frames...</div>
+                <div className="text-center py-12 text-charcoal-muted">Loading document frames...</div>
               )}
             </div>
           )}
@@ -236,29 +228,29 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
           {activeTab === 'receive' && (
             <div className="space-y-6">
               {/* Receiver Status Bar */}
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+              <div className="p-4 rounded-lg bg-cream border border-cream-border space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Radio className="w-4 h-4 text-cyan-400 animate-pulse" />
-                    <span className="text-xs font-semibold text-slate-200">
+                    <Radio className="w-4 h-4 text-sage" />
+                    <span className="text-xs font-semibold text-charcoal">
                       Optical Stream Progress: {receiveSession.receivedCount} / {receiveSession.totalFrames || '?'} Frames ({receiveSession.progressPercentage}%)
                     </span>
                   </div>
                   {receiveSession.isComplete ? (
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300 flex items-center gap-1">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sage/15 border border-sage/40 text-sage flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" /> 100% RECONSTRUCTED
                     </span>
                   ) : (
-                    <span className="text-xs font-mono text-slate-500">
+                    <span className="text-xs font-mono text-charcoal-muted">
                       Session: {receiveSession.sessionId || 'Listening...'}
                     </span>
                   )}
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-cream-border rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300"
+                    className="h-full bg-sage transition-all duration-300"
                     style={{ width: `${receiveSession.progressPercentage}%` }}
                   />
                 </div>
@@ -267,12 +259,12 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
               {/* Simulation / Manual Input */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-slate-300">
+                  <label className="text-xs font-medium text-charcoal">
                     Paste Optical QR Frame (or run simulation)
                   </label>
                   <button
                     onClick={handleSimulateSelfIngest}
-                    className="text-xs text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1"
+                    className="text-xs text-sage hover:text-sage font-medium flex items-center gap-1"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     Simulate Full Optical Stream Scan
@@ -285,7 +277,7 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
                     value={manualInput}
                     onChange={(e) => setManualInput(e.target.value)}
                     placeholder="e.g. HAG1:sessionId:0:4:checksum:payload"
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-cyan-500"
+                    className="flex-1 bg-cream border border-cream-border rounded px-3 py-2 text-xs font-mono text-charcoal focus:outline-none focus:border-charcoal"
                   />
                   <button
                     onClick={() => {
@@ -294,7 +286,7 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
                         setManualInput('');
                       }
                     }}
-                    className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs transition-all"
+                    className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold text-xs transition-colors border border-charcoal"
                   >
                     Ingest Frame
                   </button>
@@ -303,20 +295,20 @@ export const AirGapSyncModal: React.FC<AirGapSyncModalProps> = ({
 
               {/* Reconstructed Content Preview */}
               {reconstructedText && (
-                <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-800/60 space-y-3">
+                <div className="p-4 rounded-lg bg-sage/10 border border-sage/40 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-sage flex items-center gap-1.5 font-serif">
                       <CheckCircle2 className="w-4 h-4" />
                       Payload Bit-Exact Reconstructed ({reconstructedText.length} bytes)
                     </span>
                     <button
                       onClick={handleApplyToDocument}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all"
+                      className="px-3 py-1.5 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold text-xs transition-colors border border-charcoal"
                     >
                       Apply to Editor
                     </button>
                   </div>
-                  <pre className="p-3 bg-slate-950 rounded-xl font-mono text-xs text-slate-300 max-h-40 overflow-y-auto border border-slate-800">
+                  <pre className="p-3 bg-cream-light rounded font-mono text-xs text-charcoal max-h-40 overflow-y-auto border border-cream-border">
                     {reconstructedText}
                   </pre>
                 </div>

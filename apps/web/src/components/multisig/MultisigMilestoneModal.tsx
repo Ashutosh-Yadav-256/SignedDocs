@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   Award,
   ShieldCheck,
-  Users,
   CheckCircle2,
-  XCircle,
   Clock,
-  Send,
   X,
   Plus,
-  Copy,
   Download,
   KeyRound,
 } from 'lucide-react';
@@ -46,7 +42,7 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
   identity,
   activePeers,
 }) => {
-  const [activeTab, setActiveTab] = useState<'status' | 'propose' | 'endorse'>('status');
+  const [activeTab, setActiveTab] = useState<'status' | 'propose'>('status');
   const [milestoneName, setMilestoneName] = useState('v1.0 Formal Final Agreement');
   const [description, setDescription] = useState('Mutual sign-off and multi-party cryptographic milestone lock.');
   const [requiredQuorum, setRequiredQuorum] = useState(2);
@@ -57,7 +53,6 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
   const [sealedNode, setSealedNode] = useState<MultisigSealNode | null>(null);
   const [sealVerification, setSealVerification] = useState<MultisigVerificationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // Initialize demo proposal if none exists
   useEffect(() => {
@@ -155,42 +150,42 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
+      <div className="bg-cream-light border border-cream-border rounded-lg w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden text-charcoal">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-6 py-4 border-b border-cream-border flex items-center justify-between bg-cream">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400">
+            <div className="p-2 rounded border border-sage/30 bg-sage/10 text-sage">
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+              <h2 className="text-base font-serif font-bold flex items-center gap-2 text-charcoal">
                 Multi-Party Milestone Seals (Multisig)
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-950 border border-amber-800 text-amber-300 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-cream-light border border-cream-border text-sage font-mono">
                   M-of-N Quorum
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-charcoal-muted">
                 Co-sign and permanently seal document milestone agreements across distributed peer quorums.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-dark transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-800 bg-slate-950/30 px-6 pt-2">
+        <div className="flex border-b border-cream-border bg-cream px-6 pt-2 text-xs">
           <button
             onClick={() => setActiveTab('status')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'status'
-                ? 'border-amber-500 text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <ShieldCheck className="w-4 h-4" />
@@ -198,10 +193,10 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('propose')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'propose'
-                ? 'border-amber-500 text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Plus className="w-4 h-4" />
@@ -216,53 +211,53 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
               {activeProposal ? (
                 <>
                   {/* Proposal Banner */}
-                  <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="p-5 rounded-lg bg-cream border border-cream-border space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-amber-400" />
+                      <h3 className="text-base font-serif font-bold text-charcoal flex items-center gap-2">
+                        <Award className="w-5 h-5 text-sage" />
                         {activeProposal.milestoneName}
                       </h3>
                       <span
-                        className={`text-xs px-2.5 py-1 rounded-full font-semibold border flex items-center gap-1.5 ${
+                        className={`text-xs px-2.5 py-1 rounded font-semibold border flex items-center gap-1.5 ${
                           sealedNode
-                            ? 'bg-emerald-950/80 border-emerald-700 text-emerald-300'
-                            : 'bg-amber-950/80 border-amber-700 text-amber-300'
+                            ? 'bg-sage/15 border-sage/40 text-sage'
+                            : 'bg-terracotta/15 border-terracotta/40 text-terracotta'
                         }`}
                       >
                         {sealedNode ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-sage" />
                             CRYPTOGRAPHICALLY SEALED
                           </>
                         ) : (
                           <>
-                            <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                            <Clock className="w-3.5 h-3.5 text-terracotta" />
                             AWAITING QUORUM
                           </>
                         )}
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-charcoal-muted leading-relaxed font-serif">
                       {activeProposal.milestoneDescription || 'No description provided.'}
                     </p>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs border-t border-slate-800/80">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs border-t border-cream-border">
                       <div>
-                        <span className="text-slate-500">Quorum Required:</span>
-                        <div className="font-semibold text-amber-300">
+                        <span className="text-charcoal-muted">Quorum Required:</span>
+                        <div className="font-semibold text-charcoal">
                           {activeProposal.quorum.requiredQuorum} of {activeProposal.quorum.totalEligible} Signatures
                         </div>
                       </div>
                       <div>
-                        <span className="text-slate-500">Document State Hash:</span>
-                        <div className="font-mono text-[11px] text-slate-300 truncate">
+                        <span className="text-charcoal-muted">Document State Hash:</span>
+                        <div className="font-mono text-[11px] text-charcoal truncate">
                           {activeProposal.stateHash}
                         </div>
                       </div>
                       <div>
-                        <span className="text-slate-500">Proposed By:</span>
-                        <div className="font-mono text-[11px] text-slate-300 truncate">
+                        <span className="text-charcoal-muted">Proposed By:</span>
+                        <div className="font-mono text-[11px] text-charcoal truncate">
                           {activeProposal.proposedBy.fingerprint}
                         </div>
                       </div>
@@ -271,31 +266,31 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
 
                   {/* Endorsement Progress */}
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs text-slate-300 font-medium">
+                    <div className="flex items-center justify-between text-xs text-charcoal font-medium">
                       <span>Endorsement Signatures ({endorsements.length}/{activeProposal.quorum.requiredQuorum})</span>
-                      <span className="text-slate-500">ECDSA P-256 Verified</span>
+                      <span className="text-charcoal-muted">ECDSA P-256 Verified</span>
                     </div>
 
                     <div className="space-y-2">
                       {endorsements.map((e, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700/60"
+                          className="flex items-center justify-between p-3 rounded bg-cream border border-cream-border"
                         >
                           <div className="flex items-center space-x-2.5">
-                            <div className="p-1 rounded bg-emerald-500/20 text-emerald-400">
+                            <div className="p-1 rounded bg-sage/20 text-sage">
                               <CheckCircle2 className="w-4 h-4" />
                             </div>
                             <div>
-                              <div className="text-xs font-mono font-semibold text-slate-200">
+                              <div className="text-xs font-mono font-semibold text-charcoal">
                                 {e.author.fingerprint}
                               </div>
-                              <div className="text-[10px] text-slate-500 font-mono">
+                              <div className="text-[10px] text-charcoal-muted font-mono">
                                 Signed at {new Date(e.timestamp).toLocaleTimeString()}
                               </div>
                             </div>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-emerald-400 border border-emerald-900">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cream-light text-sage border border-cream-border">
                             Valid Signature
                           </span>
                         </div>
@@ -308,7 +303,7 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
                     <button
                       onClick={handleEndorse}
                       disabled={isProcessing || !identity}
-                      className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-950 transition-all disabled:opacity-50"
+                      className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold text-xs flex items-center gap-2 border border-charcoal transition-colors disabled:opacity-50"
                     >
                       <KeyRound className="w-4 h-4" />
                       {isProcessing ? 'Signing...' : 'Sign & Endorse with My Key'}
@@ -317,21 +312,21 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
                     {sealedNode && (
                       <button
                         onClick={handleDownloadSeal}
-                        className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold flex items-center gap-2 border border-slate-700 transition-colors"
+                        className="px-4 py-2 rounded bg-cream hover:bg-cream-dark text-xs font-semibold flex items-center gap-2 border border-cream-border text-charcoal transition-colors"
                       >
-                        <Download className="w-4 h-4 text-emerald-400" />
+                        <Download className="w-4 h-4 text-sage" />
                         Download Seal Certificate
                       </button>
                     )}
                   </div>
                 </>
               ) : (
-                <div className="text-center py-12 text-slate-400 space-y-3">
-                  <Award className="w-12 h-12 mx-auto text-slate-600" />
+                <div className="text-center py-12 text-charcoal-muted space-y-3">
+                  <Award className="w-12 h-12 mx-auto text-charcoal-muted" />
                   <p className="text-sm">No active milestone proposal for this document.</p>
                   <button
                     onClick={() => setActiveTab('propose')}
-                    className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs transition-all"
+                    className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold text-xs transition-colors border border-charcoal"
                   >
                     Propose Milestone Seal
                   </button>
@@ -343,45 +338,45 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
           {activeTab === 'propose' && (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Milestone Title</label>
+                <label className="text-xs font-medium text-charcoal">Milestone Title</label>
                 <input
                   type="text"
                   value={milestoneName}
                   onChange={(e) => setMilestoneName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-cream border border-cream-border rounded px-3 py-2 text-xs text-charcoal focus:outline-none focus:border-charcoal font-serif"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Description / Clause Purpose</label>
+                <label className="text-xs font-medium text-charcoal">Description / Clause Purpose</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full h-20 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full h-20 bg-cream border border-cream-border rounded p-3 text-xs text-charcoal focus:outline-none focus:border-charcoal font-serif"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Required Quorum (M Signatures)</label>
+                  <label className="text-xs font-medium text-charcoal">Required Quorum (M Signatures)</label>
                   <input
                     type="number"
                     min="1"
                     max="10"
                     value={requiredQuorum}
                     onChange={(e) => setRequiredQuorum(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-cream border border-cream-border rounded px-3 py-2 text-xs text-charcoal focus:outline-none focus:border-charcoal"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Total Eligible Peers (N)</label>
+                  <label className="text-xs font-medium text-charcoal">Total Eligible Peers (N)</label>
                   <input
                     type="number"
                     min="1"
                     max="10"
                     value={totalEligible}
                     onChange={(e) => setTotalEligible(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-cream border border-cream-border rounded px-3 py-2 text-xs text-charcoal focus:outline-none focus:border-charcoal"
                   />
                 </div>
               </div>
@@ -389,7 +384,7 @@ export const MultisigMilestoneModal: React.FC<MultisigMilestoneModalProps> = ({
               <button
                 onClick={handleCreateNewProposal}
                 disabled={isProcessing || !identity}
-                className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-950 transition-all disabled:opacity-50"
+                className="w-full py-2.5 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-bold text-xs flex items-center justify-center gap-2 border border-charcoal transition-colors disabled:opacity-50"
               >
                 <Plus className="w-4 h-4" />
                 {isProcessing ? 'Proposing...' : 'Create Proposal & Sign Milestone'}

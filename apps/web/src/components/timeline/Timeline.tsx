@@ -1,6 +1,6 @@
 import React from 'react';
 import { SignedCommitNode } from '@hermes/core';
-import { GitCommit, ShieldCheck, Clock, User, GitBranch } from 'lucide-react';
+import { GitCommit, ShieldCheck, Clock, User, GitBranch, Sparkles } from 'lucide-react';
 
 export interface TimelineProps {
   commits: SignedCommitNode[];
@@ -13,16 +13,16 @@ export const Timeline: React.FC<TimelineProps> = ({ commits, heads, onSelectComm
 
   if (commits.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 glass-panel rounded-2xl text-center">
-        <GitCommit className="h-10 w-10 text-slate-600 mb-2" />
-        <h4 className="text-sm font-semibold text-slate-400">No Commit History Yet</h4>
+      <div className="flex flex-col items-center justify-center p-8 bg-cream-50 border border-cream-border rounded-xl text-center">
+        <GitCommit className="h-8 w-8 text-charcoal-light mb-2" />
+        <h4 className="text-xs font-semibold text-charcoal-muted">No Commit History Yet</h4>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      {reversedCommits.map((commit, index) => {
+    <div className="space-y-2.5 font-sans">
+      {reversedCommits.map((commit) => {
         const isHead = heads.includes(commit.id);
         const isRoot = commit.parentIds.length === 0;
         const isMerge = commit.parentIds.length > 1;
@@ -31,57 +31,57 @@ export const Timeline: React.FC<TimelineProps> = ({ commits, heads, onSelectComm
           <div
             key={commit.id}
             onClick={() => onSelectCommit && onSelectCommit(commit)}
-            className="group glass-panel hover:bg-slate-900/90 rounded-xl p-4 border border-slate-800/90 transition-all cursor-pointer hover:border-cyan-500/30"
+            className="group bg-cream-50 hover:bg-cream-subtle rounded-lg p-3 border border-cream-border transition-colors cursor-pointer"
           >
             <div className="flex items-start justify-between">
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-2.5">
                 <div
-                  className={`mt-0.5 rounded-lg p-2 ${
+                  className={`mt-0.5 rounded p-1.5 ${
                     isHead
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-sage-light text-sage-dark border border-sage-border'
                       : isMerge
-                        ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30'
-                        : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                        ? 'bg-terracotta-light text-terracotta-dark border border-terracotta-border'
+                        : 'bg-cream-subtle text-charcoal border border-cream-border'
                   }`}
                 >
-                  <GitCommit className="h-4 w-4" />
+                  <GitCommit className="h-3.5 w-3.5" />
                 </div>
                 <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-mono text-xs font-bold text-white group-hover:text-cyan-400 transition-colors">
-                      {commit.id.slice(0, 10)}...
+                  <div className="flex items-center space-x-1.5">
+                    <span className="font-mono text-xs font-bold text-charcoal group-hover:underline">
+                      {commit.id.slice(0, 8)}
                     </span>
                     {isHead && (
-                      <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">
-                        HEAD TIP
+                      <span className="bg-sage-light text-sage-dark text-[9px] font-semibold px-1.5 py-0.2 rounded border border-sage-border">
+                        HEAD
                       </span>
                     )}
                     {isMerge && (
-                      <span className="bg-purple-500/20 text-purple-400 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-purple-500/30 flex items-center gap-1">
-                        <GitBranch className="h-2.5 w-2.5" /> MERGE
+                      <span className="bg-terracotta-light text-terracotta-dark text-[9px] font-semibold px-1.5 py-0.2 rounded border border-terracotta-border flex items-center gap-0.5">
+                        <GitBranch className="h-2 w-2" /> MERGE
                       </span>
                     )}
                     {isRoot && (
-                      <span className="bg-slate-800 text-slate-400 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                        GENESIS
+                      <span className="bg-cream-subtle text-charcoal-muted text-[9px] font-semibold px-1.5 py-0.2 rounded border border-cream-border">
+                        ROOT
                       </span>
                     )}
                   </div>
 
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-charcoal-muted">
                     <span className="flex items-center space-x-1 font-mono">
-                      <User className="h-3 w-3 text-slate-500" />
-                      <span>{commit.author.fingerprint.slice(0, 16)}</span>
+                      <User className="h-3 w-3 text-charcoal-light" />
+                      <span>{commit.author.fingerprint.slice(0, 12)}...</span>
                     </span>
                     <span className="flex items-center space-x-1">
-                      <Clock className="h-3 w-3 text-slate-500" />
+                      <Clock className="h-3 w-3 text-charcoal-light" />
                       <span>{new Date(commit.timestamp).toLocaleTimeString()}</span>
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -89,15 +89,15 @@ export const Timeline: React.FC<TimelineProps> = ({ commits, heads, onSelectComm
                     onSelectCommit && onSelectCommit(commit);
                   }}
                   title="Explain commit with AI"
-                  className="flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-lg px-2 py-1 transition-colors"
+                  className="flex items-center space-x-1 text-xs text-sage-dark hover:bg-sage-light bg-cream-subtle border border-cream-border rounded px-2 py-0.5 transition-colors"
                 >
-                  <span className="text-xs">✨</span>
-                  <span className="text-[10px] font-semibold">AI Explain</span>
+                  <Sparkles className="w-3 h-3 text-sage-dark" />
+                  <span className="text-[10px] font-medium">Explain</span>
                 </button>
 
-                <div className="flex items-center space-x-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-2.5 py-1">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Signed</span>
+                <div className="flex items-center space-x-1 text-xs text-sage-dark bg-sage-light border border-sage-border rounded px-2 py-0.5">
+                  <ShieldCheck className="h-3 w-3" />
+                  <span className="hidden sm:inline text-[10px] font-medium">Signed</span>
                 </div>
               </div>
             </div>

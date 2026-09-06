@@ -1,6 +1,6 @@
 import React from 'react';
 import { PeerPresence } from '@hermes/sync';
-import { Users, Radio, ShieldCheck, User } from 'lucide-react';
+import { Users, ShieldCheck } from 'lucide-react';
 
 export interface ActivePeersProps {
   peers: PeerPresence[];
@@ -16,38 +16,38 @@ export const ActivePeers: React.FC<ActivePeersProps> = ({
   currentUserColor,
 }) => {
   return (
-    <div className="glass-panel rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+    <div className="bg-cream-50 rounded-xl p-5 border border-cream-border space-y-4 font-sans text-charcoal">
+      <div className="flex items-center justify-between pb-3 border-b border-cream-border">
         <div className="flex items-center space-x-2">
-          <Users className="h-4 w-4 text-cyan-400" />
-          <h3 className="text-sm font-bold text-white">Active Collaborative Peers</h3>
+          <Users className="h-4 w-4 text-sage-dark" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal">Active Collaborators</h3>
         </div>
-        <span className="text-xs font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded-full">
-          {peers.length + 1} Connected
+        <span className="text-xs font-mono bg-cream-subtle text-charcoal-muted border border-cream-border px-2 py-0.5 rounded font-semibold">
+          {peers.length + 1} Active
         </span>
       </div>
 
       <div className="space-y-2">
         {/* You (Local Author) */}
-        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-cyan-500/30">
+        <div className="flex items-center justify-between p-2.5 rounded-lg bg-cream-subtle border border-charcoal/20">
           <div className="flex items-center space-x-3">
             <div
-              className="h-3 w-3 rounded-full ring-2 ring-cyan-500/40"
+              className="h-3 w-3 rounded-full border border-charcoal/30"
               style={{ backgroundColor: currentUserColor }}
             />
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold text-white">{currentUserDisplayName}</span>
-                <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.2 rounded font-semibold">
-                  You (Local)
+                <span className="text-xs font-semibold text-charcoal">{currentUserDisplayName}</span>
+                <span className="text-[10px] bg-charcoal text-cream-50 px-1.5 py-0.2 rounded font-medium">
+                  You
                 </span>
               </div>
-              <p className="text-[10px] font-mono text-slate-400">
+              <p className="text-[10px] font-mono text-charcoal-muted">
                 {currentUserFingerprint.slice(0, 16)}...
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-1 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+          <div className="flex items-center space-x-1 text-[10px] text-sage-dark bg-sage-light border border-sage-border px-2 py-0.5 rounded">
             <ShieldCheck className="h-3 w-3" />
             <span>Key Holder</span>
           </div>
@@ -57,23 +57,23 @@ export const ActivePeers: React.FC<ActivePeersProps> = ({
         {peers.map((peer) => (
           <div
             key={peer.author.fingerprint}
-            className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition-colors"
+            className="flex items-center justify-between p-2.5 rounded-lg bg-cream-50 border border-cream-border hover:bg-cream-subtle transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div
-                className="h-3 w-3 rounded-full"
-                style={{ backgroundColor: peer.color || '#6366f1' }}
+                className="h-3 w-3 rounded-full border border-charcoal/20"
+                style={{ backgroundColor: peer.color || '#7A8B7B' }}
               />
               <div>
-                <span className="text-xs font-semibold text-slate-200">
+                <span className="text-xs font-semibold text-charcoal">
                   {peer.displayName || 'Peer ' + peer.author.fingerprint.slice(0, 6)}
                 </span>
-                <p className="text-[10px] font-mono text-slate-400">
+                <p className="text-[10px] font-mono text-charcoal-muted">
                   {peer.author.fingerprint.slice(0, 16)}...
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-1 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+            <div className="flex items-center space-x-1 text-[10px] text-sage-dark bg-sage-light border border-sage-border px-2 py-0.5 rounded">
               <ShieldCheck className="h-3 w-3" />
               <span>Verified</span>
             </div>

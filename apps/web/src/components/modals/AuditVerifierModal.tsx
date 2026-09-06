@@ -8,9 +8,6 @@ import {
   CheckCircle2,
   XCircle,
   AlertTriangle,
-  GitCommit,
-  User,
-  Clock,
   RefreshCw,
   X,
 } from 'lucide-react';
@@ -67,19 +64,19 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
 
   return (
     <div
-      className={`glass-panel rounded-2xl border border-slate-800 shadow-2xl p-6 ${
+      className={`bg-cream-light border border-cream-border rounded-lg p-6 text-charcoal ${
         isStandaloneTab ? 'h-[calc(100vh-140px)] flex flex-col' : 'max-w-3xl w-full'
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
-        <div className="flex items-center space-x-2.5">
-          <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-400 border border-emerald-500/20">
+      <div className="flex items-center justify-between pb-4 border-b border-cream-border mb-6">
+        <div className="flex items-center space-x-3">
+          <div className="rounded border border-sage/30 bg-sage/10 p-2 text-sage">
             <FileCheck2 className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-white">Cryptographic Audit & Offline Verifier</h2>
-            <p className="text-xs text-slate-400">
+            <h2 className="text-base font-bold font-serif text-charcoal">Cryptographic Audit & Offline Verifier</h2>
+            <p className="text-xs text-charcoal-muted">
               Validates ECDSA signatures, update hashes, and Merkle DAG integrity
             </p>
           </div>
@@ -88,7 +85,7 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
         {onClose && (
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+            className="rounded p-1.5 text-charcoal-muted hover:bg-cream hover:text-charcoal transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="h-5 w-5" />
           </button>
@@ -96,7 +93,7 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
       </div>
 
       {/* Main Area */}
-      <div className="flex-1 overflow-y-auto space-y-6">
+      <div className="flex-1 overflow-y-auto space-y-6 pr-1">
         {/* Drag and Drop Zone */}
         <div
           onDragOver={(e) => {
@@ -105,20 +102,20 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
           }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
             dragOver
-              ? 'border-cyan-400 bg-cyan-500/5'
-              : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'
+              ? 'border-sage bg-sage/5'
+              : 'border-cream-border bg-cream hover:border-charcoal-muted'
           }`}
         >
-          <UploadCloud className="h-8 w-8 text-cyan-400 mx-auto mb-2" />
-          <h4 className="text-sm font-semibold text-slate-200">
-            Drag and Drop any <span className="text-cyan-400 font-mono">.hermes.json</span> audit file
+          <UploadCloud className="h-8 w-8 text-sage mx-auto mb-2" />
+          <h4 className="text-sm font-semibold text-charcoal">
+            Drag and Drop any <span className="text-sage font-mono">.hermes.json</span> audit file
           </h4>
-          <p className="text-xs text-slate-500 mt-1 mb-3">
+          <p className="text-xs text-charcoal-muted mt-1 mb-3">
             Runs fully offline in your browser using WebCrypto (zero network requests)
           </p>
-          <label className="inline-block cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2 rounded-lg border border-slate-700 transition-colors">
+          <label className="inline-block cursor-pointer bg-charcoal hover:bg-charcoal/90 text-cream text-xs font-semibold px-4 py-2 rounded border border-charcoal transition-colors">
             <span>Browse Files</span>
             <input
               type="file"
@@ -135,39 +132,39 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
 
         {/* Audit Results */}
         {isVerifying ? (
-          <div className="py-12 text-center text-slate-400 animate-pulse flex items-center justify-center space-x-2">
-            <RefreshCw className="h-5 w-5 animate-spin text-cyan-400" />
+          <div className="py-12 text-center text-charcoal-muted flex items-center justify-center space-x-2">
+            <RefreshCw className="h-5 w-5 animate-spin text-sage" />
             <span>Auditing cryptographic signatures & hashes...</span>
           </div>
         ) : report ? (
           <div className="space-y-4">
             {/* Verdict Card */}
             <div
-              className={`p-5 rounded-2xl border ${
+              className={`p-5 rounded-lg border ${
                 report.verdict === 'VALID'
-                  ? 'bg-emerald-500/10 border-emerald-500/30'
+                  ? 'bg-sage/10 border-sage/40 text-charcoal'
                   : report.verdict === 'INCOMPLETE'
-                    ? 'bg-amber-500/10 border-amber-500/30'
-                    : 'bg-rose-500/10 border-rose-500/30'
+                    ? 'bg-terracotta/10 border-terracotta/40 text-charcoal'
+                    : 'bg-rose-50 border-rose-300 text-rose-900'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   {report.verdict === 'VALID' ? (
-                    <ShieldCheck className="h-8 w-8 text-emerald-400" />
+                    <ShieldCheck className="h-8 w-8 text-sage" />
                   ) : report.verdict === 'INCOMPLETE' ? (
-                    <AlertTriangle className="h-8 w-8 text-amber-400" />
+                    <AlertTriangle className="h-8 w-8 text-terracotta" />
                   ) : (
-                    <ShieldAlert className="h-8 w-8 text-rose-400" />
+                    <ShieldAlert className="h-8 w-8 text-rose-600" />
                   )}
                   <div>
                     <h3
-                      className={`text-lg font-bold ${
+                      className={`text-lg font-bold font-serif ${
                         report.verdict === 'VALID'
-                          ? 'text-emerald-400'
+                          ? 'text-sage'
                           : report.verdict === 'INCOMPLETE'
-                            ? 'text-amber-400'
-                            : 'text-rose-400'
+                            ? 'text-terracotta'
+                            : 'text-rose-700'
                       }`}
                     >
                       {report.verdict === 'VALID'
@@ -176,12 +173,12 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
                           ? 'Incomplete Merkle DAG'
                           : 'Cryptographic Audit Failed'}
                     </h3>
-                    <p className="text-xs text-slate-300 mt-0.5">{report.summary}</p>
+                    <p className="text-xs text-charcoal-muted mt-0.5">{report.summary}</p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs font-mono bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800 text-white font-bold">
+                  <span className="text-xs font-mono bg-cream-light px-3 py-1 rounded border border-cream-border text-charcoal font-bold">
                     {report.verifiedCommits} / {report.totalCommits} Commits Valid
                   </span>
                 </div>
@@ -190,39 +187,39 @@ export const AuditVerifierModal: React.FC<AuditVerifierModalProps> = ({
 
             {/* Commit Breakdown Log */}
             <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-slate-400 uppercase font-mono">
+              <h4 className="text-xs font-semibold text-charcoal-muted uppercase tracking-wider font-mono">
                 Verified Commit Chain
               </h4>
               <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
                 {report.details.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/80 border border-slate-800/80 text-xs font-mono"
+                    className="flex items-center justify-between p-2.5 rounded bg-cream border border-cream-border text-xs font-mono text-charcoal"
                   >
                     <div className="flex items-center space-x-2">
                       {item.isValid ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="h-4 w-4 text-sage" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-rose-400" />
+                        <XCircle className="h-4 w-4 text-terracotta" />
                       )}
-                      <span className="text-white font-bold">{item.commitId.slice(0, 12)}...</span>
-                      <span className="text-slate-500">|</span>
-                      <span className="text-slate-400">
+                      <span className="font-bold">{item.commitId.slice(0, 12)}...</span>
+                      <span className="text-charcoal-muted">|</span>
+                      <span className="text-charcoal-muted">
                         {item.authorFingerprint?.slice(0, 14)}...
                       </span>
                     </div>
 
                     <div className="flex items-center space-x-2">
                       {item.timestamp && (
-                        <span className="text-slate-500">
+                        <span className="text-charcoal-muted">
                           {new Date(item.timestamp).toLocaleTimeString()}
                         </span>
                       )}
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded font-semibold ${
+                        className={`text-[10px] px-2 py-0.5 rounded font-semibold border ${
                           item.isValid
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                            ? 'bg-sage/10 text-sage border-sage/30'
+                            : 'bg-rose-50 text-rose-700 border-rose-200'
                         }`}
                       >
                         {item.verdict}

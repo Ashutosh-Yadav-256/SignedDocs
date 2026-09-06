@@ -11,7 +11,6 @@ import {
   Lock,
   Sparkles,
   X,
-  AlertTriangle,
 } from 'lucide-react';
 import {
   DocumentBlock,
@@ -154,42 +153,42 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
+      <div className="bg-cream-light border border-cream-border rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden text-charcoal">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-6 py-4 border-b border-cream-border flex items-center justify-between bg-cream">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className="p-2 rounded border border-sage/30 bg-sage/10 text-sage">
               <EyeOff className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+              <h2 className="text-base font-serif font-bold flex items-center gap-2 text-charcoal">
                 ZK-Redact & Selective Disclosure
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-cream-light border border-cream-border text-sage font-mono">
                   Merkle Proofs
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-charcoal-muted">
                 Redact confidential clauses while providing zero-knowledge cryptographic inclusion proofs to recipients.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-dark transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-800 bg-slate-950/30 px-6 pt-2">
+        <div className="flex border-b border-cream-border bg-cream px-6 pt-2 text-xs">
           <button
             onClick={() => setActiveTab('editor')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'editor'
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Lock className="w-4 h-4" />
@@ -197,10 +196,10 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('preview')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'preview'
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Eye className="w-4 h-4" />
@@ -208,10 +207,10 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('audit')}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2.5 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'audit'
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-charcoal text-charcoal font-semibold bg-cream-light rounded-t'
+                : 'border-transparent text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <FileCheck className="w-4 h-4" />
@@ -223,14 +222,14 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {activeTab === 'editor' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-slate-800/40 p-3 rounded-xl border border-slate-700/50 text-xs text-slate-300">
+              <div className="flex items-center justify-between bg-cream p-3 rounded-lg border border-cream-border text-xs text-charcoal">
                 <span>
                   Click any paragraph or clause below to toggle redaction. Redacted blocks withhold cryptographic salts while preserving the Merkle tree.
                 </span>
                 <button
                   onClick={handleGenerateBundle}
                   disabled={!identity || isGenerating}
-                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all disabled:opacity-50"
+                  className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-medium flex items-center gap-2 border border-charcoal transition-colors disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4" />
                   {isGenerating ? 'Building Tree...' : 'Generate Signed Proofs'}
@@ -243,36 +242,36 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
                   return (
                     <div
                       key={block.index}
-                      className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${
                         isRedacted
-                          ? 'bg-red-950/20 border-red-800/60 shadow-inner'
-                          : 'bg-slate-800/50 border-slate-700 hover:border-slate-600'
+                          ? 'bg-terracotta/5 border-terracotta/40'
+                          : 'bg-cream-light border-cream-border hover:border-charcoal-muted'
                       }`}
                       onClick={() => toggleRedact(block.index)}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-900 text-slate-400">
+                          <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-cream border border-cream-border text-charcoal">
                             Block #{block.index + 1} ({block.blockType})
                           </span>
                           {isRedacted ? (
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-900/80 border border-red-700 text-red-200 flex items-center gap-1">
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-terracotta/15 border border-terracotta/40 text-terracotta flex items-center gap-1">
                               <EyeOff className="w-3 h-3" /> Redacted
                             </span>
                           ) : (
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-900/40 border border-emerald-700 text-emerald-300 flex items-center gap-1">
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sage/15 border border-sage/40 text-sage flex items-center gap-1">
                               <Eye className="w-3 h-3" /> Disclosed
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] font-mono text-slate-500">
+                        <span className="text-[10px] font-mono text-charcoal-muted">
                           Leaf: {block.leafHash.slice(0, 16)}...
                         </span>
                       </div>
 
                       <p
-                        className={`text-sm leading-relaxed ${
-                          isRedacted ? 'line-through text-slate-500' : 'text-slate-200'
+                        className={`text-sm leading-relaxed font-serif ${
+                          isRedacted ? 'line-through text-charcoal-muted opacity-60' : 'text-charcoal'
                         }`}
                       >
                         {block.content}
@@ -280,16 +279,16 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
 
                       {isRedacted && (
                         <div
-                          className="mt-3 pt-3 border-t border-red-900/40 flex items-center gap-2"
+                          className="mt-3 pt-3 border-t border-terracotta/20 flex items-center gap-2"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <span className="text-xs text-red-400 font-medium">Reason:</span>
+                          <span className="text-xs text-terracotta font-medium">Reason:</span>
                           <input
                             type="text"
                             value={redactionReasons[block.index] || ''}
                             onChange={(e) => handleReasonChange(block.index, e.target.value)}
                             placeholder="e.g. Confidential Financial PII, Whistleblower Identity"
-                            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-red-500"
+                            className="flex-1 bg-cream-light border border-cream-border rounded px-2.5 py-1 text-xs text-charcoal focus:outline-none focus:border-terracotta"
                           />
                         </div>
                       )}
@@ -303,47 +302,47 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
           {activeTab === 'preview' && (
             <div className="space-y-4">
               {!generatedBundle ? (
-                <div className="text-center py-12 text-slate-400 space-y-3">
-                  <EyeOff className="w-12 h-12 mx-auto text-slate-600" />
+                <div className="text-center py-12 text-charcoal-muted space-y-3">
+                  <EyeOff className="w-12 h-12 mx-auto text-charcoal-muted" />
                   <p className="text-sm">No redacted bundle generated yet.</p>
                   <button
                     onClick={handleGenerateBundle}
                     disabled={!identity}
-                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-all"
+                    className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream font-medium text-sm transition-colors border border-charcoal"
                   >
                     Generate From Selected Blocks
                   </button>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800">
+                  <div className="flex items-center justify-between bg-cream p-4 rounded-lg border border-cream-border">
                     <div className="space-y-1">
-                      <div className="text-xs text-slate-400">
-                        Signed Merkle Root: <span className="font-mono text-emerald-400">{generatedBundle.merkleRoot}</span>
+                      <div className="text-xs text-charcoal-muted">
+                        Signed Merkle Root: <span className="font-mono text-sage font-medium">{generatedBundle.merkleRoot}</span>
                       </div>
-                      <div className="text-xs text-slate-400">
-                        Author Fingerprint: <span className="font-mono text-slate-200">{generatedBundle.author.fingerprint}</span>
+                      <div className="text-xs text-charcoal-muted">
+                        Author Fingerprint: <span className="font-mono text-charcoal">{generatedBundle.author.fingerprint}</span>
                       </div>
-                      <div className="text-xs text-slate-400 flex items-center gap-2">
+                      <div className="text-xs text-charcoal-muted flex items-center gap-2">
                         <span>Total Blocks: {generatedBundle.stats.totalBlocks}</span>
                         <span>•</span>
-                        <span className="text-emerald-400 font-medium">Revealed: {generatedBundle.stats.revealedBlocks}</span>
+                        <span className="text-sage font-medium">Revealed: {generatedBundle.stats.revealedBlocks}</span>
                         <span>•</span>
-                        <span className="text-red-400 font-medium">Redacted: {generatedBundle.stats.redactedBlocks}</span>
+                        <span className="text-terracotta font-medium">Redacted: {generatedBundle.stats.redactedBlocks}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={handleCopy}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium flex items-center gap-1.5 border border-slate-700 transition-colors"
+                        className="px-3 py-1.5 rounded bg-cream-light hover:bg-cream text-xs font-medium flex items-center gap-1.5 border border-cream-border text-charcoal transition-colors"
                       >
                         <Copy className="w-3.5 h-3.5" />
                         {copied ? 'Copied' : 'Copy JSON'}
                       </button>
                       <button
                         onClick={handleDownload}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-lg transition-colors"
+                        className="px-3 py-1.5 rounded bg-charcoal hover:bg-charcoal/90 text-cream text-xs font-medium flex items-center gap-1.5 border border-charcoal transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
                         Export .redacted.signeddocs.json
@@ -352,25 +351,25 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
                   </div>
 
                   {/* Visual Document View */}
-                  <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-4">
-                    <h3 className="text-lg font-bold text-slate-100 border-b border-slate-800 pb-2">
+                  <div className="bg-cream-light p-6 rounded-lg border border-cream-border space-y-4">
+                    <h3 className="text-lg font-serif font-bold text-charcoal border-b border-cream-border pb-2">
                       {generatedBundle.documentTitle} (Redacted Disclosed Copy)
                     </h3>
                     <div className="space-y-3">
                       {generatedBundle.blocks.map((b) => (
-                        <div key={b.index} className="p-3 rounded-lg bg-slate-900 border border-slate-800/80">
+                        <div key={b.index} className="p-3 rounded bg-cream border border-cream-border">
                           {b.isRedacted ? (
-                            <div className="bg-black/80 text-red-400 border border-red-900/50 rounded p-2.5 font-mono text-xs flex items-center justify-between">
+                            <div className="bg-cream-light text-terracotta border border-terracotta/30 rounded p-2.5 font-mono text-xs flex items-center justify-between">
                               <span className="flex items-center gap-2">
-                                <Lock className="w-3.5 h-3.5 text-red-400" />
+                                <Lock className="w-3.5 h-3.5 text-terracotta" />
                                 {b.content}
                               </span>
-                              <span className="text-[10px] text-slate-500">
+                              <span className="text-[10px] text-charcoal-muted">
                                 Proof: {b.proof.steps.length} Merkle steps
                               </span>
                             </div>
                           ) : (
-                            <div className="text-slate-200 text-sm leading-relaxed">
+                            <div className="text-charcoal text-sm leading-relaxed font-serif">
                               {b.content}
                             </div>
                           )}
@@ -385,8 +384,8 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
 
           {activeTab === 'audit' && (
             <div className="space-y-4">
-              <div className="text-xs text-slate-300 bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
-                Paste any <span className="font-mono text-emerald-400">.redacted.signeddocs.json</span> bundle below to verify its cryptographic validity. The verifier proves author authenticity and unredacted integrity without seeing secret clauses.
+              <div className="text-xs text-charcoal bg-cream p-3 rounded-lg border border-cream-border">
+                Paste any <span className="font-mono text-sage font-semibold">.redacted.signeddocs.json</span> bundle below to verify its cryptographic validity. The verifier proves author authenticity and unredacted integrity without seeing secret clauses.
               </div>
 
               <div className="space-y-2">
@@ -394,12 +393,12 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
                   value={auditJsonInput}
                   onChange={(e) => setAuditJsonInput(e.target.value)}
                   placeholder="Paste .redacted.signeddocs.json contents here..."
-                  className="w-full h-40 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-300 focus:outline-none focus:border-emerald-500"
+                  className="w-full h-40 bg-cream border border-cream-border rounded-lg p-3 font-mono text-xs text-charcoal focus:outline-none focus:border-charcoal"
                 />
                 <button
                   onClick={handleRunAudit}
                   disabled={isAuditing || !auditJsonInput.trim()}
-                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 transition-all disabled:opacity-50"
+                  className="px-4 py-2 rounded bg-charcoal hover:bg-charcoal/90 text-cream text-xs font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 border border-charcoal"
                 >
                   <FileCheck className="w-4 h-4" />
                   {isAuditing ? 'Auditing...' : 'Verify Cryptographic Proofs'}
@@ -408,49 +407,49 @@ export const RedactionStudioModal: React.FC<RedactionStudioModalProps> = ({
 
               {auditResult && (
                 <div
-                  className={`p-4 rounded-xl border space-y-3 ${
+                  className={`p-4 rounded-lg border space-y-3 ${
                     auditResult.isValid
-                      ? 'bg-emerald-950/30 border-emerald-800'
-                      : 'bg-red-950/30 border-red-800'
+                      ? 'bg-sage/10 border-sage/40 text-charcoal'
+                      : 'bg-rose-50 border-rose-300 text-rose-900'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       {auditResult.isValid ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <CheckCircle2 className="w-5 h-5 text-sage" />
                       ) : (
-                        <XCircle className="w-5 h-5 text-red-400" />
+                        <XCircle className="w-5 h-5 text-rose-600" />
                       )}
-                      <span className="font-semibold text-sm">
+                      <span className="font-semibold text-sm font-serif">
                         {auditResult.isValid ? 'Cryptographically Verified' : 'Verification Failed'}
                       </span>
                     </div>
-                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-900">
+                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-cream-light border border-cream-border text-charcoal">
                       Verdict: {auditResult.verdict}
                     </span>
                   </div>
 
                   {auditResult.error && (
-                    <div className="text-xs text-red-400 bg-red-950/60 p-2 rounded border border-red-800/80">
+                    <div className="text-xs text-rose-700 bg-rose-100 p-2 rounded border border-rose-300">
                       {auditResult.error}
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div className="bg-slate-900/80 p-2 rounded">
-                      <div className="text-slate-400">Total Blocks</div>
+                    <div className="bg-cream-light p-2 rounded border border-cream-border">
+                      <div className="text-charcoal-muted">Total Blocks</div>
                       <div className="font-semibold">{auditResult.totalBlocks}</div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded">
-                      <div className="text-emerald-400">Revealed Blocks</div>
+                    <div className="bg-cream-light p-2 rounded border border-cream-border">
+                      <div className="text-sage">Revealed Blocks</div>
                       <div className="font-semibold">{auditResult.revealedBlocks}</div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded">
-                      <div className="text-red-400">Redacted Blocks</div>
+                    <div className="bg-cream-light p-2 rounded border border-cream-border">
+                      <div className="text-terracotta">Redacted Blocks</div>
                       <div className="font-semibold">{auditResult.redactedBlocks}</div>
                     </div>
-                    <div className="bg-slate-900/80 p-2 rounded">
-                      <div className="text-slate-400">Author</div>
+                    <div className="bg-cream-light p-2 rounded border border-cream-border">
+                      <div className="text-charcoal-muted">Author</div>
                       <div className="font-mono text-[10px] truncate">{auditResult.authorFingerprint}</div>
                     </div>
                   </div>

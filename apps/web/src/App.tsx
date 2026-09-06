@@ -18,7 +18,22 @@ import { RedactionStudioModal } from './components/redaction/RedactionStudioModa
 import { MultisigMilestoneModal } from './components/multisig/MultisigMilestoneModal.js';
 import { ForensicInspectorModal } from './components/forensics/ForensicInspectorModal.js';
 import { AirGapSyncModal } from './components/airgap/AirGapSyncModal.js';
-import { Sparkles, Layers, ShieldCheck, Radio, FileText, ArrowLeft, Bot } from 'lucide-react';
+import { OnboardingModal } from './components/onboarding/OnboardingModal.js';
+import {
+  FileText,
+  Layers,
+  ShieldCheck,
+  Radio,
+  EyeOff,
+  Award,
+  Activity,
+  QrCode,
+  HelpCircle,
+  Clock,
+  KeyRound,
+  BookOpen,
+  Sparkles,
+} from 'lucide-react';
 
 export function App() {
   const storage = useMemo(() => new HermesStorage(), []);
@@ -38,6 +53,11 @@ export function App() {
   const [isVerifierModalOpen, setIsVerifierModalOpen] = useState(false);
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
   const [selectedAICommitId, setSelectedAICommitId] = useState<string | null>(null);
+
+  // Onboarding UX tour state
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(() => {
+    return !localStorage.getItem('signeddocs_onboarded_seen');
+  });
 
   // Innovation Modals State
   const [isRedactionModalOpen, setIsRedactionModalOpen] = useState(false);
@@ -78,19 +98,25 @@ export function App() {
     exportBundle,
   } = hermesDoc;
 
-  // Render loading state
+  const handleCloseOnboarding = () => {
+    localStorage.setItem('signeddocs_onboarded_seen', 'true');
+    setIsOnboardingOpen(false);
+  };
+
+  // Render loading state with flat design styling
   if (isIdentityLoading || !identity || !isLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0b0f19] text-slate-200">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-indigo-600 p-0.5 shadow-xl shadow-cyan-500/20 animate-pulse">
-            <div className="flex h-full w-full items-center justify-center rounded-[14px] bg-slate-950">
-              <Sparkles className="h-7 w-7 text-cyan-400 animate-spin" />
-            </div>
+      <div className="flex min-h-screen items-center justify-center bg-cream text-charcoal">
+        <div className="flex flex-col items-center space-y-4 max-w-sm p-8 bg-cream-light border border-cream-border rounded-lg text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded border border-sage/40 bg-sage/10 text-sage">
+            <FileText className="h-6 w-6 text-sage" />
           </div>
-          <p className="text-sm font-semibold tracking-wide text-slate-400">
-            Initializing WebCrypto Keys & Local Merkle DAG...
-          </p>
+          <div className="space-y-1">
+            <h2 className="text-base font-serif font-bold text-charcoal">SignedDocs</h2>
+            <p className="text-xs text-charcoal-muted">
+              Initializing WebCrypto ECDSA keys and local Merkle DAG...
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -112,8 +138,13 @@ export function App() {
     }
   };
 
+  // Calculate live stats for the left sidebar
+  const currentText = (ydoc.getText('tiptap') || ydoc.getText('content')).toString();
+  const wordCount = currentText.trim() ? currentText.trim().split(/\s+/).length : 0;
+  const readTimeMin = Math.max(1, Math.ceil(wordCount / 220));
+
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-cream text-charcoal flex flex-col font-sans selection:bg-sage/20 selection:text-charcoal pb-16 lg:pb-0">
       {/* Header */}
       <Header
         documentTitle={documentTitle}
@@ -151,8 +182,108 @@ export function App() {
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Sidebar (Only in Editor Mode on Desktop for Symmetrical Balance) */}
+            {activeTab === 'editor' && (
+              <div className="hidden lg:block lg:col-span-3 space-y-5 sticky top-20">
+                {/* Article Info & Reading Stats */}
+                <div className="bg-cream-light rounded-lg p-5 border border-cream-border space-y-4">
+                  <div className="pb-3 border-b border-cream-border">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-charcoal-muted">Publication Overview</span>
+                    <h3 className="text-sm font-serif font-bold text-charcoal mt-1 line-clamp-2">
+                      {documentTitle}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-charcoal-muted">
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-sage" />
+                        Reading Time
+                      </span>
+                      <span className="font-medium text-charcoal">{readTimeMin} min read</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-charcoal-muted">
+                      <span className="flex items-center gap-1.5">
+                        <BookOpen className="w-3.5 h-3.5 text-sage" />
+                        Word Count
+                      </span>
+                      <span className="font-mono text-charcoal">{wordCount} words</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-charcoal-muted">
+                      <span className="flex items-center gap-1.5">
+                        <KeyRound className="w-3.5 h-3.5 text-sage" />
+                        Author Fingerprint
+                      </span>
+                      <span className="font-mono text-[10px] text-charcoal">{identity.fingerprint.slice(0, 10)}...</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trust & Innovation Primitives */}
+                <div className="bg-cream-light rounded-lg p-5 border border-cream-border space-y-3">
+                  <h4 className="text-xs font-serif font-bold text-charcoal">Cryptographic Tools</h4>
+                  <div className="space-y-1.5">
+                    <button
+                      onClick={() => setIsRedactionModalOpen(true)}
+                      className="w-full flex items-center justify-between p-2 rounded bg-cream hover:bg-cream-dark border border-cream-border text-xs text-charcoal transition-colors text-left"
+                    >
+                      <span className="flex items-center gap-2">
+                        <EyeOff className="w-3.5 h-3.5 text-sage" />
+                        ZK-Redact Studio
+                      </span>
+                      <span className="text-[10px] text-charcoal-muted font-mono">Merkle</span>
+                    </button>
+
+                    <button
+                      onClick={() => setIsMultisigModalOpen(true)}
+                      className="w-full flex items-center justify-between p-2 rounded bg-cream hover:bg-cream-dark border border-cream-border text-xs text-charcoal transition-colors text-left"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Award className="w-3.5 h-3.5 text-terracotta" />
+                        Multisig Seal
+                      </span>
+                      <span className="text-[10px] text-charcoal-muted font-mono">Quorum</span>
+                    </button>
+
+                    <button
+                      onClick={() => setIsForensicsModalOpen(true)}
+                      className="w-full flex items-center justify-between p-2 rounded bg-cream hover:bg-cream-dark border border-cream-border text-xs text-charcoal transition-colors text-left"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Activity className="w-3.5 h-3.5 text-sage" />
+                        Origin Forensics
+                      </span>
+                      <span className="text-[10px] text-charcoal-muted font-mono">Heatmap</span>
+                    </button>
+
+                    <button
+                      onClick={() => setIsAirGapModalOpen(true)}
+                      className="w-full flex items-center justify-between p-2 rounded bg-cream hover:bg-cream-dark border border-cream-border text-xs text-charcoal transition-colors text-left"
+                    >
+                      <span className="flex items-center gap-2">
+                        <QrCode className="w-3.5 h-3.5 text-charcoal" />
+                        Optical Air-Gap Sync
+                      </span>
+                      <span className="text-[10px] text-charcoal-muted font-mono">Offline</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Tour & Guide Trigger */}
+                <button
+                  onClick={() => setIsOnboardingOpen(true)}
+                  className="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded bg-cream hover:bg-cream-dark border border-cream-border text-xs text-charcoal font-medium transition-colors"
+                >
+                  <HelpCircle className="w-4 h-4 text-sage" />
+                  <span>Platform Guide & Tour</span>
+                </button>
+              </div>
+            )}
+
             {/* Main Center Content View */}
-            <div className={`${activeTab === 'editor' ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
+            <div className={`${activeTab === 'editor' ? 'lg:col-span-6' : 'lg:col-span-12'}`}>
               {activeTab === 'editor' && (
                 <Editor
                   ydoc={ydoc}
@@ -179,9 +310,9 @@ export function App() {
               )}
             </div>
 
-            {/* Right Sidebar (Only in Editor Mode) */}
+            {/* Right Sidebar (Only in Editor Mode on Desktop) */}
             {activeTab === 'editor' && (
-              <div className="lg:col-span-4 space-y-6">
+              <div className="hidden lg:block lg:col-span-3 space-y-5 sticky top-20">
                 {/* Active Peers Presence */}
                 <ActivePeers
                   peers={activePeers}
@@ -191,15 +322,15 @@ export function App() {
                 />
 
                 {/* Quick DAG Feed */}
-                <div className="glass-panel rounded-2xl p-5 border border-slate-800 shadow-xl">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                <div className="bg-cream-light rounded-lg p-5 border border-cream-border">
+                  <div className="flex items-center justify-between pb-3 border-b border-cream-border mb-3">
                     <div className="flex items-center space-x-2">
-                      <Layers className="h-4 w-4 text-cyan-400" />
-                      <h3 className="text-sm font-bold text-white">Recent Commit Nodes</h3>
+                      <Layers className="h-4 w-4 text-sage" />
+                      <h3 className="text-sm font-serif font-bold text-charcoal">Recent Commits</h3>
                     </div>
                     <button
                       onClick={() => setActiveTab('dag')}
-                      className="text-xs text-cyan-400 hover:underline font-medium"
+                      className="text-xs text-sage hover:underline font-medium"
                     >
                       View Graph →
                     </button>
@@ -217,6 +348,53 @@ export function App() {
           </div>
         )}
       </main>
+
+      {/* Mobile Bottom Navigation Bar for Symmetrical Touch Navigation */}
+      <div className="block lg:hidden fixed bottom-0 left-0 right-0 bg-cream-light border-t border-cream-border p-2 z-40">
+        <div className="flex items-center justify-around text-[11px]">
+          <button
+            onClick={() => setActiveTab('editor')}
+            className={`flex flex-col items-center p-1 rounded ${activeTab === 'editor' ? 'text-charcoal font-bold' : 'text-charcoal-muted'}`}
+          >
+            <FileText className="h-4 w-4 mb-0.5" />
+            <span>Write</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('dag')}
+            className={`flex flex-col items-center p-1 rounded ${activeTab === 'dag' ? 'text-charcoal font-bold' : 'text-charcoal-muted'}`}
+          >
+            <Layers className="h-4 w-4 mb-0.5" />
+            <span>Graph</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('blame')}
+            className={`flex flex-col items-center p-1 rounded ${activeTab === 'blame' ? 'text-charcoal font-bold' : 'text-charcoal-muted'}`}
+          >
+            <ShieldCheck className="h-4 w-4 mb-0.5" />
+            <span>Blame</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('timetravel')}
+            className={`flex flex-col items-center p-1 rounded ${activeTab === 'timetravel' ? 'text-charcoal font-bold' : 'text-charcoal-muted'}`}
+          >
+            <Clock className="h-4 w-4 mb-0.5" />
+            <span>History</span>
+          </button>
+          <button
+            onClick={() => setIsAIAssistantOpen(true)}
+            className="flex flex-col items-center p-1 rounded text-sage font-medium"
+          >
+            <Sparkles className="h-4 w-4 mb-0.5" />
+            <span>AI</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Onboarding Modal */}
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={handleCloseOnboarding}
+      />
 
       {/* Modals & AI Assistant Drawer */}
       <AIAssistantDrawer
@@ -246,7 +424,7 @@ export function App() {
       />
 
       {isVerifierModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
           <AuditVerifierModal onClose={() => setIsVerifierModalOpen(false)} />
         </div>
       )}

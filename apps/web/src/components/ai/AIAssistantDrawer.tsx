@@ -17,15 +17,13 @@ import {
   Wand2,
   Settings,
   ShieldCheck,
-  ShieldAlert,
   Layers,
   Check,
   X,
-  Cpu,
   RefreshCw,
-  FileText,
-  AlertTriangle,
-  ArrowRight,
+  User,
+  Clock,
+  Radio,
 } from 'lucide-react';
 
 export interface AIAssistantDrawerProps {
@@ -215,23 +213,21 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl bg-slate-950/95 border-l border-slate-800 backdrop-blur-2xl shadow-2xl flex flex-col font-sans transition-all duration-300">
+    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl bg-cream-light border-l border-cream-border flex flex-col font-sans text-charcoal">
       {/* Drawer Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-        <div className="flex items-center space-x-2.5">
-          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-600 p-0.5 shadow-md shadow-cyan-500/20">
-            <div className="flex h-full w-full items-center justify-center rounded-[6px] bg-slate-950">
-              <Sparkles className="h-4 w-4 text-cyan-400" />
-            </div>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-cream-border">
+        <div className="flex items-center space-x-3">
+          <div className="rounded border border-sage/30 bg-sage/10 p-2 text-sage">
+            <Sparkles className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-bold text-white">Hermes AI Intelligence</h2>
-              <span className="rounded bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-mono text-cyan-400 border border-cyan-500/20">
-                {aiEngine.getProvider().name.includes('Offline') ? '100% Offline / $0' : aiEngine.getProvider().name}
+              <h2 className="text-sm font-bold font-serif text-charcoal">Hermes AI Intelligence</h2>
+              <span className="rounded bg-cream px-1.5 py-0.5 text-[9px] font-mono text-sage border border-cream-border font-medium">
+                {aiEngine.getProvider().name.includes('Offline') ? '100% Offline' : aiEngine.getProvider().name}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">Provenance, History & Merkle DAG Reasoning</p>
+            <p className="text-[11px] text-charcoal-muted">Provenance, History & Merkle DAG Reasoning</p>
           </div>
         </div>
 
@@ -239,15 +235,15 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           <button
             onClick={() => setActiveTab('settings')}
             title="AI Provider Settings"
-            className={`p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors ${
-              activeTab === 'settings' ? 'bg-slate-800 text-cyan-400' : ''
+            className={`p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent ${
+              activeTab === 'settings' ? 'bg-cream text-charcoal border-cream-border' : ''
             }`}
           >
             <Settings className="h-4 w-4" />
           </button>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream transition-colors border border-transparent hover:border-cream-border"
           >
             <X className="h-4 w-4" />
           </button>
@@ -255,11 +251,11 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center space-x-1 px-4 py-2 border-b border-slate-800/80 bg-slate-900/50 text-xs">
+      <div className="flex items-center space-x-1 px-4 py-2 border-b border-cream-border bg-cream text-xs">
         <button
           onClick={() => setActiveTab('qna')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all ${
-            activeTab === 'qna' ? 'bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+            activeTab === 'qna' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
           }`}
         >
           <History className="h-3.5 w-3.5" />
@@ -268,8 +264,8 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
         <button
           onClick={() => setActiveTab('commit')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all ${
-            activeTab === 'commit' ? 'bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+            activeTab === 'commit' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
           }`}
         >
           <Layers className="h-3.5 w-3.5" />
@@ -278,18 +274,18 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
         <button
           onClick={() => setActiveTab('branches')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all ${
-            activeTab === 'branches' ? 'bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+            activeTab === 'branches' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
           }`}
         >
           <GitBranch className="h-3.5 w-3.5" />
-          <span>Branches {heads.length > 1 && <span className="bg-amber-500 text-slate-950 font-bold px-1 rounded-full text-[9px]">!</span>}</span>
+          <span>Branches {heads.length > 1 && <span className="bg-terracotta text-cream font-bold px-1 rounded text-[9px]">!</span>}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('refactor')}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all ${
-            activeTab === 'refactor' ? 'bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30' : 'text-slate-400 hover:text-slate-200'
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded transition-colors ${
+            activeTab === 'refactor' ? 'bg-cream-light text-charcoal font-semibold border border-cream-border' : 'text-charcoal-muted hover:text-charcoal'
           }`}
         >
           <Wand2 className="h-3.5 w-3.5" />
@@ -302,22 +298,26 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {/* --- TAB 1: HISTORY Q&A --- */}
         {activeTab === 'qna' && (
           <div className="flex flex-col h-full space-y-4">
-            {/* Quick Prompt Pills */}
+            {/* Quick Prompt Pills (pure SVG icons) */}
             <div className="flex flex-wrap gap-2 text-[11px]">
               {[
-                '👤 Who contributed to this document?',
-                '🌳 Explain DAG branch topology',
-                '⏱️ Summarize recent revisions',
-                '🛡️ Are all commits cryptographically verified?',
-              ].map((pill, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAskQuestion(pill.replace(/^[^a-zA-Z]+/, ''))}
-                  className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-cyan-500/30 px-2.5 py-1 rounded-full transition-all"
-                >
-                  {pill}
-                </button>
-              ))}
+                { icon: User, label: 'Who contributed to this document?', query: 'Who contributed to this document?' },
+                { icon: GitBranch, label: 'Explain DAG branch topology', query: 'Explain DAG branch topology' },
+                { icon: Clock, label: 'Summarize recent revisions', query: 'Summarize recent revisions' },
+                { icon: ShieldCheck, label: 'Are all commits verified?', query: 'Are all commits cryptographically verified?' },
+              ].map((pill, idx) => {
+                const IconComponent = pill.icon;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleAskQuestion(pill.query)}
+                    className="flex items-center space-x-1.5 bg-cream hover:bg-cream-dark text-charcoal border border-cream-border px-2.5 py-1 rounded transition-colors"
+                  >
+                    <IconComponent className="h-3 w-3 text-sage" />
+                    <span>{pill.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Chat message bubbles */}
@@ -328,15 +328,15 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                   className={`flex items-start space-x-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.sender === 'ai' && (
-                    <div className="h-6 w-6 rounded-md bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 border border-cyan-500/30 mt-0.5">
+                    <div className="h-6 w-6 rounded bg-cream text-sage flex items-center justify-center flex-shrink-0 border border-cream-border mt-0.5">
                       <Bot className="h-3.5 w-3.5" />
                     </div>
                   )}
                   <div
-                    className={`rounded-2xl px-4 py-2.5 text-xs max-w-[85%] leading-relaxed ${
+                    className={`rounded-lg px-4 py-2.5 text-xs max-w-[85%] leading-relaxed ${
                       msg.sender === 'user'
-                        ? 'bg-cyan-600 text-white rounded-br-sm'
-                        : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-bl-sm shadow-md'
+                        ? 'bg-charcoal text-cream'
+                        : 'bg-cream border border-cream-border text-charcoal'
                     }`}
                   >
                     <div className="whitespace-pre-wrap font-sans">{msg.text}</div>
@@ -344,15 +344,15 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                 </div>
               ))}
               {isAnswering && (
-                <div className="flex items-center space-x-2 text-xs text-cyan-400 animate-pulse">
-                  <Bot className="h-4 w-4" />
+                <div className="flex items-center space-x-2 text-xs text-sage">
+                  <Bot className="h-4 w-4 animate-spin" />
                   <span>Traversing Merkle DAG & analyzing commits...</span>
                 </div>
               )}
             </div>
 
             {/* Input Bar */}
-            <div className="pt-2 border-t border-slate-800/80">
+            <div className="pt-2 border-t border-cream-border">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -365,12 +365,12 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                   placeholder="Ask about authors, commits, branches, or provenance..."
                   value={questionInput}
                   onChange={(e) => setQuestionInput(e.target.value)}
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="flex-1 bg-cream border border-cream-border rounded px-3.5 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal"
                 />
                 <button
                   type="submit"
                   disabled={!questionInput.trim() || isAnswering}
-                  className="bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 text-white p-2 rounded-xl transition-all shadow-md shadow-cyan-500/20"
+                  className="bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream p-2 rounded transition-colors border border-charcoal"
                 >
                   <Send className="h-3.5 w-3.5" />
                 </button>
@@ -383,11 +383,11 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {activeTab === 'commit' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300">Select Commit Node:</label>
+              <label className="text-xs font-semibold text-charcoal">Select Commit Node:</label>
               <select
                 value={currentCommitId}
                 onChange={(e) => setCurrentCommitId(e.target.value)}
-                className="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                className="bg-cream border border-cream-border rounded px-2.5 py-1 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
               >
                 {commits.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -399,22 +399,22 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
             </div>
 
             {isExplainingCommit ? (
-              <div className="flex items-center justify-center p-12 text-xs text-cyan-400 animate-pulse space-x-2">
+              <div className="flex items-center justify-center p-12 text-xs text-sage space-x-2">
                 <RefreshCw className="h-4 w-4 animate-spin" />
                 <span>Generating semantic diff & commit explanation...</span>
               </div>
             ) : (
-              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-xs space-y-3 shadow-lg">
-                <div className="whitespace-pre-wrap leading-relaxed text-slate-200">
+              <div className="bg-cream border border-cream-border rounded-lg p-4 text-xs space-y-3">
+                <div className="whitespace-pre-wrap leading-relaxed text-charcoal">
                   {commitExplanation || 'No commit selected.'}
                 </div>
 
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                  <div className="flex items-center space-x-1.5 text-emerald-400">
+                <div className="pt-3 border-t border-cream-border flex items-center justify-between text-[11px] text-charcoal-muted">
+                  <div className="flex items-center space-x-1.5 text-sage">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     <span>Cryptographically Authenticated (ECDSA P-256)</span>
                   </div>
-                  <span className="font-mono text-slate-500">Node: #{currentCommitId.slice(0, 8)}</span>
+                  <span className="font-mono text-charcoal-muted">Node: #{currentCommitId.slice(0, 8)}</span>
                 </div>
               </div>
             )}
@@ -424,16 +424,16 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {/* --- TAB 3: BRANCH & CONFLICT ANALYSIS --- */}
         {activeTab === 'branches' && (
           <div className="space-y-4">
-            <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-cream border border-cream-border rounded-lg flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-white">Active Merkle DAG Heads</p>
-                <p className="text-[11px] text-slate-400">
+                <p className="font-semibold text-charcoal">Active Merkle DAG Heads</p>
+                <p className="text-[11px] text-charcoal-muted">
                   {heads.length} branch head(s) currently registered in graph.
                 </p>
               </div>
               <div className="flex items-center space-x-1">
                 {heads.map((h) => (
-                  <span key={h} className="font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded text-[10px]">
+                  <span key={h} className="font-mono bg-cream-light text-sage border border-cream-border px-2 py-0.5 rounded text-[10px] font-medium">
                     #{h.slice(0, 6)}
                   </span>
                 ))}
@@ -441,22 +441,22 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
             </div>
 
             {heads.length <= 1 ? (
-              <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6 text-center space-y-2 text-xs text-slate-300">
-                <Check className="h-8 w-8 text-emerald-400 mx-auto" />
-                <p className="font-semibold text-white">Single Unified Head</p>
-                <p className="text-slate-400 text-[11px]">
+              <div className="bg-cream border border-cream-border rounded-lg p-6 text-center space-y-2 text-xs text-charcoal">
+                <Check className="h-8 w-8 text-sage mx-auto" />
+                <p className="font-semibold text-charcoal font-serif">Single Unified Head</p>
+                <p className="text-charcoal-muted text-[11px]">
                   All peer commits are currently merged into a single branch. There are no divergent branches active.
                 </p>
               </div>
             ) : (
-              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-xs space-y-3">
+              <div className="bg-cream border border-cream-border rounded-lg p-4 text-xs space-y-3">
                 {isAnalyzingBranches ? (
-                  <div className="flex items-center justify-center p-8 text-cyan-400 space-x-2 animate-pulse">
+                  <div className="flex items-center justify-center p-8 text-sage space-x-2">
                     <RefreshCw className="h-4 w-4 animate-spin" />
                     <span>Analyzing branch divergence & conflict risks...</span>
                   </div>
                 ) : (
-                  <div className="whitespace-pre-wrap leading-relaxed text-slate-200">
+                  <div className="whitespace-pre-wrap leading-relaxed text-charcoal">
                     {branchAnalysis}
                   </div>
                 )}
@@ -469,19 +469,19 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {activeTab === 'refactor' && (
           <div className="space-y-4 text-xs">
             <div className="space-y-1.5">
-              <label className="font-semibold text-slate-300">Prompt AI to Edit Document:</label>
+              <label className="font-semibold text-charcoal">Prompt AI to Edit Document:</label>
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
                   placeholder="e.g., 'Add a security overview section', 'Generate Table of Contents', 'Clean formatting'"
                   value={refactorPrompt}
                   onChange={(e) => setRefactorPrompt(e.target.value)}
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="flex-1 bg-cream border border-cream-border rounded px-3 py-2 text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:border-charcoal font-sans"
                 />
                 <button
                   onClick={handleGenerateSuggestion}
                   disabled={!refactorPrompt.trim() || isGeneratingSuggestion}
-                  className="flex items-center space-x-1.5 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 disabled:opacity-40 text-white px-3.5 py-2 rounded-xl transition-all shadow-md shadow-cyan-500/20 font-semibold"
+                  className="flex items-center space-x-1.5 bg-charcoal hover:bg-charcoal/90 disabled:opacity-40 text-cream px-3.5 py-2 rounded transition-colors font-semibold border border-charcoal"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>Generate</span>
@@ -490,30 +490,30 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
             </div>
 
             {isGeneratingSuggestion && (
-              <div className="flex items-center justify-center p-8 text-cyan-400 space-x-2 animate-pulse">
+              <div className="flex items-center justify-center p-8 text-sage space-x-2">
                 <RefreshCw className="h-4 w-4 animate-spin" />
                 <span>AI is formulating document revision...</span>
               </div>
             )}
 
             {suggestion && (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-                  <span className="font-semibold text-white">Proposed Revision Preview</span>
-                  <span className="text-[10px] text-cyan-400">{suggestion.summary}</span>
+              <div className="bg-cream border border-cream-border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-cream-border">
+                  <span className="font-semibold text-charcoal font-serif">Proposed Revision Preview</span>
+                  <span className="text-[10px] text-sage font-medium">{suggestion.summary}</span>
                 </div>
 
                 {/* Diff Preview */}
-                <div className="max-h-60 overflow-y-auto font-mono text-[11px] space-y-0.5 bg-slate-950 p-3 rounded-lg border border-slate-800/80">
+                <div className="max-h-60 overflow-y-auto font-mono text-[11px] space-y-0.5 bg-cream-light p-3 rounded border border-cream-border">
                   {suggestion.diffLines.slice(0, 40).map((line, idx) => (
                     <div
                       key={idx}
                       className={`px-1.5 py-0.5 rounded ${
                         line.type === 'added'
-                          ? 'bg-emerald-500/10 text-emerald-300 font-semibold'
+                          ? 'bg-sage/15 text-sage font-semibold'
                           : line.type === 'removed'
-                          ? 'bg-rose-500/10 text-rose-300 line-through opacity-70'
-                          : 'text-slate-400 opacity-60'
+                          ? 'bg-rose-50 text-rose-700 line-through opacity-70'
+                          : 'text-charcoal-muted opacity-60'
                       }`}
                     >
                       {line.type === 'added' ? '+ ' : line.type === 'removed' ? '- ' : '  '}
@@ -522,8 +522,8 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                   ))}
                 </div>
 
-                <div className="p-2.5 bg-slate-950/80 border border-slate-800 rounded-lg text-[11px] text-slate-400 space-y-1">
-                  <div className="flex items-center space-x-1.5 text-cyan-300 font-semibold">
+                <div className="p-2.5 bg-cream-light border border-cream-border rounded text-[11px] text-charcoal-muted space-y-1">
+                  <div className="flex items-center space-x-1.5 text-sage font-semibold">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     <span>Human-in-the-Loop Cryptographic Invariant</span>
                   </div>
@@ -535,14 +535,14 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                 <div className="flex items-center justify-end space-x-2 pt-2">
                   <button
                     onClick={() => setSuggestion(null)}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium"
+                    className="px-3 py-1.5 bg-cream hover:bg-cream-dark text-charcoal border border-cream-border rounded font-medium"
                   >
                     Discard
                   </button>
                   <button
                     onClick={handleApplySuggestion}
                     disabled={isApplying}
-                    className="flex items-center space-x-1.5 px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-semibold shadow-md shadow-emerald-500/20"
+                    className="flex items-center space-x-1.5 px-4 py-1.5 bg-charcoal hover:bg-charcoal/90 text-cream rounded font-semibold border border-charcoal"
                   >
                     <Check className="h-3.5 w-3.5" />
                     <span>{isApplying ? 'Signing Commit...' : 'Approve & Cryptographically Sign'}</span>
@@ -556,15 +556,15 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {/* --- TAB 5: AI SETTINGS --- */}
         {activeTab === 'settings' && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
-              <p className="font-semibold text-white">Select AI Provider</p>
-              <p className="text-[11px] text-slate-400">
+            <div className="p-3 bg-cream border border-cream-border rounded-lg space-y-1">
+              <p className="font-semibold text-charcoal">Select AI Provider</p>
+              <p className="text-[11px] text-charcoal-muted">
                 Hermes AI operates on zero-cost local heuristics by default, with optional local LLM (Ollama) or Cloud API adapters.
               </p>
             </div>
 
             <div className="space-y-2">
-              <label className="font-semibold text-slate-300 block">Provider Engine:</label>
+              <label className="font-semibold text-charcoal block">Provider Engine:</label>
               <div className="grid grid-cols-1 gap-2">
                 {[
                   {
@@ -586,70 +586,70 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                   <button
                     key={item.type}
                     onClick={() => setProviderType(item.type)}
-                    className={`text-left p-3 rounded-xl border transition-all ${
+                    className={`text-left p-3 rounded-lg border transition-colors ${
                       providerType === item.type
-                        ? 'bg-cyan-500/10 border-cyan-500/40 shadow-sm'
-                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                        ? 'bg-cream border-charcoal'
+                        : 'bg-cream-light border-cream-border hover:border-charcoal-muted'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-white">{item.name}</span>
-                      {providerType === item.type && <Check className="h-3.5 w-3.5 text-cyan-400" />}
+                      <span className="font-semibold text-charcoal">{item.name}</span>
+                      {providerType === item.type && <Check className="h-3.5 w-3.5 text-sage" />}
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
+                    <p className="text-[11px] text-charcoal-muted mt-0.5">{item.desc}</p>
                   </button>
                 ))}
               </div>
             </div>
 
             {providerType === 'ollama' && (
-              <div className="space-y-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+              <div className="space-y-3 bg-cream p-3.5 rounded-lg border border-cream-border">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Ollama Server Endpoint:</label>
+                  <label className="block text-charcoal font-semibold mb-1">Ollama Server Endpoint:</label>
                   <input
                     type="text"
                     value={endpoint}
                     onChange={(e) => setEndpoint(e.target.value)}
                     placeholder="http://localhost:11434"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Model Name:</label>
+                  <label className="block text-charcoal font-semibold mb-1">Model Name:</label>
                   <input
                     type="text"
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
                     placeholder="llama3.2"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
                   />
                 </div>
               </div>
             )}
 
             {providerType === 'cloud' && (
-              <div className="space-y-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+              <div className="space-y-3 bg-cream p-3.5 rounded-lg border border-cream-border">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">API Key:</label>
+                  <label className="block text-charcoal font-semibold mb-1">API Key:</label>
                   <input
                     type="password"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder="sk-..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">
+                  <p className="text-[10px] text-charcoal-muted mt-1">
                     Your key is stored only in your local browser and never sent to peers or signaling relays.
                   </p>
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Model / Endpoint:</label>
+                  <label className="block text-charcoal font-semibold mb-1">Model / Endpoint:</label>
                   <input
                     type="text"
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
                     placeholder="gpt-4o-mini or gemini-1.5-flash"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-cream-light border border-cream-border rounded px-2.5 py-1.5 text-xs text-charcoal font-mono focus:outline-none focus:border-charcoal"
                   />
                 </div>
               </div>
@@ -657,7 +657,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
             <button
               onClick={saveSettings}
-              className="w-full py-2 bg-gradient-to-r from-cyan-600 to-sky-600 hover:from-cyan-500 hover:to-sky-500 text-white font-semibold rounded-xl shadow-md transition-all"
+              className="w-full py-2 bg-charcoal hover:bg-charcoal/90 text-cream font-semibold rounded border border-charcoal transition-colors"
             >
               Save AI Configuration
             </button>

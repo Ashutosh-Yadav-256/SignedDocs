@@ -8,14 +8,17 @@ import {
   FileCheck2,
   Sparkles,
   Layers,
-  Key,
   Copy,
   Check,
+  Radio,
   FileText,
   EyeOff,
   Award,
   Activity,
-  Radio,
+  HelpCircle,
+  Menu,
+  X,
+  Feather,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
@@ -41,6 +44,7 @@ export interface HeaderProps {
   onMultisigClick?: () => void;
   onForensicsClick?: () => void;
   onAirGapClick?: () => void;
+  onOnboardingClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -63,10 +67,12 @@ export const Header: React.FC<HeaderProps> = ({
   onMultisigClick,
   onForensicsClick,
   onAirGapClick,
+  onOnboardingClick,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const copyFingerprint = () => {
     navigator.clipboard.writeText(identity.fingerprint);
@@ -75,35 +81,34 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const isAuditValid = auditReport?.verdict === 'VALID';
+  const connectionState = activePeers.length > 0 ? 'Connected' : 'Local';
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-        {/* Left Section: Logo & Document Title */}
-        <div className="flex items-center space-x-4">
+    <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
+        {/* Left Section: Publication Branding & Document Title */}
+        <div className="flex items-center space-x-3.5">
           <button
             onClick={onDocumentsClick}
-            className="flex items-center space-x-2.5 transition-opacity hover:opacity-80 group text-left"
+            className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left"
+            title="Open Document Library"
           >
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/30 transition-all">
-              <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-slate-950/90">
-                <Sparkles className="h-5 w-5 text-cyan-400" />
-              </div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal">
+              <Feather className="h-4 w-4 text-cream-50" />
             </div>
-            <div>
+            <div className="hidden sm:block">
               <div className="flex items-center space-x-1.5">
-                <span className="font-bold tracking-tight text-white text-base">HermesDocs</span>
-                <span className="rounded bg-cyan-500/10 px-1.5 py-0.2 text-[10px] font-semibold text-cyan-400 border border-cyan-500/20">
-                  DAG v1
+                <span className="font-bold tracking-tight text-charcoal text-sm font-serif">SignedDocs</span>
+                <span className="rounded bg-cream-subtle px-1.5 py-0.2 text-[10px] font-semibold text-charcoal-muted border border-cream-border font-mono">
+                  v1.0
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono">Local-First CRDT</p>
             </div>
           </button>
 
-          <div className="h-6 w-px bg-slate-800" />
+          <div className="h-5 w-px bg-cream-border hidden sm:block" />
 
-          {/* Title Editor */}
+          {/* Document Title Editor */}
           <div className="flex items-center">
             {isEditingTitle ? (
               <input
@@ -113,15 +118,16 @@ export const Header: React.FC<HeaderProps> = ({
                 onBlur={() => setIsEditingTitle(false)}
                 onKeyDown={(e) => e.key === 'Enter' && setIsEditingTitle(false)}
                 autoFocus
-                className="bg-slate-900 border border-cyan-500/40 rounded px-2 py-1 text-sm font-semibold text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                className="bg-cream-subtle border border-charcoal/30 rounded px-2.5 py-1 text-sm font-semibold text-charcoal focus:outline-none focus:border-charcoal font-serif"
               />
             ) : (
               <button
                 onClick={() => setIsEditingTitle(true)}
-                className="group flex items-center space-x-1.5 rounded-lg px-2.5 py-1 text-sm font-semibold text-slate-200 hover:bg-slate-900 transition-colors"
+                className="group flex items-center space-x-1.5 rounded px-2 py-1 text-sm font-semibold text-charcoal hover:bg-cream-subtle transition-colors font-serif"
+                title="Click to rename document"
               >
-                <span>{documentTitle}</span>
-                <span className="text-slate-500 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="truncate max-w-[160px] md:max-w-xs">{documentTitle}</span>
+                <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity">
                   ✎
                 </span>
               </button>
@@ -129,14 +135,14 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center Section: Navigation Tabs */}
-        <div className="hidden lg:flex items-center space-x-1 rounded-xl bg-slate-900/90 p-1 border border-slate-800/80">
+        {/* Center Section: Minimalist Navigation Tabs (Desktop) */}
+        <div className="hidden lg:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border">
           <button
             onClick={() => onTabChange('editor')}
-            className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
               activeTab === 'editor'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
+                : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
@@ -145,10 +151,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => onTabChange('dag')}
-            className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
               activeTab === 'dag'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
+                : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Layers className="h-3.5 w-3.5" />
@@ -157,10 +163,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => onTabChange('blame')}
-            className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
               activeTab === 'blame'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
+                : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <ShieldCheck className="h-3.5 w-3.5" />
@@ -169,10 +175,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => onTabChange('timetravel')}
-            className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
               activeTab === 'timetravel'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
+                : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Radio className="h-3.5 w-3.5" />
@@ -181,10 +187,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => onTabChange('audit')}
-            className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
               activeTab === 'audit'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
+                : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <FileCheck2 className="h-3.5 w-3.5" />
@@ -192,46 +198,23 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        {/* Right Section: Author Identity & Action Buttons */}
-        <div className="flex items-center space-x-3">
-          {/* Cryptographic Audit Badge */}
-          {auditReport && (
-            <div
-              className={`hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                isAuditValid
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                  : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+        {/* Right Section: Action Utilities & Identity */}
+        <div className="flex items-center space-x-2">
+          {/* System Status Indicator (Rule 23) */}
+          <div className="hidden xl:flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
+            <span
+              className={`h-2 w-2 rounded-full ${
+                connectionState === 'Connected' ? 'bg-sage-dark' : 'bg-charcoal-light'
               }`}
-            >
-              {isAuditValid ? (
-                <>
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                  <span>Verified DAG ({auditReport.verifiedCommits})</span>
-                </>
-              ) : (
-                <>
-                  <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
-                  <span>Unverified ({auditReport.failedCommits})</span>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Active Peers Counter */}
-          <div className="flex items-center space-x-1.5 rounded-lg bg-slate-900 px-2.5 py-1 border border-slate-800 text-xs text-slate-300">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <Users className="h-3.5 w-3.5 text-slate-400" />
-            <span className="font-mono">{activePeers.length + 1}</span>
+            />
+            <span className="font-mono text-[11px]">{connectionState}</span>
           </div>
 
           {/* Author Fingerprint Card */}
-          <div className="flex items-center space-x-2 rounded-xl bg-slate-900/90 border border-slate-800 px-3 py-1.5">
+          <div className="hidden md:flex items-center space-x-2 rounded-lg bg-cream-subtle border border-cream-border px-2.5 py-1">
             <div
-              className="h-3 w-3 rounded-full flex-shrink-0"
-              style={{ backgroundColor: userColor }}
+              className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: userColor || '#7A8B7B' }}
             />
             <div className="flex flex-col text-left">
               {isEditingName ? (
@@ -242,12 +225,13 @@ export const Header: React.FC<HeaderProps> = ({
                   onBlur={() => setIsEditingName(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setIsEditingName(false)}
                   autoFocus
-                  className="bg-slate-800 text-xs text-white rounded px-1 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                  className="bg-cream-50 text-xs text-charcoal rounded px-1 border border-charcoal/30 focus:outline-none"
                 />
               ) : (
                 <button
                   onClick={() => setIsEditingName(true)}
-                  className="text-xs font-semibold text-slate-200 hover:text-cyan-400 transition-colors"
+                  className="text-xs font-semibold text-charcoal hover:underline transition-all"
+                  title="Click to change author display name"
                 >
                   {displayName}
                 </button>
@@ -255,96 +239,215 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={copyFingerprint}
                 title="Click to copy ECDSA public key fingerprint"
-                className="flex items-center space-x-1 text-[10px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
+                className="flex items-center space-x-1 text-[10px] font-mono text-charcoal-muted hover:text-charcoal transition-colors"
               >
-                <span>{identity.fingerprint.slice(0, 14)}...</span>
-                {copied ? (
-                  <Check className="h-2.5 w-2.5 text-emerald-400" />
-                ) : (
-                  <Copy className="h-2.5 w-2.5" />
-                )}
+                <span>{identity.fingerprint.slice(0, 12)}...</span>
+                {copied ? <Check className="h-2.5 w-2.5 text-sage-dark" /> : <Copy className="h-2.5 w-2.5" />}
               </button>
             </div>
           </div>
 
-          {/* ZK-Redact Button */}
+          {/* Innovation Action Toolbar (Flat 2D Buttons) */}
           {onRedactClick && (
             <button
               onClick={onRedactClick}
-              title="Cryptographic Selective Disclosure & Zero-Knowledge Redaction"
-              className="flex items-center space-x-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all shadow-sm"
+              title="ZK-Redact: Cryptographic Selective Disclosure"
+              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
-              <EyeOff className="h-3.5 w-3.5" />
-              <span className="hidden xl:inline">ZK-Redact</span>
+              <EyeOff className="h-3.5 w-3.5 text-terracotta-dark" />
+              <span>Redact</span>
             </button>
           )}
 
-          {/* Multisig Milestone Button */}
           {onMultisigClick && (
             <button
               onClick={onMultisigClick}
-              title="M-of-N Threshold Milestone Seal"
-              className="flex items-center space-x-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 px-2.5 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-all shadow-sm"
+              title="Multisig: M-of-N Milestone Agreement Seal"
+              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
-              <Award className="h-3.5 w-3.5" />
-              <span className="hidden xl:inline">Multisig</span>
+              <Award className="h-3.5 w-3.5 text-terracotta-dark" />
+              <span>Multisig</span>
             </button>
           )}
 
-          {/* Forensics Heatmap Button */}
           {onForensicsClick && (
             <button
               onClick={onForensicsClick}
-              title="Human vs AI Attribution Heatmap & Provenance"
-              className="flex items-center space-x-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 px-2.5 py-1.5 text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition-all shadow-sm"
+              title="Forensics: Human vs. AI Attribution Heatmap"
+              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
-              <Activity className="h-3.5 w-3.5" />
-              <span className="hidden xl:inline">Forensics</span>
+              <Activity className="h-3.5 w-3.5 text-sage-dark" />
+              <span>Forensics</span>
             </button>
           )}
 
-          {/* Air-Gap Optical Sync Button */}
           {onAirGapClick && (
             <button
               onClick={onAirGapClick}
-              title="Air-Gapped Optical QR Sneakernet Sync"
-              className="flex items-center space-x-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 px-2.5 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition-all shadow-sm"
+              title="Air-Gap: Optical QR Sneakernet Sync"
+              className="hidden lg:flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
             >
-              <Radio className="h-3.5 w-3.5" />
-              <span className="hidden xl:inline">Air-Gap</span>
+              <Radio className="h-3.5 w-3.5 text-sage-dark" />
+              <span>Air-Gap</span>
             </button>
           )}
 
-          {/* AI Intelligence Assistant */}
           {onAIClick && (
             <button
               onClick={onAIClick}
-              className="flex items-center space-x-1.5 rounded-lg bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 border border-cyan-500/30 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 hover:text-white transition-all shadow-sm"
+              title="AI Provenance & Change Explainer"
+              className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors"
             >
-              <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
-              <span>AI Assistant</span>
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">AI Assist</span>
             </button>
           )}
 
-          {/* Share / P2P WebRTC */}
+          {/* Share / P2P Room */}
           <button
             onClick={onShareClick}
-            className="flex items-center space-x-1.5 rounded-lg bg-slate-900 border border-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition-all shadow-sm"
+            className="flex items-center space-x-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
           >
-            <Share2 className="h-3.5 w-3.5 text-cyan-400" />
-            <span className="hidden sm:inline">P2P Room</span>
+            <Share2 className="h-3.5 w-3.5 text-charcoal-muted" />
+            <span className="hidden sm:inline">Share</span>
           </button>
 
-          {/* Export .hermes.json */}
+          {/* Export Bundle */}
           <button
             onClick={onExportClick}
-            className="flex items-center space-x-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-sky-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:from-cyan-500 hover:to-sky-500 transition-all shadow-md shadow-cyan-500/20"
+            className="flex items-center space-x-1.5 rounded px-3 py-1.5 text-xs font-semibold bg-charcoal text-cream-50 hover:bg-charcoal-subtle transition-colors"
           >
             <Download className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Export Audit</span>
+            <span className="hidden sm:inline">Export</span>
+          </button>
+
+          {/* Onboarding Tour Trigger */}
+          {onOnboardingClick && (
+            <button
+              onClick={onOnboardingClick}
+              title="Guided User Tour"
+              className="p-1.5 rounded text-charcoal-muted hover:text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </button>
+          )}
+
+          {/* Mobile Menu Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-1.5 rounded text-charcoal hover:bg-cream-subtle border border-cream-border transition-colors"
+          >
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Dropdown */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-t border-cream-border bg-cream-50 px-4 py-3 space-y-3 font-sans">
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <button
+              onClick={() => {
+                onTabChange('editor');
+                setMobileMenuOpen(false);
+              }}
+              className={`p-2 rounded text-left flex items-center gap-2 ${
+                activeTab === 'editor' ? 'bg-charcoal text-cream-50 font-semibold' : 'bg-cream-subtle text-charcoal'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Editor
+            </button>
+            <button
+              onClick={() => {
+                onTabChange('dag');
+                setMobileMenuOpen(false);
+              }}
+              className={`p-2 rounded text-left flex items-center gap-2 ${
+                activeTab === 'dag' ? 'bg-charcoal text-cream-50 font-semibold' : 'bg-cream-subtle text-charcoal'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              Commit DAG
+            </button>
+            <button
+              onClick={() => {
+                onTabChange('blame');
+                setMobileMenuOpen(false);
+              }}
+              className={`p-2 rounded text-left flex items-center gap-2 ${
+                activeTab === 'blame' ? 'bg-charcoal text-cream-50 font-semibold' : 'bg-cream-subtle text-charcoal'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Signed Blame
+            </button>
+            <button
+              onClick={() => {
+                onTabChange('timetravel');
+                setMobileMenuOpen(false);
+              }}
+              className={`p-2 rounded text-left flex items-center gap-2 ${
+                activeTab === 'timetravel' ? 'bg-charcoal text-cream-50 font-semibold' : 'bg-cream-subtle text-charcoal'
+              }`}
+            >
+              <Radio className="w-3.5 h-3.5" />
+              Time Travel
+            </button>
+          </div>
+
+          <div className="pt-2 border-t border-cream-border grid grid-cols-2 gap-2 text-xs">
+            {onRedactClick && (
+              <button
+                onClick={() => {
+                  onRedactClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2"
+              >
+                <EyeOff className="w-3.5 h-3.5 text-terracotta-dark" />
+                ZK-Redact
+              </button>
+            )}
+            {onMultisigClick && (
+              <button
+                onClick={() => {
+                  onMultisigClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2"
+              >
+                <Award className="w-3.5 h-3.5 text-terracotta-dark" />
+                Multisig Seal
+              </button>
+            )}
+            {onForensicsClick && (
+              <button
+                onClick={() => {
+                  onForensicsClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2"
+              >
+                <Activity className="w-3.5 h-3.5 text-sage-dark" />
+                Forensics
+              </button>
+            )}
+            {onAirGapClick && (
+              <button
+                onClick={() => {
+                  onAirGapClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2"
+              >
+                <Radio className="w-3.5 h-3.5 text-sage-dark" />
+                Air-Gap Sync
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

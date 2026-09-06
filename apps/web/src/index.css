@@ -4,163 +4,170 @@
 
 @layer base {
   :root {
-    --color-surface-bg: #070d1f;
-    --color-surface-card: #0c1324;
-    --color-surface-container: #191f31;
-    --color-primary-cyan: #00f2ff;
-    --color-secondary-emerald: #10b981;
+    --color-bg-cream: #F9F6F0;
+    --color-text-charcoal: #1A1A1A;
+    --color-accent-sage: #7A8B7B;
+    --color-accent-terracotta: #C87D55;
+    --color-border-subtle: #E2DCD2;
   }
 
   body {
-    background-color: #070d1f;
-    color: #dce1fb;
+    background-color: #F9F6F0;
+    color: #1A1A1A;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    selection-background-color: rgba(0, 242, 255, 0.25);
-    selection-color: #74f5ff;
     overflow-x: hidden;
   }
 }
 
-/* Custom Cyber-Secure Scrollbar */
+/* Minimalist Flat Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #070d1f;
+  background: #F4F0E8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #23293c;
-  border-radius: 4px;
+  background: #D4CEBF;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00dbe7;
+  background: #7A8B7B;
 }
 
-/* Glassmorphism & Elevation */
-.glass-panel {
-  background: rgba(12, 19, 36, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(132, 148, 149, 0.15);
+/* Flat Card & Panel Utility */
+.flat-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2DCD2;
 }
 
-.glass-panel-glow {
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 242, 255, 0.3);
-  box-shadow: 0 0 20px -2px rgba(0, 242, 255, 0.2);
+.flat-card-subtle {
+  background-color: #F4F0E8;
+  border: 1px solid #E2DCD2;
 }
 
-.glow-cyan {
-  box-shadow: 0 0 16px -2px rgba(0, 242, 255, 0.35);
+.flat-pill-sage {
+  background-color: #EFF2EF;
+  border: 1px solid #B6C2B7;
+  color: #3B453C;
 }
 
-.glow-emerald {
-  box-shadow: 0 0 16px -2px rgba(16, 185, 129, 0.35);
+.flat-pill-terracotta {
+  background-color: #FBF1EB;
+  border: 1px solid #E1B197;
+  color: #8E4C29;
 }
 
-/* TipTap Editor Styles */
+.flat-pill-charcoal {
+  background-color: #F4F0E8;
+  border: 1px solid #D4CEBF;
+  color: #1A1A1A;
+}
+
+/* Medium-Style ProseMirror Typography */
 .ProseMirror {
   outline: none;
-  min-height: 480px;
-  color: #dce1fb;
-  font-size: 1.05rem;
-  line-height: 1.75;
+  min-height: 520px;
+  color: #242424;
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-size: 1.2rem;
+  line-height: 1.85;
 }
 
 .ProseMirror p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.003em;
 }
 
 .ProseMirror h1 {
-  font-size: 2.25rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 2.35rem;
   font-weight: 800;
-  color: #ffffff;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.025em;
-  text-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+  color: #1A1A1A;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
 }
 
 .ProseMirror h2 {
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.65rem;
   font-weight: 700;
-  color: #f1f5f9;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  color: #1A1A1A;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
   letter-spacing: -0.02em;
 }
 
 .ProseMirror h3 {
-  font-size: 1.35rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.3rem;
   font-weight: 600;
-  color: #e2e8f0;
-  margin-top: 1.25rem;
+  color: #2D2D2D;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
 .ProseMirror blockquote {
-  border-left: 3px solid #00f2ff;
-  padding-left: 1rem;
+  border-left: 3px solid #1A1A1A;
+  padding-left: 1.25rem;
+  margin: 1.75rem 0;
   font-style: italic;
-  color: #b9cacb;
-  margin: 1.25rem 0;
-  background: rgba(0, 242, 255, 0.04);
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
-  border-radius: 0 0.375rem 0.375rem 0;
+  color: #555555;
+  font-size: 1.25rem;
+  line-height: 1.75;
 }
 
 .ProseMirror code {
-  background: rgba(35, 41, 60, 0.85);
-  border: 1px solid rgba(0, 242, 255, 0.15);
-  padding: 0.2rem 0.45rem;
-  border-radius: 0.25rem;
+  background: #F2EDE2;
+  border: 1px solid #E2DCD2;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.875em;
-  color: #00f2ff;
+  font-size: 0.85em;
+  color: #1A1A1A;
 }
 
 .ProseMirror pre {
-  background: #070d1f;
-  border: 1px solid rgba(132, 148, 149, 0.2);
+  background: #1A1A1A;
+  border: 1px solid #2D2D2D;
   padding: 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 6px;
   overflow-x: auto;
-  margin: 1.25rem 0;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  margin: 1.75rem 0;
 }
 
 .ProseMirror pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: #dce1fb;
+  color: #F9F6F0;
   font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .ProseMirror ul {
   list-style-type: disc;
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  padding-left: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .ProseMirror ol {
   list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  padding-left: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .ProseMirror li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
 .ProseMirror hr {
   border: none;
-  border-top: 1px solid rgba(132, 148, 149, 0.2);
-  margin: 2rem 0;
+  border-top: 1px solid #E2DCD2;
+  margin: 2.5rem 0;
 }
 
 /* Collaborative Cursors */
@@ -168,33 +175,35 @@
   position: relative;
   margin-left: -1px;
   margin-right: -1px;
-  border-left: 1px solid #00f2ff;
-  border-right: 1px solid #00f2ff;
+  border-left: 2px solid #7A8B7B;
+  border-right: 2px solid #7A8B7B;
   word-break: normal;
   pointer-events: none;
 }
 
 .collaboration-cursor__label {
   position: absolute;
-  top: -1.4em;
+  top: -1.5em;
   left: -1px;
-  font-size: 11px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   user-select: none;
-  color: #000;
-  padding: 1px 6px;
-  border-radius: 3px 3px 3px 0;
+  color: #FFFFFF;
+  background-color: #1A1A1A;
+  padding: 1px 5px;
+  border-radius: 3px;
   white-space: nowrap;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Placeholder */
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: #849495;
+  color: #8C8C8C;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
+  font-style: italic;
 }

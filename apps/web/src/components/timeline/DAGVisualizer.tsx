@@ -1,6 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { CommitDAG, SignedCommitNode } from '@hermes/core';
-import { ShieldCheck, GitCommit, GitBranch, GitMerge, Clock, User, Hash, Key, CheckCircle, ChevronRight } from 'lucide-react';
+import {
+  ShieldCheck,
+  GitCommit,
+  GitBranch,
+  GitMerge,
+  Clock,
+  User,
+  Hash,
+  Key,
+  CheckCircle,
+  ChevronRight,
+  Sparkles,
+} from 'lucide-react';
 
 export interface DAGVisualizerProps {
   dag: CommitDAG;
@@ -110,48 +122,44 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
 
   if (commits.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 glass-panel rounded-2xl text-center">
-        <GitBranch className="h-12 w-12 text-slate-600 mb-3 animate-pulse" />
-        <h3 className="text-lg font-semibold text-slate-300">No Commits in DAG Yet</h3>
-        <p className="text-sm text-slate-500 max-w-md mt-1">
-          Start typing in the editor. Once you pause for 1.5s or click "Sign Commit Node", signed Merkle DAG nodes will be visualized here.
+      <div className="flex flex-col items-center justify-center p-12 bg-cream-50 border border-cream-border rounded-xl text-center text-charcoal font-sans">
+        <GitBranch className="h-10 w-10 text-charcoal-light mb-2" />
+        <h3 className="text-sm font-bold text-charcoal">No Commits in DAG Yet</h3>
+        <p className="text-xs text-charcoal-muted max-w-md mt-1">
+          Start typing in the editor. When you pause or click "Sign Commit", signed Merkle DAG nodes will appear here.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)]">
+    <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)] font-sans text-charcoal">
       {/* Left Area: SVG Graph Canvas */}
-      <div className="flex-1 glass-panel rounded-2xl p-6 border border-slate-800 shadow-2xl flex flex-col overflow-hidden">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800/80 mb-4">
+      <div className="flex-1 bg-cream-50 rounded-xl p-6 border border-cream-border flex flex-col overflow-hidden">
+        <div className="flex items-center justify-between pb-4 border-b border-cream-border mb-4">
           <div className="flex items-center space-x-2">
-            <GitCommit className="h-5 w-5 text-cyan-400" />
-            <h2 className="text-base font-bold text-white">Merkle DAG History Graph</h2>
-            <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono">
+            <GitCommit className="h-4 w-4 text-charcoal" />
+            <h2 className="text-sm font-bold text-charcoal">Merkle DAG History Graph</h2>
+            <span className="text-xs bg-cream-subtle text-charcoal-muted px-2 py-0.5 rounded border border-cream-border font-mono">
               {commits.length} Nodes
             </span>
           </div>
-          <div className="flex items-center space-x-3 text-xs text-slate-400">
+          <div className="flex items-center space-x-3 text-xs text-charcoal-muted">
             <span className="flex items-center space-x-1">
-              <span className="h-2.5 w-2.5 rounded-full bg-cyan-400 inline-block shadow-sm shadow-cyan-400" />
-              <span>Standard Commit</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-charcoal inline-block" />
+              <span>Commit</span>
             </span>
             <span className="flex items-center space-x-1">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 inline-block shadow-sm shadow-emerald-400" />
-              <span>DAG Head Tip</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-sage-dark inline-block" />
+              <span>Head Tip</span>
             </span>
           </div>
         </div>
 
         {/* Scrollable DAG Area */}
-        <div className="flex-1 overflow-auto rounded-xl bg-slate-950/70 border border-slate-900 p-4 relative">
+        <div className="flex-1 overflow-auto rounded-lg bg-cream-100 border border-cream-border p-4 relative">
           <svg width={layout.width} height={layout.height} className="overflow-visible">
             <defs>
-              <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#6366f1" stopOpacity="0.8" />
-              </linearGradient>
               <marker
                 id="arrowhead"
                 markerWidth="8"
@@ -160,7 +168,7 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
                 refY="3"
                 orient="auto"
               >
-                <polygon points="0 0, 8 3, 0 6" fill="#0ea5e9" />
+                <polygon points="0 0, 8 3, 0 6" fill="#1A1A1A" />
               </marker>
             </defs>
 
@@ -170,7 +178,6 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
               const isSelectedEdge =
                 selectedCommit?.id === to.commit.id || selectedCommit?.id === from.commit.id;
 
-              // Cubic bezier curve for branch merges
               const midX = (from.x + to.x) / 2;
               const pathD = `M ${from.x} ${from.y} C ${midX} ${from.y}, ${midX} ${to.y}, ${to.x} ${to.y}`;
 
@@ -179,11 +186,11 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
                   key={`edge-${idx}`}
                   d={pathD}
                   fill="none"
-                  stroke={isSelectedEdge ? '#38bdf8' : '#334155'}
-                  strokeWidth={isSelectedEdge ? 3 : 2}
+                  stroke={isSelectedEdge ? '#1A1A1A' : '#B6C2B7'}
+                  strokeWidth={isSelectedEdge ? 2.5 : 1.5}
                   strokeDasharray={edge.isMerge ? '4 2' : 'none'}
                   markerEnd="url(#arrowhead)"
-                  className="transition-all duration-300"
+                  className="transition-all duration-200"
                 />
               );
             })}
@@ -204,55 +211,59 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
                   }}
                   className="cursor-pointer group"
                 >
-                  {/* Glow circle on selection */}
+                  {/* Selection Indicator Circle */}
                   {isSelected && (
                     <circle
-                      r="24"
+                      r="22"
                       fill="none"
-                      stroke="#38bdf8"
-                      strokeWidth="2"
-                      className="animate-ping opacity-30"
+                      stroke="#1A1A1A"
+                      strokeWidth="1.5"
+                      strokeDasharray="3 3"
                     />
                   )}
 
                   {/* Main Node Circle */}
                   <circle
-                    r={isHead ? 16 : 14}
-                    fill={isSelected ? '#0ea5e9' : isHead ? '#10b981' : '#1e293b'}
-                    stroke={isSelected ? '#ffffff' : isHead ? '#34d399' : '#0ea5e9'}
-                    strokeWidth={isHead ? 3 : 2}
-                    className="transition-all duration-200 group-hover:scale-110"
+                    r={isHead ? 15 : 13}
+                    fill={isSelected ? '#1A1A1A' : isHead ? '#7A8B7B' : '#FFFFFF'}
+                    stroke={isSelected ? '#1A1A1A' : isHead ? '#5E705F' : '#1A1A1A'}
+                    strokeWidth={isHead ? 2.5 : 1.5}
+                    className="transition-all duration-150"
                   />
 
-                  {/* Icon */}
+                  {/* SVG Icon */}
                   {isMerge ? (
                     <GitMerge
-                      className="h-4 w-4 text-white -translate-x-2 -translate-y-2 pointer-events-none"
+                      className={`h-3.5 w-3.5 -translate-x-1.5 -translate-y-1.5 pointer-events-none ${
+                        isSelected || isHead ? 'text-cream-50' : 'text-charcoal'
+                      }`}
                     />
                   ) : (
                     <GitCommit
-                      className="h-4 w-4 text-white -translate-x-2 -translate-y-2 pointer-events-none"
+                      className={`h-3.5 w-3.5 -translate-x-1.5 -translate-y-1.5 pointer-events-none ${
+                        isSelected || isHead ? 'text-cream-50' : 'text-charcoal'
+                      }`}
                     />
                   )}
 
                   {/* Label Text */}
                   <text
                     x="0"
-                    y="28"
+                    y="26"
                     textAnchor="middle"
-                    className="text-[11px] font-mono fill-slate-300 font-semibold pointer-events-none"
+                    className="text-[10px] font-mono fill-charcoal font-semibold pointer-events-none"
                   >
                     {node.commit.id.slice(0, 7)}
                   </text>
 
-                  {/* Author Fingerprint Tag */}
+                  {/* Author Tag */}
                   <text
                     x="0"
-                    y="42"
+                    y="38"
                     textAnchor="middle"
-                    className="text-[9px] font-mono fill-slate-500 pointer-events-none"
+                    className="text-[9px] font-mono fill-charcoal-muted pointer-events-none"
                   >
-                    {node.commit.author.fingerprint.slice(0, 10)}
+                    {node.commit.author.fingerprint.slice(0, 8)}...
                   </text>
                 </g>
               );
@@ -263,14 +274,14 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
 
       {/* Right Area: Commit Node Cryptographic Inspector */}
       {selectedCommit && (
-        <div className="w-full lg:w-96 glass-panel rounded-2xl p-6 border border-slate-800 shadow-2xl flex flex-col justify-between overflow-y-auto">
+        <div className="w-full lg:w-96 bg-cream-50 rounded-xl p-6 border border-cream-border flex flex-col justify-between overflow-y-auto">
           <div>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-cream-border">
               <div className="flex items-center space-x-2">
-                <ShieldCheck className="h-5 w-5 text-emerald-400" />
+                <ShieldCheck className="h-4 w-4 text-sage-dark" />
                 <div>
-                  <h3 className="text-sm font-bold text-white">Cryptographic Node</h3>
-                  <p className="text-[11px] text-emerald-400 font-mono">ECDSA P-256 Verified</p>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal">Cryptographic Node</h3>
+                  <p className="text-[11px] text-sage-dark font-mono">ECDSA P-256 Verified</p>
                 </div>
               </div>
 
@@ -278,53 +289,53 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectCommit(selectedCommit)}
-                  className="flex items-center space-x-1 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shadow-sm"
+                  className="flex items-center space-x-1 bg-sage-light text-sage-dark border border-sage-border px-2.5 py-1 rounded text-xs font-semibold hover:bg-sage-200 transition-colors"
                 >
-                  <span>✨</span>
+                  <Sparkles className="w-3.5 h-3.5" />
                   <span>AI Explain</span>
                 </button>
               )}
             </div>
 
-            <div className="mt-4 space-y-4 text-xs">
+            <div className="mt-4 space-y-3.5 text-xs">
               {/* Commit ID */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
                   <Hash className="h-3 w-3" /> Commit ID (SHA-256)
                 </label>
-                <div className="mt-1 bg-slate-900/90 rounded-lg p-2 font-mono text-cyan-400 break-all border border-slate-800">
+                <div className="mt-1 bg-cream-subtle rounded p-2 font-mono text-charcoal break-all border border-cream-border text-[11px]">
                   {selectedCommit.id}
                 </div>
               </div>
 
               {/* Author Info */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
                   <User className="h-3 w-3" /> Signer Fingerprint
                 </label>
-                <div className="mt-1 bg-slate-900/90 rounded-lg p-2 font-mono text-slate-200 break-all border border-slate-800">
+                <div className="mt-1 bg-cream-subtle rounded p-2 font-mono text-charcoal break-all border border-cream-border text-[11px]">
                   {selectedCommit.author.fingerprint}
                 </div>
               </div>
 
               {/* Timestamp */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
                   <Clock className="h-3 w-3" /> Timestamp
                 </label>
-                <div className="mt-1 bg-slate-900/90 rounded-lg p-2 font-mono text-slate-300 border border-slate-800">
+                <div className="mt-1 bg-cream-subtle rounded p-2 font-mono text-charcoal border border-cream-border text-[11px]">
                   {new Date(selectedCommit.timestamp).toLocaleString()}
                 </div>
               </div>
 
               {/* Parent IDs */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
                   <GitBranch className="h-3 w-3" /> Parents ({selectedCommit.parentIds.length})
                 </label>
                 <div className="mt-1 space-y-1">
                   {selectedCommit.parentIds.length === 0 ? (
-                    <div className="text-slate-500 italic p-2 bg-slate-900/60 rounded">
+                    <div className="text-charcoal-muted italic p-2 bg-cream-subtle rounded border border-cream-border text-xs">
                       Root Commit (Genesis)
                     </div>
                   ) : (
@@ -332,10 +343,10 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
                       <div
                         key={pId}
                         onClick={() => setSelectedCommitId(pId)}
-                        className="bg-slate-900/90 hover:bg-slate-800 text-slate-300 rounded p-1.5 font-mono cursor-pointer flex items-center justify-between transition-colors border border-slate-800"
+                        className="bg-cream-subtle hover:bg-cream-200 text-charcoal rounded p-1.5 font-mono cursor-pointer flex items-center justify-between transition-colors border border-cream-border text-[11px]"
                       >
                         <span>{pId.slice(0, 16)}...</span>
-                        <ChevronRight className="h-3 w-3 text-slate-500" />
+                        <ChevronRight className="h-3 w-3 text-charcoal-muted" />
                       </div>
                     ))
                   )}
@@ -344,30 +355,30 @@ export const DAGVisualizer: React.FC<DAGVisualizerProps> = ({
 
               {/* Update Hash */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
                   <Key className="h-3 w-3" /> Yjs Update Binary Hash
                 </label>
-                <div className="mt-1 bg-slate-900/90 rounded-lg p-2 font-mono text-slate-400 break-all border border-slate-800">
+                <div className="mt-1 bg-cream-subtle rounded p-2 font-mono text-charcoal-muted break-all border border-cream-border text-[10px]">
                   {selectedCommit.updateHash}
                 </div>
               </div>
 
               {/* ECDSA Signature */}
               <div>
-                <label className="text-slate-500 font-mono text-[10px] uppercase flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3 text-emerald-400" /> ECDSA P-256 Signature
+                <label className="text-charcoal-muted font-mono text-[10px] uppercase flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3 text-sage-dark" /> ECDSA P-256 Signature
                 </label>
-                <div className="mt-1 bg-slate-900/90 rounded-lg p-2 font-mono text-emerald-400 break-all border border-emerald-500/20 text-[10px]">
+                <div className="mt-1 bg-cream-subtle rounded p-2 font-mono text-sage-dark break-all border border-cream-border text-[10px]">
                   {selectedCommit.signature}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <span>Protocol Version: {selectedCommit.version}</span>
-            <span className="text-emerald-400 font-semibold flex items-center gap-1">
-              <CheckCircle className="h-3.5 w-3.5" /> Verified Node
+          <div className="mt-6 pt-4 border-t border-cream-border flex items-center justify-between text-xs text-charcoal-muted">
+            <span>Protocol: v{selectedCommit.version}</span>
+            <span className="text-sage-dark font-semibold flex items-center gap-1">
+              <CheckCircle className="h-3.5 w-3.5" /> Verified
             </span>
           </div>
         </div>
