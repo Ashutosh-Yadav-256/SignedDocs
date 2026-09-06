@@ -6,48 +6,41 @@ import * as Y from 'yjs';
  */
 export function extractTextFromYDoc(doc: Y.Doc, fieldName: string = 'default'): string {
   try {
-    const share = (doc as any).share;
-    if (share && share.has(fieldName)) {
-      const type = share.get(fieldName);
-      // Check if it's an XmlFragment or has toJSON
-      if (type instanceof Y.XmlFragment || type?.constructor?.name === 'XmlFragment') {
-        const fragment = doc.getXmlFragment(fieldName);
-        return formatXmlFragmentToText(fragment);
-      }
-      if (type instanceof Y.Text || type?.constructor?.name === 'Text') {
-        const ytext = doc.getText(fieldName);
-        return ytext.toString();
-      }
-    }
-
-    // Default attempt: try XmlFragment first (TipTap standard)
     const fragment = doc.getXmlFragment(fieldName);
-    return formatXmlFragmentToText(fragment);
-  } catch {
-    try {
-      const ytext = doc.getText(fieldName);
-      return ytext.toString();
-    } catch {
-      return '';
+    const rawXml = fragment ? fragment.toString() : '';
+    if (rawXml && rawXml.trim()) {
+      return rawXml
+        .replace(/<\/?[^>]+(>|$)/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
-  }
-}
 
-function formatXmlFragmentToText(fragment: Y.XmlFragment): string {
-  try {
-    const rawXml = fragment.toString();
-    if (!rawXml) return '';
-    return rawXml
-      .replace(/<p[^>]*>/gi, '')
-      .replace(/<\/p>/gi, '\n')
-      .replace(/<h[1-6][^>]*>/gi, '')
-      .replace(/<\/h[1-6]>/gi, '\n')
-      .replace(/<li[^>]*>/gi, '• ')
-      .replace(/<\/li>/gi, '\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+    const ytext = doc.getText(fieldName);
+    return ytext ? ytext.toString().trim() : '';
   } catch {
     return '';
   }
+}
+
+/**
+ * Replaces the entire content of a Y.Doc field ('default') with new plain text.
+ */
+export function replaceYDocContent(doc: Y.Doc, newContent: string, fieldName: string = 'default'): void {
+  doc.transact(() => {
+    try {
+      const fragment = doc.getXmlFragment(fieldName);
+      while (fragment.length > 0) {
+        fragment.delete(0, 1);
+      }
+      const p = new Y.XmlElement('paragraph');
+      p.insert(0, [new Y.XmlText(newContent)]);
+      fragment.insert(0, [p]);
+    } catch {
+      const ytext = doc.getText(fieldName);
+      if (ytext) {
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, newContent);
+      }
+    }
+  });
 }

@@ -8,6 +8,7 @@ import {
   AIProviderConfig,
   AISuggestion,
 } from '@hermes/core';
+import { extractTextFromYDoc } from '../../lib/yjsUtils.js';
 import {
   Sparkles,
   Bot,
@@ -162,8 +163,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     setQuestionInput('');
     setIsAnswering(true);
 
-    const ytext = ydoc.getText('tiptap') || ydoc.getText('content');
-    const currentText = ytext ? ytext.toString() : '';
+    const currentText = extractTextFromYDoc(ydoc, 'default');
 
     try {
       const answer = await aiEngine.askHistoryQnA(q, dag, documentId, documentTitle, currentText);
@@ -182,8 +182,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     if (!refactorPrompt.trim() || isGeneratingSuggestion) return;
     setIsGeneratingSuggestion(true);
 
-    const ytext = ydoc.getText('tiptap') || ydoc.getText('content');
-    const currentText = ytext ? ytext.toString() : '';
+    const currentText = extractTextFromYDoc(ydoc, 'default');
 
     try {
       const res = await aiEngine.suggestEdit(refactorPrompt, currentText);

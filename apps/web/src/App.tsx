@@ -19,6 +19,7 @@ import { MultisigMilestoneModal } from './components/multisig/MultisigMilestoneM
 import { ForensicInspectorModal } from './components/forensics/ForensicInspectorModal.js';
 import { AirGapSyncModal } from './components/airgap/AirGapSyncModal.js';
 import { OnboardingModal } from './components/onboarding/OnboardingModal.js';
+import { extractTextFromYDoc, replaceYDocContent } from './lib/yjsUtils.js';
 import {
   FileText,
   Layers,
@@ -123,26 +124,32 @@ export function App() {
     );
   }
 
+  const [docText, setDocText] = useState(() => extractTextFromYDoc(ydoc, 'default'));
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setDocText(extractTextFromYDoc(ydoc, 'default'));
+    };
+    handleUpdate();
+    ydoc.on('update', handleUpdate);
+    return () => {
+      ydoc.off('update', handleUpdate);
+    };
+  }, [ydoc]);
+
   const handleOpenAICommit = (commit: any) => {
     setSelectedAICommitId(commit.id);
     setIsAIAssistantOpen(true);
   };
 
   const handleApplyAISuggestion = async (newContent: string) => {
-    const ytext = ydoc.getText('tiptap') || ydoc.getText('content');
-    if (ytext) {
-      ydoc.transact(() => {
-        ytext.delete(0, ytext.length);
-        ytext.insert(0, newContent);
-      });
-      await flushCommit();
-    }
+    replaceYDocContent(ydoc, newContent, 'default');
+    await flushCommit();
   };
 
   // Calculate live stats for the left sidebar
-  const currentText = (ydoc.getText('tiptap') || ydoc.getText('content')).toString();
-  const wordCount = currentText.trim() ? currentText.trim().split(/\s+/).length : 0;
-  const readTimeMin = Math.max(1, Math.ceil(wordCount / 220));
+  const wordCount = docText.trim() ? docText.trim().split(/\s+/).filter(Boolean).length : 0;
+  const readTimeMin = Math.max(1, Math.ceil(wordCount / 200));
 
   return (
     <div className="min-h-screen bg-cream text-charcoal flex flex-col font-sans selection:bg-sage/20 selection:text-charcoal pb-16 lg:pb-0">
@@ -443,7 +450,7 @@ export function App() {
         onClose={() => setIsRedactionModalOpen(false)}
         documentId={documentId}
         documentTitle={documentTitle}
-        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        documentText={docText}
         identity={identity}
         heads={heads}
       />
@@ -454,7 +461,7 @@ export function App() {
         onClose={() => setIsMultisigModalOpen(false)}
         documentId={documentId}
         documentTitle={documentTitle}
-        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        documentText={docText}
         identity={identity}
         activePeers={activePeers}
       />
@@ -465,7 +472,7 @@ export function App() {
         onClose={() => setIsForensicsModalOpen(false)}
         documentId={documentId}
         documentTitle={documentTitle}
-        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        documentText={docText}
         identity={identity}
       />
 
@@ -475,7 +482,7 @@ export function App() {
         onClose={() => setIsAirGapModalOpen(false)}
         documentId={documentId}
         documentTitle={documentTitle}
-        documentText={(ydoc.getText('tiptap') || ydoc.getText('content')).toString()}
+        documentText={docText}
         onApplyReconstructedPayload={handleApplyAISuggestion}
       />
 
