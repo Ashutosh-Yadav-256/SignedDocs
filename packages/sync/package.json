@@ -21,6 +21,7 @@
     "@hermes/crypto": "*",
     "@hermes/protocol": "*",
     "@hermes/storage": "*",
+    "y-protocols": "^1.0.6",
     "yjs": "^13.6.23"
   },
   "devDependencies": {

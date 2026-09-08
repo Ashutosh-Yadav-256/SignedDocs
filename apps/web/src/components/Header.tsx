@@ -21,10 +21,12 @@ import {
   Feather,
   ChevronDown,
   SlidersHorizontal,
+  Server,
+  Link2,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
-import { PeerPresence } from '@hermes/sync';
+import { PeerPresence, TransportStatus } from '@hermes/sync';
 
 export interface HeaderProps {
   documentTitle: string;
@@ -39,6 +41,7 @@ export interface HeaderProps {
   onTabChange: (tab: 'editor' | 'dag' | 'blame' | 'timetravel' | 'audit') => void;
   onExportClick: () => void;
   onShareClick: () => void;
+  onJoinClick?: () => void;
   onVerifyClick: () => void;
   onDocumentsClick: () => void;
   onAIClick?: () => void;
@@ -47,6 +50,9 @@ export interface HeaderProps {
   onForensicsClick?: () => void;
   onAirGapClick?: () => void;
   onOnboardingClick?: () => void;
+  onLoadingScreenClick?: () => void;
+  onAuthorClick?: () => void;
+  signalingStatus?: TransportStatus;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -62,6 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   onExportClick,
   onShareClick,
+  onJoinClick,
   onVerifyClick,
   onDocumentsClick,
   onAIClick,
@@ -70,6 +77,9 @@ export const Header: React.FC<HeaderProps> = ({
   onForensicsClick,
   onAirGapClick,
   onOnboardingClick,
+  onLoadingScreenClick,
+  onAuthorClick,
+  signalingStatus,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -204,19 +214,39 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right Section: Action Utilities & Identity */}
         <div className="flex items-center space-x-2 shrink-0">
           {/* System Status Indicator */}
-          <div className="hidden 2xl:flex items-center space-x-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal">
+          <button
+            onClick={onLoadingScreenClick}
+            title="Click to view Render relay status and loading animation"
+            className="hidden 2xl:flex items-center space-x-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal hover:bg-cream transition-colors cursor-pointer"
+          >
             <span
               className={`h-2 w-2 rounded-full ${
-                connectionState === 'Connected' ? 'bg-sage-dark' : 'bg-charcoal-light'
+                activePeers.length > 0
+                  ? 'bg-sage-dark'
+                  : signalingStatus === 'CONNECTED'
+                  ? 'bg-sage'
+                  : signalingStatus === 'CONNECTING'
+                  ? 'bg-terracotta animate-pulse'
+                  : 'bg-charcoal-light'
               }`}
             />
-            <span className="font-mono text-[11px]">{connectionState}</span>
-          </div>
+            <span className="font-mono text-[11px]">
+              {activePeers.length > 0
+                ? 'Connected'
+                : signalingStatus === 'CONNECTED'
+                ? 'Relay Ready'
+                : signalingStatus === 'CONNECTING'
+                ? 'Waking Relay...'
+                : 'Local / Offline'}
+            </span>
+          </button>
 
           {/* Author Fingerprint Card */}
           <div className="hidden md:flex items-center space-x-2 rounded-lg bg-cream-subtle border border-cream-border px-2.5 py-1">
-            <div
-              className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+            <button
+              onClick={onAuthorClick}
+              title="Click to edit author identity & cursor color"
+              className="h-3 w-3 rounded-full flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-charcoal/20 transition-all"
               style={{ backgroundColor: userColor || '#7A8B7B' }}
             />
             <div className="flex flex-col text-left">
@@ -232,9 +262,9 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               ) : (
                 <button
-                  onClick={() => setIsEditingName(true)}
-                  className="text-xs font-semibold text-charcoal hover:underline transition-all"
-                  title="Click to change author display name"
+                  onClick={onAuthorClick || (() => setIsEditingName(true))}
+                  className="text-xs font-semibold text-charcoal hover:underline transition-all cursor-pointer text-left"
+                  title="Click to change author display name & cursor style"
                 >
                   {displayName}
                 </button>
@@ -242,7 +272,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={copyFingerprint}
                 title="Click to copy ECDSA public key fingerprint"
-                className="flex items-center space-x-1 text-[10px] font-mono text-charcoal-muted hover:text-charcoal transition-colors"
+                className="flex items-center space-x-1 text-[10px] font-mono text-charcoal-muted hover:text-charcoal transition-colors cursor-pointer"
               >
                 <span>{identity.fingerprint.slice(0, 10)}...</span>
                 {copied ? <Check className="h-2.5 w-2.5 text-sage-dark" /> : <Copy className="h-2.5 w-2.5" />}
@@ -328,6 +358,21 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </button>
                   )}
+                  {onLoadingScreenClick && (
+                    <button
+                      onClick={() => {
+                        onLoadingScreenClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal border-t border-cream-border/50 cursor-pointer"
+                    >
+                      <Server className="h-3.5 w-3.5 text-sage-dark" />
+                      <div>
+                        <div className="font-semibold">Render Relay & Loader</div>
+                        <div className="text-[10px] text-charcoal-muted">Wake-up status & animation</div>
+                      </div>
+                    </button>
+                  )}
                 </div>
               </>
             )}
@@ -341,6 +386,30 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Sparkles className="h-3.5 w-3.5" />
               <span className="hidden md:inline">AI Assist</span>
+            </button>
+          )}
+
+          {/* Join Document Session */}
+          {onJoinClick && (
+            <button
+              onClick={onJoinClick}
+              title="Join via Invite Link or Room Code"
+              className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white text-charcoal border border-cream-border hover:bg-cream-subtle transition-colors shrink-0 cursor-pointer shadow-xs"
+            >
+              <Link2 className="h-3.5 w-3.5 text-terracotta-dark" />
+              <span className="hidden sm:inline">Join</span>
+            </button>
+          )}
+
+          {/* Invite Collaborators */}
+          {onShareClick && (
+            <button
+              onClick={onShareClick}
+              title="Share Document & Invite Collaborators"
+              className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors shrink-0 cursor-pointer shadow-xs"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Invite</span>
             </button>
           )}
 
@@ -429,13 +498,25 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          <div className="pt-2 border-t border-cream-border grid grid-cols-2 gap-2 text-xs">
+          <div className="pt-2 border-t border-cream-border grid grid-cols-3 gap-2 text-xs">
+            {onJoinClick && (
+              <button
+                onClick={() => {
+                  onJoinClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-white border border-cream-border text-charcoal font-semibold text-left flex items-center gap-1.5"
+              >
+                <Link2 className="w-3.5 h-3.5 text-terracotta-dark" />
+                Join
+              </button>
+            )}
             <button
               onClick={() => {
                 onShareClick();
                 setMobileMenuOpen(false);
               }}
-              className="p-2 rounded bg-charcoal text-cream-50 font-semibold text-left flex items-center gap-2"
+              className="p-2 rounded bg-charcoal text-cream-50 font-semibold text-left flex items-center gap-1.5"
             >
               <Share2 className="w-3.5 h-3.5" />
               Invite
@@ -445,10 +526,10 @@ export const Header: React.FC<HeaderProps> = ({
                 onExportClick();
                 setMobileMenuOpen(false);
               }}
-              className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-2 text-charcoal font-semibold"
+              className="p-2 rounded bg-cream-subtle border border-cream-border text-left flex items-center gap-1.5 text-charcoal font-semibold"
             >
               <Download className="w-3.5 h-3.5" />
-              Export Bundle
+              Export
             </button>
           </div>
 

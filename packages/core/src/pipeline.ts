@@ -12,6 +12,7 @@ import { SignedCommitNode } from './types.js';
 
 export interface CommitPipelineOptions {
   debounceMs?: number;
+  maxWaitMs?: number;
   maxBatchSize?: number;
   onCommitCreated?: (commit: SignedCommitNode) => Promise<void> | void;
 }
@@ -19,7 +20,9 @@ export interface CommitPipelineOptions {
 export class CommitPipeline {
   private updateBuffer: Uint8Array[] = [];
   private debounceTimer: any = null;
+  private maxWaitTimer: any = null;
   private debounceMs: number;
+  private maxWaitMs: number;
   private maxBatchSize: number;
   private onCommitCreated?: (commit: SignedCommitNode) => Promise<void> | void;
   private identity: HermesIdentity;
@@ -33,7 +36,8 @@ export class CommitPipeline {
   ) {
     this.identity = identity;
     this.dag = dag;
-    this.debounceMs = options.debounceMs ?? 1500;
+    this.debounceMs = options.debounceMs ?? 800;
+    this.maxWaitMs = options.maxWaitMs ?? 2000;
     this.maxBatchSize = options.maxBatchSize ?? 50;
     this.onCommitCreated = options.onCommitCreated;
   }
@@ -60,6 +64,13 @@ export class CommitPipeline {
     this.debounceTimer = setTimeout(() => {
       this.flush();
     }, this.debounceMs);
+
+    // Guarantee that updates are flushed within maxWaitMs even during continuous typing
+    if (!this.maxWaitTimer) {
+      this.maxWaitTimer = setTimeout(() => {
+        this.flush();
+      }, this.maxWaitMs);
+    }
   }
 
   /**
@@ -69,6 +80,10 @@ export class CommitPipeline {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = null;
+    }
+    if (this.maxWaitTimer) {
+      clearTimeout(this.maxWaitTimer);
+      this.maxWaitTimer = null;
     }
 
     if (this.updateBuffer.length === 0 || this.isCommitting) {

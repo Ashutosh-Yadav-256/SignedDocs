@@ -1,4 +1,5 @@
 import * as Y from 'yjs';
+import { Awareness, encodeAwarenessUpdate, applyAwarenessUpdate } from 'y-protocols/awareness';
 import {
   CommitDAG,
   HermesAuthor,
@@ -6,7 +7,7 @@ import {
   HermesVerifier,
   SignedCommitNode,
 } from '@hermes/core';
-import { base64ToUint8Array, HermesIdentity } from '@hermes/crypto';
+import { base64ToUint8Array, uint8ArrayToBase64, HermesIdentity } from '@hermes/crypto';
 import {
   AwarenessMessage,
   DAGHeadsMessage,
@@ -30,6 +31,7 @@ export interface SyncEngineOptions {
   transports: SyncTransport[];
   displayName?: string;
   userColor?: string;
+  yAwareness?: Awareness;
 }
 
 export class SyncEngine {
@@ -40,6 +42,7 @@ export class SyncEngine {
   private storage: HermesStorage;
   private transports: SyncTransport[] = [];
   private awareness: AwarenessManager;
+  private yAwareness: Awareness;
   private displayName: string;
   private userColor: string;
   private isProcessingRemoteUpdate = false;
@@ -52,8 +55,29 @@ export class SyncEngine {
     this.dag = options.dag;
     this.storage = options.storage;
     this.awareness = new AwarenessManager();
+    this.yAwareness = options.yAwareness || new Awareness(this.ydoc);
     this.displayName = options.displayName || 'Anonymous Author';
     this.userColor = options.userColor || '#' + Math.floor(Math.random() * 16777215).toString(16);
+
+    // Initialize local Yjs awareness state for collaborative cursors
+    const authorShortId = this.identity.fingerprint.replace('hermes:', '').slice(0, 8);
+    this.yAwareness.setLocalStateField('user', {
+      name: this.displayName,
+      color: this.userColor,
+      authorId: authorShortId,
+      fingerprint: this.identity.fingerprint,
+    });
+
+    // Listen to local awareness changes and broadcast to peers
+    this.yAwareness.on('update', ({ added, updated, removed }: { added: number[]; updated: number[]; removed: number[] }, origin: any) => {
+      if (origin !== 'remote') {
+        const clients = added.concat(updated).concat(removed);
+        if (clients.length > 0) {
+          const updateBytes = encodeAwarenessUpdate(this.yAwareness, clients);
+          this.broadcastAwareness(undefined, uint8ArrayToBase64(updateBytes));
+        }
+      }
+    });
 
     for (const transport of options.transports) {
       this.addTransport(transport);
@@ -139,7 +163,17 @@ export class SyncEngine {
     this.broadcastDAGHeads();
   }
 
-  public broadcastAwareness(cursor?: { anchor: number; head: number }): void {
+  public broadcastAwareness(cursor?: { anchor: number; head: number }, awarenessUpdate?: string): void {
+    let encodedUpdate = awarenessUpdate;
+    if (!encodedUpdate) {
+      try {
+        const bytes = encodeAwarenessUpdate(this.yAwareness, [this.yAwareness.clientID]);
+        encodedUpdate = uint8ArrayToBase64(bytes);
+      } catch {
+        // ignore
+      }
+    }
+
     const msg: AwarenessMessage = {
       type: 'AWARENESS',
       documentId: this.document.id,
@@ -154,6 +188,7 @@ export class SyncEngine {
         displayName: this.displayName,
         lastActive: Date.now(),
       },
+      awarenessUpdate: encodedUpdate,
     };
 
     this.broadcast(msg);
@@ -252,6 +287,15 @@ export class SyncEngine {
           displayName: msg.state.displayName || msg.author.fingerprint.slice(0, 12),
           lastActive: msg.state.lastActive,
         });
+
+        if (msg.awarenessUpdate) {
+          try {
+            const bytes = base64ToUint8Array(msg.awarenessUpdate);
+            applyAwarenessUpdate(this.yAwareness, bytes, 'remote');
+          } catch (err) {
+            console.warn('Failed to apply remote Yjs awareness update', err);
+          }
+        }
         break;
       }
     }
@@ -309,10 +353,28 @@ export class SyncEngine {
     return this.isProcessingRemoteUpdate;
   }
 
+  public getYjsAwareness(): Awareness {
+    return this.yAwareness;
+  }
+
+  public updateLocalUser(displayName: string, userColor: string): void {
+    this.displayName = displayName;
+    this.userColor = userColor;
+    const authorShortId = this.identity.fingerprint.replace('hermes:', '').slice(0, 8);
+    this.yAwareness.setLocalStateField('user', {
+      name: displayName,
+      color: userColor,
+      authorId: authorShortId,
+      fingerprint: this.identity.fingerprint,
+    });
+    this.broadcastAwareness();
+  }
+
   public destroy(): void {
     for (const transport of this.transports) {
       transport.close();
     }
+    this.yAwareness.destroy();
     this.awareness.destroy();
     this.onDAGUpdatedCallbacks = [];
   }

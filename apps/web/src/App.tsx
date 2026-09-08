@@ -19,6 +19,8 @@ import { MultisigMilestoneModal } from './components/multisig/MultisigMilestoneM
 import { ForensicInspectorModal } from './components/forensics/ForensicInspectorModal.js';
 import { AirGapSyncModal } from './components/airgap/AirGapSyncModal.js';
 import { OnboardingModal } from './components/onboarding/OnboardingModal.js';
+import { AuthorIdentityModal } from './components/modals/AuthorIdentityModal.js';
+import { LoadingScreen } from './components/loading/LoadingScreen.js';
 import { extractTextFromYDoc, replaceYDocContent } from './lib/yjsUtils.js';
 import {
   FileText,
@@ -41,15 +43,26 @@ export function App() {
 
   // Parse URL parameters for room sharing
   const searchParams = new URLSearchParams(window.location.search);
-  const initialDocId = searchParams.get('doc') || 'doc_hermes_default';
-  const initialRoom = searchParams.get('room') || initialDocId;
-  const defaultSignalingUrl = 'wss://hermes-signaling-relay.onrender.com';
+  const urlDocId = searchParams.get('doc');
+  const urlRoom = searchParams.get('room');
+  const hasInviteLink = Boolean(urlDocId);
+
+  const initialDocId = urlDocId || 'doc_hermes_default';
+  const initialRoom = urlRoom || initialDocId;
+  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const defaultSignalingUrl = isLocalHost ? 'ws://localhost:4444' : 'wss://hermes-signaling-relay.onrender.com';
   const initialSignal = searchParams.get('signal') || (import.meta.env?.VITE_SIGNALING_URL as string) || defaultSignalingUrl;
 
   const [documentId, setDocumentId] = useState(initialDocId);
-  const [documentTitle, setDocumentTitle] = useState('Hermes Protocol Specification');
+  const [roomCode, setRoomCode] = useState(initialRoom);
+  const [documentTitle, setDocumentTitle] = useState(
+    hasInviteLink ? 'Shared Document' : 'Hermes Protocol Specification'
+  );
   const [activeTab, setActiveTab] = useState<'editor' | 'dag' | 'blame' | 'timetravel' | 'audit'>('editor');
-  const [showDashboard, setShowDashboard] = useState(false);
+  
+  // Option B: Show Document Hub on direct visit without an invite link
+  const [showDashboard, setShowDashboard] = useState(!hasInviteLink);
+  const [isInviteSession, setIsInviteSession] = useState(hasInviteLink);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isVerifierModalOpen, setIsVerifierModalOpen] = useState(false);
@@ -66,6 +79,8 @@ export function App() {
   const [isMultisigModalOpen, setIsMultisigModalOpen] = useState(false);
   const [isForensicsModalOpen, setIsForensicsModalOpen] = useState(false);
   const [isAirGapModalOpen, setIsAirGapModalOpen] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
+  const [isPreviewLoadingOpen, setIsPreviewLoadingOpen] = useState(false);
 
   // Author identity
   const {
@@ -73,7 +88,10 @@ export function App() {
     displayName,
     userColor,
     isLoading: isIdentityLoading,
+    isNameModalOpen,
+    setIsNameModalOpen,
     updateDisplayName,
+    updateUserColor,
   } = useHermesIdentity(storage);
 
   // Synchronized Hermes document
@@ -84,18 +102,20 @@ export function App() {
     displayName,
     userColor,
     storage,
-    roomCode: initialRoom,
+    roomCode,
     signalingUrl: initialSignal,
   });
 
   const {
     ydoc,
+    yAwareness,
     dag,
     commits,
     heads,
     activePeers,
     auditReport,
     isLoaded,
+    signalingStatus,
     flushCommit,
     exportBundle,
   } = hermesDoc;
@@ -105,28 +125,48 @@ export function App() {
     setIsOnboardingOpen(false);
   };
 
-  // Render loading state with flat design styling
-  if (isIdentityLoading || !identity || !isLoaded) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-cream text-charcoal">
-        <div className="flex flex-col items-center space-y-4 max-w-sm p-8 bg-cream-light border border-cream-border rounded-lg text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded border border-sage/40 bg-sage/10 text-sage">
-            <FileText className="h-6 w-6 text-sage" />
-          </div>
-          <div className="space-y-1">
-            <h2 className="text-base font-serif font-bold text-charcoal">SignedDocs</h2>
-            <p className="text-xs text-charcoal-muted">
-              Initializing WebCrypto ECDSA keys and local Merkle DAG...
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Sync document title from storage when switching/loading an existing document
+  useEffect(() => {
+    let isMounted = true;
+    async function loadMeta() {
+      const doc = await storage.getDocument(documentId);
+      if (doc && doc.title && isMounted) {
+        setDocumentTitle(doc.title);
+      }
+    }
+    loadMeta();
+    return () => {
+      isMounted = false;
+    };
+  }, [documentId, storage]);
 
-  const [docText, setDocText] = useState(() => extractTextFromYDoc(ydoc, 'default'));
+  const handleTitleChange = async (newTitle: string) => {
+    setDocumentTitle(newTitle);
+    const existing = await storage.getDocument(documentId);
+    if (existing) {
+      await storage.saveDocument({ ...existing, title: newTitle, updatedAt: Date.now() });
+    }
+  };
+
+  const handleSelectDocument = (newId: string, newTitle: string, newRoomCode?: string) => {
+    const targetRoom = newRoomCode || newId;
+    setDocumentId(newId);
+    setRoomCode(targetRoom);
+    setDocumentTitle(newTitle);
+    setShowDashboard(false);
+    setIsInviteSession(Boolean(newRoomCode && newRoomCode !== newId) || newId !== 'doc_hermes_default');
+
+    // Update browser URL query parameters smoothly
+    const url = new URL(window.location.href);
+    url.searchParams.set('doc', newId);
+    url.searchParams.set('room', targetRoom);
+    window.history.pushState({}, '', url.toString());
+  };
+
+  const [docText, setDocText] = useState(() => (ydoc ? extractTextFromYDoc(ydoc, 'default') : ''));
 
   useEffect(() => {
+    if (!ydoc) return;
     const handleUpdate = () => {
       setDocText(extractTextFromYDoc(ydoc, 'default'));
     };
@@ -136,6 +176,20 @@ export function App() {
       ydoc.off('update', handleUpdate);
     };
   }, [ydoc]);
+
+  // Render rich animated loading page during Render cold-start / app initialization
+  if (isIdentityLoading || !identity || !isLoaded || !hasEntered) {
+    return (
+      <LoadingScreen
+        isIdentityLoading={isIdentityLoading}
+        identityReady={!!identity}
+        isDocLoaded={isLoaded}
+        signalingStatus={signalingStatus}
+        documentTitle={documentTitle}
+        onReadyToEnter={() => setHasEntered(true)}
+      />
+    );
+  }
 
   const handleOpenAICommit = (commit: any) => {
     setSelectedAICommitId(commit.id);
@@ -156,7 +210,7 @@ export function App() {
       {/* Header */}
       <Header
         documentTitle={documentTitle}
-        onTitleChange={setDocumentTitle}
+        onTitleChange={handleTitleChange}
         identity={identity}
         displayName={displayName}
         onDisplayNameChange={updateDisplayName}
@@ -167,6 +221,7 @@ export function App() {
         onTabChange={setActiveTab}
         onExportClick={() => setIsExportOpen(true)}
         onShareClick={() => setIsShareOpen(true)}
+        onJoinClick={() => setShowDashboard(true)}
         onVerifyClick={() => setIsVerifierModalOpen(true)}
         onDocumentsClick={() => setShowDashboard(!showDashboard)}
         onAIClick={() => setIsAIAssistantOpen(true)}
@@ -175,18 +230,62 @@ export function App() {
         onForensicsClick={() => setIsForensicsModalOpen(true)}
         onAirGapClick={() => setIsAirGapModalOpen(true)}
         onOnboardingClick={() => setIsOnboardingOpen(true)}
+        onLoadingScreenClick={() => setIsPreviewLoadingOpen(true)}
+        onAuthorClick={() => setIsNameModalOpen(true)}
+        signalingStatus={signalingStatus}
       />
+
+      {/* Invite Collaboration Banner */}
+      {isInviteSession && !showDashboard && (
+        <div className="bg-sage-light/70 border-b border-sage/30 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-2 text-charcoal shadow-2xs">
+          <div className="flex items-center space-x-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-sage-dark"></span>
+            </span>
+            <span className="font-semibold text-sage-dark">Collaborative Session:</span>
+            <span className="font-mono text-charcoal font-semibold bg-white px-1.5 py-0.5 rounded border border-sage/20 text-[11px]">
+              {documentId}
+            </span>
+            {roomCode !== documentId && (
+              <span className="text-charcoal-muted text-[11px]">
+                (Room: <span className="font-mono">{roomCode}</span>)
+              </span>
+            )}
+          </div>
+          <div className="flex items-center space-x-3 text-xs">
+            <button
+              onClick={() => setIsShareOpen(true)}
+              className="text-sage-dark hover:underline font-semibold cursor-pointer"
+            >
+              Invite Link
+            </button>
+            <span className="text-cream-border">|</span>
+            <button
+              onClick={() => setShowDashboard(true)}
+              className="text-charcoal-muted hover:text-charcoal cursor-pointer"
+            >
+              Document Hub
+            </button>
+            <span className="text-cream-border">|</span>
+            <button
+              onClick={() => setIsInviteSession(false)}
+              className="text-charcoal-muted hover:text-charcoal text-[11px] cursor-pointer"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
         {showDashboard ? (
           <Dashboard
             storage={storage}
-            onSelectDocument={(id, title) => {
-              setDocumentId(id);
-              setDocumentTitle(title);
-              setShowDashboard(false);
-            }}
+            currentDocId={documentId}
+            canClose={true}
+            onSelectDocument={handleSelectDocument}
             onClose={() => setShowDashboard(false)}
           />
         ) : (
@@ -296,8 +395,12 @@ export function App() {
               {activeTab === 'editor' && (
                 <Editor
                   ydoc={ydoc}
+                  yAwareness={yAwareness}
                   onFlushCommit={flushCommit}
                   documentTitle={documentTitle}
+                  authorFingerprint={identity.fingerprint}
+                  authorColor={userColor}
+                  displayName={displayName}
                 />
               )}
 
@@ -329,6 +432,7 @@ export function App() {
                   currentUserDisplayName={displayName}
                   currentUserColor={userColor}
                   onShareClick={() => setIsShareOpen(true)}
+                  onAuthorClick={() => setIsNameModalOpen(true)}
                 />
 
                 {/* Quick DAG Feed */}
@@ -430,7 +534,7 @@ export function App() {
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
         documentId={documentId}
-        roomCode={initialRoom}
+        roomCode={roomCode}
       />
 
       {isVerifierModalOpen && (
@@ -484,6 +588,32 @@ export function App() {
         documentTitle={documentTitle}
         documentText={docText}
         onApplyReconstructedPayload={handleApplyAISuggestion}
+      />
+
+      {/* Loading Animation Page Preview Modal */}
+      {isPreviewLoadingOpen && (
+        <LoadingScreen
+          isIdentityLoading={false}
+          identityReady={true}
+          isDocLoaded={true}
+          signalingStatus={signalingStatus}
+          documentTitle={documentTitle}
+          isPreview={true}
+          onClosePreview={() => setIsPreviewLoadingOpen(false)}
+        />
+      )}
+
+      {/* Author Identity & Custom Name Prompt Modal */}
+      <AuthorIdentityModal
+        isOpen={isNameModalOpen}
+        onClose={() => setIsNameModalOpen(false)}
+        identity={identity}
+        displayName={displayName}
+        userColor={userColor}
+        onSave={(newName, newColor) => {
+          updateDisplayName(newName);
+          updateUserColor(newColor);
+        }}
       />
 
     </div>

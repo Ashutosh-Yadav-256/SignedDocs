@@ -52,6 +52,7 @@ export class WebRTCTransport implements SyncTransport {
       this.ws = new WebSocket(this.signalingUrl);
 
       this.ws.onopen = () => {
+        this.setStatus('CONNECTED');
         // Join the room for this document
         this.sendSignal({
           type: 'join',
@@ -70,13 +71,16 @@ export class WebRTCTransport implements SyncTransport {
       };
 
       this.ws.onerror = () => {
+        this.setStatus('DISCONNECTED');
         this.scheduleReconnect();
       };
 
       this.ws.onclose = () => {
+        this.setStatus('DISCONNECTED');
         this.scheduleReconnect();
       };
     } catch {
+      this.setStatus('DISCONNECTED');
       this.scheduleReconnect();
     }
   }

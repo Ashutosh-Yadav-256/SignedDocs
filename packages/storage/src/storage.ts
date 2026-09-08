@@ -226,7 +226,7 @@ export class HermesStorage {
 
   // --- Cryptographic Identity Operations ---
 
-  public async saveIdentity(identity: HermesIdentity): Promise<void> {
+  public async saveIdentity(identity: HermesIdentity, identityKey: string = 'primary_identity'): Promise<void> {
     if (!this.isIndexedDBAvailable()) {
       this.memoryIdentity = identity;
       return;
@@ -237,7 +237,7 @@ export class HermesStorage {
       const tx = db.transaction('identities', 'readwrite');
       const store = tx.objectStore('identities');
       const req = store.put({
-        id: 'primary_identity',
+        id: identityKey,
         fingerprint: identity.fingerprint,
         publicKeyBase64: identity.publicKeyBase64,
         publicKey: identity.publicKey,
@@ -248,7 +248,7 @@ export class HermesStorage {
     });
   }
 
-  public async loadIdentity(): Promise<HermesIdentity | null> {
+  public async loadIdentity(identityKey: string = 'primary_identity'): Promise<HermesIdentity | null> {
     if (!this.isIndexedDBAvailable()) {
       return this.memoryIdentity;
     }
@@ -257,7 +257,7 @@ export class HermesStorage {
     return new Promise((resolve, reject) => {
       const tx = db.transaction('identities', 'readonly');
       const store = tx.objectStore('identities');
-      const req = store.get('primary_identity');
+      const req = store.get(identityKey);
       req.onsuccess = () => {
         if (!req.result) {
           resolve(null);

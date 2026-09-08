@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Y from 'yjs';
+import { Awareness } from 'y-protocols/awareness';
 import {
   AuditReport,
   CommitDAG,
@@ -16,6 +17,7 @@ import {
   PeerPresence,
   SyncEngine,
   SyncTransport,
+  TransportStatus,
   WebRTCTransport,
 } from '@hermes/sync';
 
@@ -48,6 +50,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
   // Authoritative document state
   const ydoc = useMemo(() => new Y.Doc(), [documentId]);
   const dag = useMemo(() => new CommitDAG(), [documentId]);
+  const yAwareness = useMemo(() => new Awareness(ydoc), [ydoc]);
 
   const [commits, setCommits] = useState<SignedCommitNode[]>([]);
   const [heads, setHeads] = useState<string[]>([]);
@@ -55,6 +58,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [auditReport, setAuditReport] = useState<AuditReport | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [signalingStatus, setSignalingStatus] = useState<TransportStatus>('CONNECTING');
 
   const pipelineRef = useRef<CommitPipeline | null>(null);
   const syncEngineRef = useRef<SyncEngine | null>(null);
@@ -135,9 +139,27 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
       const transports: SyncTransport[] = [new BroadcastChannelTransport(documentId)];
 
       if (enableWebRTC) {
+        // Kick off HTTP wake-up ping to Render signaling server container
+        try {
+          const httpHealthUrl = signalingUrl
+            .replace(/^wss:\/\//i, 'https://')
+            .replace(/^ws:\/\//i, 'http://')
+            .replace(/\/$/, '') + '/health';
+          fetch(httpHealthUrl, { mode: 'no-cors' }).catch(() => {
+            // Ignore no-cors or network errors, HTTP hit still triggers Render spin-up!
+          });
+        } catch {
+          // ignore
+        }
+
         const webrtc = new WebRTCTransport(documentId, {
           signalingUrl,
           roomCode: roomCode || documentId,
+        });
+        webrtc.onStatusChange((status) => {
+          if (isMounted) {
+            setSignalingStatus(status);
+          }
         });
         webrtc.connect();
         transports.push(webrtc);
@@ -153,6 +175,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
         transports,
         displayName,
         userColor,
+        yAwareness,
       });
       syncEngineRef.current = syncEngine;
 
@@ -172,7 +195,8 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
 
       // 4. Setup Commit Pipeline for local edits
       const pipeline = new CommitPipeline(identity, dag, {
-        debounceMs: 1500,
+        debounceMs: 600,
+        maxWaitMs: 1500,
         maxBatchSize: 50,
         onCommitCreated: async (newCommit) => {
           await storage.saveCommit(documentId, newCommit);
@@ -230,6 +254,22 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
     };
   }, [documentId, documentTitle, identity, enableWebRTC, signalingUrl, roomCode]);
 
+  // Sync author identity details to live Yjs awareness whenever they change
+  useEffect(() => {
+    if (yAwareness && identity) {
+      const authorShortId = identity.fingerprint.replace('hermes:', '').slice(0, 8);
+      yAwareness.setLocalStateField('user', {
+        name: displayName,
+        color: userColor,
+        authorId: authorShortId,
+        fingerprint: identity.fingerprint,
+      });
+      if (syncEngineRef.current) {
+        syncEngineRef.current.updateLocalUser(displayName, userColor);
+      }
+    }
+  }, [displayName, userColor, identity, yAwareness]);
+
   // Manual flush to immediately create a signed commit
   const flushCommit = useCallback(async () => {
     if (pipelineRef.current) {
@@ -284,6 +324,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
 
   return {
     ydoc,
+    yAwareness,
     dag,
     commits,
     heads,
@@ -291,6 +332,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
     isSyncing,
     auditReport,
     isLoaded,
+    signalingStatus,
     flushCommit,
     exportBundle,
     refreshDAGState,

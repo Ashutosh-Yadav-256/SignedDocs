@@ -46,6 +46,7 @@ export interface AwarenessMessage {
     displayName?: string;
     lastActive: number;
   };
+  awarenessUpdate?: string;
 }
 
 export type HermesMessage =

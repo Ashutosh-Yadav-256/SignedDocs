@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import Placeholder from '@tiptap/extension-placeholder';
 import Typography from '@tiptap/extension-typography';
 import * as Y from 'yjs';
@@ -10,24 +11,31 @@ import { Clock, ShieldCheck, BookOpen } from 'lucide-react';
 
 export interface EditorProps {
   ydoc: Y.Doc;
+  yAwareness?: any;
   onFlushCommit?: () => void;
   documentTitle: string;
-  authorName?: string;
   authorFingerprint?: string;
   authorColor?: string;
+  displayName?: string;
 }
 
 export const Editor: React.FC<EditorProps> = ({
   ydoc,
+  yAwareness,
   onFlushCommit,
   documentTitle,
-  authorName = 'Ashutosh Yadav',
-  authorFingerprint = 'hermes:author',
+  authorFingerprint = 'hermes:anonymous',
   authorColor = '#7A8B7B',
+  displayName,
 }) => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [readTimeMinutes, setReadTimeMinutes] = useState(1);
+
+  const cleanFingerprint = authorFingerprint.replace('hermes:', '');
+  const authorShortId = cleanFingerprint.slice(0, 8);
+  const authorLabel = displayName || `Author #${authorShortId || 'anon'}`;
+  const avatarInitials = ((displayName && displayName.trim().slice(0, 2)) || authorShortId.slice(0, 2) || 'ID').toUpperCase();
 
   const editor = useEditor({
     extensions: [
@@ -38,6 +46,36 @@ export const Editor: React.FC<EditorProps> = ({
         document: ydoc,
         field: 'default',
       }),
+      ...(yAwareness
+        ? [
+            CollaborationCursor.configure({
+              provider: {
+                awareness: yAwareness,
+              },
+              user: {
+                name: displayName || `Author #${authorShortId}`,
+                color: authorColor,
+                authorId: authorShortId,
+              },
+              render(user: any) {
+                const cursor = document.createElement('span');
+                cursor.classList.add('collaboration-cursor__caret');
+                cursor.setAttribute('style', `border-color: ${user.color || '#7A8B7B'}`);
+
+                const label = document.createElement('div');
+                label.classList.add('collaboration-cursor__label');
+                label.setAttribute('style', `background-color: ${user.color || '#1A1A1A'}`);
+
+                const nameText = user.name || 'Author';
+                const idTag = user.authorId ? `#${user.authorId}` : '';
+                label.textContent = idTag ? `${nameText} (${idTag})` : nameText;
+
+                cursor.appendChild(label);
+                return cursor;
+              },
+            }),
+          ]
+        : []),
       Placeholder.configure({
         placeholder: 'Tell your story... All words are cryptographically signed to the immutable Merkle DAG.',
       }),
@@ -56,6 +94,21 @@ export const Editor: React.FC<EditorProps> = ({
       setReadTimeMinutes(Math.max(1, Math.ceil(words / 200)));
     },
   });
+
+  // Sync updated user identity into editor collaboration cursor
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      try {
+        (editor.commands as any).updateUser?.({
+          name: displayName || `Author #${authorShortId}`,
+          color: authorColor,
+          authorId: authorShortId,
+        });
+      } catch {
+        // ignore
+      }
+    }
+  }, [editor, displayName, authorColor, authorShortId]);
 
   useEffect(() => {
     if (editor) {
@@ -84,18 +137,19 @@ export const Editor: React.FC<EditorProps> = ({
           {/* Author Byline Row */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
             <div className="flex items-center space-x-3">
-              {/* Author Avatar */}
+              {/* Author Avatar - Cryptographic Hash Initials */}
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-cream-50 font-bold text-sm"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-cream-50 font-bold font-mono text-xs shadow-xs"
                 style={{ backgroundColor: authorColor }}
+                title={`Cryptographic Author: ${authorFingerprint}`}
               >
-                {authorName.slice(0, 1).toUpperCase()}
+                {avatarInitials}
               </div>
 
               <div className="space-y-0.5">
                 <div className="flex items-center space-x-2">
-                  <span className="font-semibold text-sm text-charcoal">{authorName}</span>
-                  <span className="text-xs text-sage flex items-center gap-1 bg-sage-light px-1.5 py-0.5 rounded border border-sage/30 font-medium">
+                  <span className="font-semibold text-sm font-mono text-charcoal">{authorLabel}</span>
+                  <span className="text-xs text-sage flex items-center gap-1 bg-sage-light px-1.5 py-0.5 rounded border border-sage/30 font-medium font-sans">
                     <ShieldCheck className="w-3 h-3 text-sage" />
                     ECDSA P-256
                   </span>
@@ -109,8 +163,8 @@ export const Editor: React.FC<EditorProps> = ({
                   <span>•</span>
                   <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   <span>•</span>
-                  <span className="font-mono text-[10px] text-charcoal-muted">
-                    {authorFingerprint.slice(0, 14)}...
+                  <span className="font-mono text-[10px] text-charcoal-muted" title={authorFingerprint}>
+                    {authorFingerprint.slice(0, 18)}...
                   </span>
                 </div>
               </div>

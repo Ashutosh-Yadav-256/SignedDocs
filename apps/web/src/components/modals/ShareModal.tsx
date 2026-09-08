@@ -46,21 +46,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-lg bg-cream-light rounded-lg border border-cream-border overflow-hidden text-charcoal">
+      <div className="w-full max-w-lg bg-cream-light rounded-xl border border-cream-border shadow-2xl overflow-hidden text-charcoal">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-cream-border">
           <div className="flex items-center space-x-3">
-            <div className="rounded border border-sage/30 bg-sage/10 p-2 text-sage">
+            <div className="rounded-lg border border-sage/30 bg-sage/10 p-2 text-sage-dark">
               <Share2 className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold font-serif text-charcoal">Peer-to-Peer Collaboration</h3>
-              <p className="text-xs text-charcoal-muted">Direct WebRTC & BroadcastChannel Synchronization</p>
+              <h3 className="text-base font-bold font-serif text-charcoal">Invite Collaborators</h3>
+              <p className="text-xs text-charcoal-muted">Direct WebRTC & BroadcastChannel Zero-Trust Sync</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded p-1.5 text-charcoal-muted hover:bg-cream hover:text-charcoal transition-colors border border-transparent hover:border-cream-border"
+            className="rounded p-1.5 text-charcoal-muted hover:bg-cream hover:text-charcoal transition-colors border border-transparent hover:border-cream-border cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -71,16 +71,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           {/* Features pills */}
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="bg-cream border border-cream-border rounded-lg p-3 flex items-center space-x-2.5">
-              <Radio className="h-4 w-4 text-sage" />
+              <Radio className="h-4 w-4 text-sage-dark" />
               <div>
                 <p className="font-semibold text-charcoal">Multi-Tab Sync</p>
-                <p className="text-[10px] text-charcoal-muted">BroadcastChannel (0 net)</p>
+                <p className="text-[10px] text-charcoal-muted">BroadcastChannel (0 network)</p>
               </div>
             </div>
             <div className="bg-cream border border-cream-border rounded-lg p-3 flex items-center space-x-2.5">
-              <Network className="h-4 w-4 text-terracotta" />
+              <Network className="h-4 w-4 text-terracotta-dark" />
               <div>
-                <p className="font-semibold text-charcoal">P2P WebRTC</p>
+                <p className="font-semibold text-charcoal">P2P WebRTC Mesh</p>
                 <p className="text-[10px] text-charcoal-muted">Direct DataChannels</p>
               </div>
             </div>
@@ -88,27 +88,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
           <div>
             <label className="text-xs font-semibold text-charcoal block mb-1.5">
-              Shareable Document URL
+              Shareable Document Invite URL
             </label>
             <div className="flex items-center space-x-2">
               <input
                 type="text"
                 readOnly
                 value={shareUrl}
-                className="flex-1 bg-cream border border-cream-border rounded px-3 py-2 text-xs font-mono text-charcoal focus:outline-none focus:border-charcoal"
+                className="flex-1 bg-cream border border-cream-border rounded-lg px-3 py-2 text-xs font-mono text-charcoal focus:outline-none focus:border-charcoal select-all"
               />
               <button
                 onClick={copyUrl}
-                className="flex items-center space-x-1.5 rounded bg-charcoal hover:bg-charcoal/90 text-cream px-3.5 py-2 text-xs font-semibold transition-colors border border-charcoal flex-shrink-0"
+                className="flex items-center space-x-1.5 rounded-lg bg-charcoal hover:bg-charcoal/90 text-cream-50 px-3.5 py-2 text-xs font-semibold transition-colors border border-charcoal flex-shrink-0 cursor-pointer shadow-xs"
               >
                 {copied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-sage" />
-                    <span className="text-sage">Copied</span>
+                    <Check className="h-3.5 w-3.5 text-sage-light" />
+                    <span className="text-sage-light">Copied!</span>
                   </>
                 ) : (
                   <>
-                    <Copy className="h-3.5 w-3.5 text-cream" />
+                    <Copy className="h-3.5 w-3.5 text-cream-50" />
                     <span>Copy Link</span>
                   </>
                 )}
@@ -118,11 +118,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
           <div className="bg-cream rounded-lg p-3.5 border border-cream-border text-xs text-charcoal space-y-1.5">
             <div className="flex items-center space-x-1.5 text-charcoal font-semibold">
-              <Shield className="h-3.5 w-3.5 text-sage" />
+              <Shield className="h-3.5 w-3.5 text-sage-dark" />
               <span>Zero-Knowledge Collaboration</span>
             </div>
             <p className="text-[11px] leading-relaxed text-charcoal-muted">
-              Document contents are transmitted directly peer-to-peer over encrypted WebRTC DataChannels. Incoming commits are cryptographically verified against ECDSA signatures before being applied to the document state.
+              Document edits are transmitted directly peer-to-peer over encrypted WebRTC DataChannels. Incoming commits are cryptographically verified against ECDSA signatures before being applied to the document state.
             </p>
           </div>
         </div>
@@ -131,7 +131,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <div className="p-4 border-t border-cream-border bg-cream text-right">
           <button
             onClick={onClose}
-            className="rounded bg-cream-light hover:bg-cream-dark text-charcoal border border-cream-border px-4 py-1.5 text-xs font-semibold transition-colors"
+            className="rounded-lg bg-cream-light hover:bg-cream-dark text-charcoal border border-cream-border px-4 py-1.5 text-xs font-semibold transition-colors cursor-pointer"
           >
             Close
           </button>
