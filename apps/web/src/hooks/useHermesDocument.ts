@@ -59,6 +59,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
   const [auditReport, setAuditReport] = useState<AuditReport | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [signalingStatus, setSignalingStatus] = useState<TransportStatus>('CONNECTING');
+  const [syncEngine, setSyncEngine] = useState<SyncEngine | null>(null);
 
   const pipelineRef = useRef<CommitPipeline | null>(null);
   const syncEngineRef = useRef<SyncEngine | null>(null);
@@ -178,6 +179,9 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
         yAwareness,
       });
       syncEngineRef.current = syncEngine;
+      if (isMounted) {
+        setSyncEngine(syncEngine);
+      }
 
       // Listen for DAG changes from remote peers
       const unsubDAG = syncEngine.onDAGUpdated(() => {
@@ -325,6 +329,7 @@ export function useHermesDocument(options: UseHermesDocumentOptions) {
   return {
     ydoc,
     yAwareness,
+    syncEngine,
     dag,
     commits,
     heads,

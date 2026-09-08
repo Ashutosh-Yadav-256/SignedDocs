@@ -10,6 +10,7 @@ import {
 import { base64ToUint8Array, uint8ArrayToBase64, HermesIdentity } from '@hermes/crypto';
 import {
   AwarenessMessage,
+  ChatEncryptedMessage,
   DAGHeadsMessage,
   HermesMessage,
   IdentityHelloMessage,
@@ -47,6 +48,7 @@ export class SyncEngine {
   private userColor: string;
   private isProcessingRemoteUpdate = false;
   private onDAGUpdatedCallbacks: (() => void)[] = [];
+  private chatMessageListeners: ((msg: ChatEncryptedMessage) => void)[] = [];
 
   constructor(options: SyncEngineOptions) {
     this.document = options.document;
@@ -298,6 +300,13 @@ export class SyncEngine {
         }
         break;
       }
+
+      case 'CHAT_MESSAGE': {
+        for (const handler of this.chatMessageListeners) {
+          handler(msg);
+        }
+        break;
+      }
     }
   }
 
@@ -370,10 +379,22 @@ export class SyncEngine {
     this.broadcastAwareness();
   }
 
+  public onChatMessage(handler: (msg: ChatEncryptedMessage) => void): () => void {
+    this.chatMessageListeners.push(handler);
+    return () => {
+      this.chatMessageListeners = this.chatMessageListeners.filter((h) => h !== handler);
+    };
+  }
+
+  public broadcastChatMessage(msg: ChatEncryptedMessage): void {
+    this.broadcast(msg);
+  }
+
   public destroy(): void {
     for (const transport of this.transports) {
       transport.close();
     }
+    this.chatMessageListeners = [];
     this.yAwareness.destroy();
     this.awareness.destroy();
     this.onDAGUpdatedCallbacks = [];

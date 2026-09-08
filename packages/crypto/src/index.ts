@@ -6,3 +6,4 @@ export * from './identity.js';
 export * from './signing.js';
 export * from './verification.js';
 export * from './merkle.js';
+export * from './encryption.js';

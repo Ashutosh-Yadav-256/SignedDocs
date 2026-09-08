@@ -9,6 +9,7 @@ export function isHermesMessage(obj: any): obj is HermesMessage {
     'SYNC_RESPONSE',
     'NEW_COMMIT',
     'AWARENESS',
+    'CHAT_MESSAGE',
   ];
   return validTypes.includes(obj.type) && typeof obj.documentId === 'string';
 }

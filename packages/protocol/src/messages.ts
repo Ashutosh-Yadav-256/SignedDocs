@@ -49,10 +49,24 @@ export interface AwarenessMessage {
   awarenessUpdate?: string;
 }
 
+export interface ChatEncryptedMessage {
+  type: 'CHAT_MESSAGE';
+  documentId: string;
+  roomCode: string;
+  id: string;
+  author: HermesAuthor;
+  authorColor: string;
+  ciphertext: string;
+  iv: string;
+  signature: string;
+  timestamp: number;
+}
+
 export type HermesMessage =
   | IdentityHelloMessage
   | DAGHeadsMessage
   | SyncRequestMessage
   | SyncResponseMessage
   | NewCommitMessage
-  | AwarenessMessage;
+  | AwarenessMessage
+  | ChatEncryptedMessage;

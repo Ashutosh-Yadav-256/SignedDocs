@@ -23,6 +23,7 @@ import {
   SlidersHorizontal,
   Server,
   Link2,
+  MessageSquare,
 } from 'lucide-react';
 import { AuditReport } from '@hermes/core';
 import { HermesIdentity } from '@hermes/crypto';
@@ -52,6 +53,10 @@ export interface HeaderProps {
   onOnboardingClick?: () => void;
   onLoadingScreenClick?: () => void;
   onAuthorClick?: () => void;
+  onChatClick?: () => void;
+  isChatOpen?: boolean;
+  unreadChatCount?: number;
+  chatActiveRoom?: string;
   signalingStatus?: TransportStatus;
 }
 
@@ -79,10 +84,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOnboardingClick,
   onLoadingScreenClick,
   onAuthorClick,
+  onChatClick,
+  isChatOpen,
+  unreadChatCount,
+  chatActiveRoom,
   signalingStatus,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
@@ -98,126 +106,95 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-cream-border bg-cream-50 text-charcoal">
-      <div className="flex h-16 items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] mx-auto">
-        {/* Left Section: Publication Branding & Document Title */}
-        <div className="flex items-center space-x-3 sm:space-x-3.5 min-w-0 shrink-0">
+      <div className="flex h-16 items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-4 lg:px-6 w-full max-w-[1600px] mx-auto min-w-0">
+        {/* Left Section: Document Library Trigger */}
+        <div className="flex items-center shrink-0">
           <button
             onClick={onDocumentsClick}
-            className="flex items-center space-x-2.5 transition-colors hover:opacity-85 text-left shrink-0"
+            className="flex items-center transition-colors hover:opacity-85 text-left shrink-0"
             title="Open Document Library"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-charcoal text-cream-50 border border-charcoal shrink-0">
               <Feather className="h-4 w-4 text-cream-50" />
             </div>
-            <div className="hidden sm:block shrink-0">
-              <div className="flex items-center space-x-1.5">
-                <span className="font-bold tracking-tight text-charcoal text-sm font-serif">SignedDocs</span>
-                <span className="rounded bg-cream-subtle px-1.5 py-0.2 text-[10px] font-semibold text-charcoal-muted border border-cream-border font-mono">
-                  v1.0
-                </span>
-              </div>
-            </div>
           </button>
-
-          <div className="h-5 w-px bg-cream-border hidden sm:block shrink-0" />
-
-          {/* Document Title Editor */}
-          <div className="flex items-center min-w-0">
-            {isEditingTitle ? (
-              <input
-                type="text"
-                value={documentTitle}
-                onChange={(e) => onTitleChange && onTitleChange(e.target.value)}
-                onBlur={() => setIsEditingTitle(false)}
-                onKeyDown={(e) => e.key === 'Enter' && setIsEditingTitle(false)}
-                autoFocus
-                className="bg-cream-subtle border border-charcoal/30 rounded px-2.5 py-1 text-sm font-semibold text-charcoal focus:outline-none focus:border-charcoal font-serif"
-              />
-            ) : (
-              <button
-                onClick={() => setIsEditingTitle(true)}
-                className="group flex items-center space-x-1.5 rounded px-2 py-1 text-sm font-semibold text-charcoal hover:bg-cream-subtle transition-colors font-serif min-w-0"
-                title="Click to rename document"
-              >
-                <span className="truncate max-w-[100px] sm:max-w-[140px] md:max-w-[180px] xl:max-w-xs">{documentTitle}</span>
-                <span className="text-charcoal-light text-xs opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                  ✎
-                </span>
-              </button>
-            )}
-          </div>
         </div>
 
-        {/* Center Section: Minimalist Navigation Tabs (Desktop xl+) */}
-        <div className="hidden xl:flex items-center space-x-1 bg-cream-subtle p-1 rounded-lg border border-cream-border shrink-0">
+        {/* Center Section: Responsive Navigation Tabs (Compact Icons on xl, Full Text on 2xl+) */}
+        <div className="hidden xl:flex items-center space-x-0.5 bg-cream-subtle p-1 rounded-lg border border-cream-border shrink-0">
           <button
             onClick={() => onTabChange('editor')}
-            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
+            title="Document Editor"
+            className={`flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
               activeTab === 'editor'
                 ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
                 : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
-            <span>Editor</span>
+            <span className="hidden 2xl:inline">Editor</span>
           </button>
 
           <button
             onClick={() => onTabChange('dag')}
-            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
+            title="Merkle Commit DAG"
+            className={`flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
               activeTab === 'dag'
                 ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
                 : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Layers className="h-3.5 w-3.5" />
-            <span>Commit DAG</span>
+            <span className="hidden 2xl:inline">Commit DAG</span>
           </button>
 
           <button
             onClick={() => onTabChange('blame')}
-            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
+            title="Cryptographic Signed Blame"
+            className={`flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
               activeTab === 'blame'
                 ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
                 : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Signed Blame</span>
+            <span className="hidden 2xl:inline">Signed Blame</span>
           </button>
 
           <button
             onClick={() => onTabChange('timetravel')}
-            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
+            title="State Revision Time Travel"
+            className={`flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
               activeTab === 'timetravel'
                 ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
                 : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <Radio className="h-3.5 w-3.5" />
-            <span>Time Travel</span>
+            <span className="hidden 2xl:inline">Time Travel</span>
           </button>
 
           <button
             onClick={() => onTabChange('audit')}
-            className={`flex items-center space-x-1.5 rounded px-3 py-1 text-xs font-medium transition-colors ${
+            title="Cryptographic Audit & Verifier"
+            className={`flex items-center space-x-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
               activeTab === 'audit'
                 ? 'bg-cream-50 text-charcoal font-semibold border border-cream-border shadow-none'
                 : 'text-charcoal-muted hover:text-charcoal'
             }`}
           >
             <FileCheck2 className="h-3.5 w-3.5" />
-            <span>Audit & Verify</span>
+            <span className="hidden 2xl:inline">Audit & Verify</span>
           </button>
         </div>
 
         {/* Right Section: Action Utilities & Identity */}
-        <div className="flex items-center space-x-2 shrink-0">
+        <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0 min-w-0">
           {/* System Status Indicator */}
           <button
             onClick={onLoadingScreenClick}
             title="Click to view Render relay status and loading animation"
-            className="hidden 2xl:flex items-center space-x-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal hover:bg-cream transition-colors cursor-pointer"
+            className="hidden 2xl:flex items-center space-x-1.5 rounded-lg px-2 py-1 text-xs font-medium border border-cream-border bg-cream-subtle text-charcoal hover:bg-cream transition-colors cursor-pointer shrink-0"
           >
             <span
               className={`h-2 w-2 rounded-full ${
@@ -241,8 +218,8 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Author Fingerprint Card */}
-          <div className="hidden md:flex items-center space-x-2 rounded-lg bg-cream-subtle border border-cream-border px-2.5 py-1">
+          {/* Author Fingerprint Card (Full on xl+, Avatar dot on <xl) */}
+          <div className="hidden xl:flex items-center space-x-2 rounded-lg bg-cream-subtle border border-cream-border px-2 py-1 shrink-0">
             <button
               onClick={onAuthorClick}
               title="Click to edit author identity & cursor color"
@@ -258,12 +235,12 @@ export const Header: React.FC<HeaderProps> = ({
                   onBlur={() => setIsEditingName(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setIsEditingName(false)}
                   autoFocus
-                  className="bg-cream-50 text-xs text-charcoal rounded px-1 border border-charcoal/30 focus:outline-none"
+                  className="bg-cream-50 text-xs text-charcoal rounded px-1 border border-charcoal/30 focus:outline-none max-w-[90px]"
                 />
               ) : (
                 <button
                   onClick={onAuthorClick || (() => setIsEditingName(true))}
-                  className="text-xs font-semibold text-charcoal hover:underline transition-all cursor-pointer text-left"
+                  className="text-xs font-semibold text-charcoal hover:underline transition-all cursor-pointer text-left truncate max-w-[85px] sm:max-w-[110px]"
                   title="Click to change author display name & cursor style"
                 >
                   {displayName}
@@ -274,11 +251,21 @@ export const Header: React.FC<HeaderProps> = ({
                 title="Click to copy ECDSA public key fingerprint"
                 className="flex items-center space-x-1 text-[10px] font-mono text-charcoal-muted hover:text-charcoal transition-colors cursor-pointer"
               >
-                <span>{identity.fingerprint.slice(0, 10)}...</span>
+                <span>{identity.fingerprint.slice(0, 8)}...</span>
                 {copied ? <Check className="h-2.5 w-2.5 text-sage-dark" /> : <Copy className="h-2.5 w-2.5" />}
               </button>
             </div>
           </div>
+
+          {/* Compact Author Avatar Button on smaller screens (< xl) */}
+          <button
+            onClick={onAuthorClick}
+            title={`Author: ${displayName} (#${identity.fingerprint.replace('hermes:', '').slice(0, 8)}) - Click to edit profile`}
+            className="xl:hidden h-7 w-7 rounded-full flex items-center justify-center text-[11px] text-white font-bold shrink-0 cursor-pointer border border-cream-border shadow-2xs hover:ring-2 hover:ring-charcoal/20 transition-all"
+            style={{ backgroundColor: userColor || '#7A8B7B' }}
+          >
+            {displayName.charAt(0).toUpperCase()}
+          </button>
 
           {/* Tools Dropdown */}
           <div className="relative hidden sm:block">
@@ -373,6 +360,21 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </button>
                   )}
+                  {onChatClick && (
+                    <button
+                      onClick={() => {
+                        onChatClick();
+                        setToolsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-cream transition-colors text-charcoal border-t border-cream-border/50 cursor-pointer"
+                    >
+                      <MessageSquare className="h-3.5 w-3.5 text-sage-dark" />
+                      <div>
+                        <div className="font-semibold">E2EE Chat & Rooms</div>
+                        <div className="text-[10px] text-charcoal-muted">AES-256 encrypted chat</div>
+                      </div>
+                    </button>
+                  )}
                 </div>
               </>
             )}
@@ -394,10 +396,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onJoinClick}
               title="Join via Invite Link or Room Code"
-              className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white text-charcoal border border-cream-border hover:bg-cream-subtle transition-colors shrink-0 cursor-pointer shadow-xs"
+              className="flex items-center space-x-1 rounded-lg px-2 sm:px-2.5 py-1 text-xs font-semibold bg-white text-charcoal border border-cream-border hover:bg-cream-subtle transition-colors shrink-0 cursor-pointer shadow-xs"
             >
               <Link2 className="h-3.5 w-3.5 text-terracotta-dark" />
-              <span className="hidden sm:inline">Join</span>
+              <span>Join</span>
             </button>
           )}
 
@@ -406,10 +408,33 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onShareClick}
               title="Share Document & Invite Collaborators"
-              className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors shrink-0 cursor-pointer shadow-xs"
+              className="flex items-center space-x-1 rounded-lg px-2 sm:px-2.5 py-1 text-xs font-semibold bg-sage-light text-sage-dark border border-sage-border hover:bg-sage-200 transition-colors shrink-0 cursor-pointer shadow-xs"
             >
               <Share2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Invite</span>
+              <span>Invite</span>
+            </button>
+          )}
+
+          {/* E2EE Chat Toggle */}
+          {onChatClick && (
+            <button
+              onClick={onChatClick}
+              title={`End-to-End Encrypted Chat ${chatActiveRoom ? `(#${chatActiveRoom})` : ''}`}
+              className={`relative flex items-center space-x-1 rounded-lg px-2 sm:px-2.5 py-1 text-xs font-semibold border transition-all shrink-0 cursor-pointer shadow-xs ${
+                isChatOpen
+                  ? 'bg-charcoal text-cream-50 border-charcoal'
+                  : 'bg-white text-charcoal border-cream-border hover:bg-cream-subtle'
+              }`}
+            >
+              <MessageSquare className="h-3.5 w-3.5 text-sage-dark" />
+              <span>Chat</span>
+              {unreadChatCount && unreadChatCount > 0 ? (
+                <span className="bg-terracotta text-cream-50 font-bold px-1.5 py-0.2 rounded-full text-[10px] animate-pulse">
+                  {unreadChatCount}
+                </span>
+              ) : (
+                <span className="h-1.5 w-1.5 rounded-full bg-sage-dark" />
+              )}
             </button>
           )}
 
@@ -417,7 +442,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onExportClick}
             title="Export Verifiable Bundle"
-            className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium border border-cream-border hover:bg-cream-subtle text-charcoal transition-colors shrink-0"
+            className="flex items-center space-x-1 rounded-lg px-2 sm:px-2.5 py-1 text-xs font-medium border border-cream-border hover:bg-cream-subtle text-charcoal transition-colors shrink-0"
           >
             <Download className="h-3.5 w-3.5 text-charcoal-muted" />
             <span className="hidden sm:inline">Export</span>
@@ -531,6 +556,25 @@ export const Header: React.FC<HeaderProps> = ({
               <Download className="w-3.5 h-3.5" />
               Export
             </button>
+            {onChatClick && (
+              <button
+                onClick={() => {
+                  onChatClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 rounded bg-white border border-cream-border text-left flex items-center justify-between gap-1.5 text-charcoal font-semibold col-span-3 sm:col-span-1"
+              >
+                <div className="flex items-center gap-1.5">
+                  <MessageSquare className="w-3.5 h-3.5 text-sage-dark" />
+                  <span>Encrypted Chat</span>
+                </div>
+                {unreadChatCount && unreadChatCount > 0 && (
+                  <span className="bg-terracotta text-cream-50 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                    {unreadChatCount}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
 
           <div className="pt-2 border-t border-cream-border grid grid-cols-2 gap-2 text-xs">

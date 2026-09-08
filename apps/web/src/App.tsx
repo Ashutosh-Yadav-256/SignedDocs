@@ -21,6 +21,8 @@ import { AirGapSyncModal } from './components/airgap/AirGapSyncModal.js';
 import { OnboardingModal } from './components/onboarding/OnboardingModal.js';
 import { AuthorIdentityModal } from './components/modals/AuthorIdentityModal.js';
 import { LoadingScreen } from './components/loading/LoadingScreen.js';
+import { useHermesChat } from './hooks/useHermesChat.js';
+import { ChatBox } from './components/chat/ChatBox.js';
 import { extractTextFromYDoc, replaceYDocContent } from './lib/yjsUtils.js';
 import {
   FileText,
@@ -36,6 +38,7 @@ import {
   KeyRound,
   BookOpen,
   Sparkles,
+  MessageSquare,
 } from 'lucide-react';
 
 export function App() {
@@ -116,9 +119,20 @@ export function App() {
     auditReport,
     isLoaded,
     signalingStatus,
+    syncEngine,
     flushCommit,
     exportBundle,
   } = hermesDoc;
+
+  // Real-Time End-to-End Encrypted Chat & Multi-Room Management
+  const hermesChat = useHermesChat({
+    documentId,
+    initialRoomCode: roomCode,
+    identity,
+    displayName,
+    userColor,
+    syncEngine,
+  });
 
   const handleCloseOnboarding = () => {
     localStorage.setItem('signeddocs_onboarded_seen', 'true');
@@ -232,6 +246,10 @@ export function App() {
         onOnboardingClick={() => setIsOnboardingOpen(true)}
         onLoadingScreenClick={() => setIsPreviewLoadingOpen(true)}
         onAuthorClick={() => setIsNameModalOpen(true)}
+        onChatClick={hermesChat.toggleChat}
+        isChatOpen={hermesChat.isChatOpen}
+        unreadChatCount={hermesChat.unreadCount}
+        chatActiveRoom={hermesChat.activeRoom}
         signalingStatus={signalingStatus}
       />
 
@@ -501,6 +519,20 @@ export function App() {
             <Sparkles className="h-4 w-4 mb-0.5" />
             <span>AI</span>
           </button>
+          <button
+            onClick={hermesChat.toggleChat}
+            className={`relative flex flex-col items-center p-1 rounded ${
+              hermesChat.isChatOpen ? 'text-charcoal font-bold' : 'text-charcoal-muted'
+            }`}
+          >
+            <MessageSquare className="h-4 w-4 mb-0.5" />
+            <span>Chat</span>
+            {hermesChat.unreadCount > 0 && (
+              <span className="absolute -top-1 right-2 bg-terracotta text-cream-50 text-[9px] font-bold px-1 rounded-full animate-pulse">
+                {hermesChat.unreadCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -614,6 +646,23 @@ export function App() {
           updateDisplayName(newName);
           updateUserColor(newColor);
         }}
+      />
+
+      {/* Real-Time End-to-End Encrypted Chat Box & Rooms */}
+      <ChatBox
+        isOpen={hermesChat.isChatOpen}
+        onClose={hermesChat.closeChat}
+        onOpen={hermesChat.openChat}
+        activeRoom={hermesChat.activeRoom}
+        knownRooms={hermesChat.knownRooms}
+        messages={hermesChat.messages}
+        onSendMessage={hermesChat.sendMessage}
+        onSwitchRoom={hermesChat.switchRoom}
+        onStartFreshRoom={hermesChat.startFreshRoom}
+        documentId={documentId}
+        documentTitle={documentTitle}
+        currentAuthorFingerprint={identity.fingerprint}
+        signalingUrl={initialSignal}
       />
 
     </div>
